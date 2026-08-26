@@ -105,56 +105,93 @@ section{position:relative}
 
 /* ---------- preloader: the bike assembles itself ---------- */
 #loader{position:fixed;inset:0;background:var(--ink);z-index:200;display:flex;align-items:center;
-  justify-content:center;transition:opacity .6s ease,visibility .6s}
+  justify-content:center;transition:opacity .7s ease,visibility .7s}
 #loader.done{opacity:0;visibility:hidden}
 #loader.off{display:none}
-.ld-wrap{position:relative;width:min(1180px,94vw);background:var(--ink)}
-.ld-ridge,.ld-dust{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:118%;pointer-events:none;mix-blend-mode:lighten}
-.ld-ridge{opacity:0;transition:opacity 1.1s ease}
-.ld-dust{opacity:0;transition:opacity 1.6s ease}
-#loader.riding .ld-dust{opacity:.45}
-#loader.peak .ld-ridge{opacity:.4}
-.ld-stage{position:relative;width:100%;aspect-ratio:2752/1536;background:var(--ink)}
-.ld-p{position:absolute;display:block;mix-blend-mode:lighten;will-change:transform,opacity}
+.ld-wrap{position:relative;width:min(1240px,96vw)}
+.ld-ridge,.ld-dust{position:absolute;left:50%;top:50%;width:120%;pointer-events:none;
+  opacity:0;transform:translate3d(-50%,-50%,0)}
+.ld-ridge{transition:opacity 1.3s ease}
+.ld-dust{transition:opacity 1.5s ease}
+#loader.riding .ld-dust{opacity:.4}
+#loader.peak .ld-ridge{opacity:.45}
+
+.ld-stage{position:relative;width:100%;aspect-ratio:2752/1536}
+/* transparent PNG-style parts: no blend mode, so every move stays on the GPU */
+.ld-p{position:absolute;display:block;opacity:0;
+  transform:translate3d(0,0,0);          /* create the GPU layer up front */
+  will-change:transform,opacity;backface-visibility:hidden}
 .ld-frame {left:22.67%;top:20.51%;width:52.03%}
 .ld-wr    {left:10.22%;top:34.50%;width:32.59%}
 .ld-wf    {left:58.17%;top:36.74%;width:30.70%}
-.ld-crank {left:39.93%;top:58.59%;width:11.05%}
+.ld-crank {left:40.44%;top:59.24%;width:10.10%}
 .ld-bar   {left:59.50%;top:14.00%;width:26.00%}
 .ld-saddle{left:39.00%;top:17.20%;width:14.50%}
-.ld-frame{opacity:0;transform:translateX(-6%) scale(.97)}
-#loader.build .ld-frame{animation:ldFrameIn 1.05s cubic-bezier(.22,.9,.25,1) .05s forwards}
-@keyframes ldFrameIn{60%{opacity:1}to{opacity:1;transform:none}}
-.ld-wr,.ld-wf{opacity:0;transform:translateY(-34%)}
-#loader.build .ld-wr{animation:ldDropIn .62s cubic-bezier(.2,.85,.3,1.08) .58s forwards}
-#loader.build .ld-wf{animation:ldDropIn .62s cubic-bezier(.2,.85,.3,1.08) .72s forwards}
-@keyframes ldDropIn{to{opacity:1;transform:none}}
-.ld-crank{opacity:0;transform:scale(.82)}
-#loader.build .ld-crank{animation:ldPopIn .42s cubic-bezier(.2,.9,.3,1.2) .96s forwards}
-.ld-bar{opacity:0;transform:translate(8%,-14%)}
-#loader.build .ld-bar{animation:ldSlideIn .5s cubic-bezier(.2,.85,.3,1) 1.06s forwards}
-.ld-saddle{opacity:0;transform:translateY(-18%)}
-#loader.build .ld-saddle{animation:ldSlideIn .5s cubic-bezier(.2,.85,.3,1) 1.16s forwards}
-@keyframes ldPopIn{to{opacity:1;transform:none}}
-@keyframes ldSlideIn{to{opacity:1;transform:none}}
-#loader.riding .ld-wr,#loader.riding .ld-wf{animation:ldSpinW .9s linear infinite;opacity:1;transform:none}
-#loader.riding .ld-crank{animation:ldSpinW 1.5s linear infinite;opacity:1}
-@keyframes ldSpinW{to{transform:rotate(360deg)}}
-#loader.riding .ld-stage{animation:ldRollFwd 2.1s cubic-bezier(.4,.02,.4,1) forwards}
-@keyframes ldRollFwd{to{transform:translateX(3%) scale(1.035)}}
-.ld-flash{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.92);
+
+/* ===== assembly: long, overlapping moves so it reads as one build ===== */
+/* frame glides in from the left and settles */
+@keyframes ldFrame{
+  0%  {opacity:0;transform:translate3d(-14%,3%,0) rotate(-3deg) scale(.94)}
+  55% {opacity:1}
+  100%{opacity:1;transform:translate3d(0,0,0) rotate(0) scale(1)}
+}
+/* wheels roll in from off-frame while spinning, then keep rolling */
+@keyframes ldWheelIn{
+  0%  {opacity:0;transform:translate3d(-70%,0,0) rotate(-300deg)}
+  35% {opacity:1}
+  100%{opacity:1;transform:translate3d(0,0,0) rotate(0)}
+}
+@keyframes ldWheelInR{
+  0%  {opacity:0;transform:translate3d(70%,0,0) rotate(300deg)}
+  35% {opacity:1}
+  100%{opacity:1;transform:translate3d(0,0,0) rotate(0)}
+}
+/* crank spins into place */
+@keyframes ldCrank{
+  0%  {opacity:0;transform:rotate(-220deg) scale(.7)}
+  100%{opacity:1;transform:rotate(0) scale(1)}
+}
+/* cockpit and saddle drop from above */
+@keyframes ldDropFrom{
+  0%  {opacity:0;transform:translate3d(0,-90%,0)}
+  60% {opacity:1}
+  100%{opacity:1;transform:translate3d(0,0,0)}
+}
+
+/* every move lands by 1.60 s, exactly when the bike starts rolling — no snap */
+#loader.build .ld-frame {animation:ldFrame    1.10s cubic-bezier(.16,.84,.24,1)  .00s both}
+#loader.build .ld-wr    {animation:ldWheelIn  1.30s cubic-bezier(.18,.86,.22,1)  .30s both}
+#loader.build .ld-wf    {animation:ldWheelInR 1.30s cubic-bezier(.18,.86,.22,1)  .30s both}
+#loader.build .ld-crank {animation:ldCrank     .75s cubic-bezier(.2,.86,.25,1)   .85s both}
+#loader.build .ld-saddle{animation:ldDropFrom  .70s cubic-bezier(.2,.88,.26,1)   .80s both}
+#loader.build .ld-bar   {animation:ldDropFrom  .70s cubic-bezier(.2,.88,.26,1)   .90s both}
+
+/* ===== rolling out: wheels + crank keep turning, bike eases forward ===== */
+#loader.riding .ld-wr,#loader.riding .ld-wf{animation:ldSpinW 1.05s linear infinite;opacity:1}
+#loader.riding .ld-crank{animation:ldSpinW 1.9s linear infinite;opacity:1}
+@keyframes ldSpinW{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+#loader.riding .ld-stage{animation:ldRollFwd 2.2s cubic-bezier(.36,.02,.4,1) both}
+@keyframes ldRollFwd{from{transform:translate3d(0,0,0) scale(1)}
+  to{transform:translate3d(4%,0,0) scale(1.05)}}
+
+/* ===== summit ===== */
+.ld-flash{position:absolute;left:50%;top:50%;opacity:0;pointer-events:none;
+  transform:translate3d(-50%,-50%,0) scale(.9);
   font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;
-  font-size:clamp(2.4rem,6.6vw,5rem);letter-spacing:.18em;color:var(--ivory);opacity:0;
-  text-shadow:0 0 60px rgba(190,157,82,.5);pointer-events:none}
+  font-size:clamp(2.4rem,6.6vw,5rem);letter-spacing:.18em;color:var(--ivory);
+  text-shadow:0 0 70px rgba(190,157,82,.55)}
 .ld-flash b{color:var(--gold)}
-#loader.peak .ld-flash{animation:ldFlashIn .85s cubic-bezier(.2,.9,.25,1) forwards}
-@keyframes ldFlashIn{40%{opacity:1;transform:translate(-50%,-50%) scale(1)}
-  to{opacity:1;transform:translate(-50%,-50%) scale(1.02)}}
-#loader.peak .ld-p{filter:brightness(.5) saturate(.85);transition:filter .7s ease}
+#loader.peak .ld-flash{animation:ldFlashIn 1s cubic-bezier(.16,.86,.24,1) both}
+@keyframes ldFlashIn{
+  0%  {opacity:0;transform:translate3d(-50%,-50%,0) scale(.9)}
+  45% {opacity:1;transform:translate3d(-50%,-50%,0) scale(1)}
+  100%{opacity:1;transform:translate3d(-50%,-50%,0) scale(1.03)}
+}
+#loader.peak .ld-p{filter:brightness(.45) saturate(.8);transition:filter .8s ease}
+
 .ld-foot{margin-top:clamp(14px,2.4vw,26px)}
 .ld-bar-p{height:2px;background:rgba(190,157,82,.18);overflow:hidden}
-.ld-bar-p i{display:block;height:100%;width:0;background:var(--gold);transition:width .3s ease}
+.ld-bar-p i{display:block;height:100%;width:0;background:var(--gold);transition:width .35s ease}
 .ld-txt{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
 .ld-txt span{font-size:.68rem;letter-spacing:.26em;text-transform:uppercase;color:var(--stone)}
 .ld-txt button{background:none;border:0;color:rgba(142,134,119,.7);font-family:var(--body);
@@ -663,9 +700,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold-soft);outline-
 </nav>
 
 <section id="hero">
-  <video id="heroVid" autoplay muted loop playsinline poster="assets/img/hero-poster.webp" preload="auto">
-    <source src="assets/video/hero-v2.webm" type="video/webm">
-    <source src="assets/video/hero-v2.mp4" type="video/mp4">
+  <video id="heroVid" autoplay muted loop playsinline poster="assets/img/hero-poster.webp" preload="none">
+    <source data-src="assets/video/hero-v2.webm" type="video/webm">
+    <source data-src="assets/video/hero-v2.mp4" type="video/mp4">
   </video>
   <div class="grain" aria-hidden="true"></div>
   <div class="vig" aria-hidden="true"></div>
@@ -1216,26 +1253,45 @@ if(!RM){
     clearInterval(mT);clearInterval(pT);
     bar.style.width='100%';
     setTimeout(function(){L.classList.add('done')},260);
-    setTimeout(off,950);
+    setTimeout(function(){
+      off();
+      /* only now let the heavy hero video start — it would fight the animation */
+      var v=document.getElementById('heroVid');
+      if(v){
+        [].forEach.call(v.querySelectorAll('source[data-src]'),function(sc){
+          sc.src=sc.getAttribute('data-src');sc.removeAttribute('data-src');
+        });
+        v.preload='auto';v.load();
+        var pr=v.play(); if(pr&&pr.catch)pr.catch(function(){});
+      }
+    },950);
   }
 
-  /* wait for the parts, but never longer than 900 ms */
+  /* wait until the parts are DECODED, not merely downloaded — a half-decoded
+     image stalls the first animation frame and the assembly looks like it pops */
   var parts=[].slice.call(L.querySelectorAll('.ld-p'));
   var waits=parts.map(function(im){
+    if(im.decode) return im.decode().catch(function(){});
     return im.complete?Promise.resolve():new Promise(function(r){im.onload=im.onerror=r});
   });
   var ready=Promise.race([
     Promise.all(waits),
-    new Promise(function(r){setTimeout(r,900)})
+    new Promise(function(r){setTimeout(r,1600)})
   ]);
 
-  ready.then(function(){
+  var raf2=function(){return new Promise(function(r){
+    requestAnimationFrame(function(){requestAnimationFrame(r)})})};
+
+  ready.then(raf2).then(function(){
     mT=setInterval(function(){mi=(mi+1)%msgs.length;msg.textContent=msgs[mi]},900);
     pT=setInterval(function(){prog=Math.min(88,prog+Math.random()*9);bar.style.width=prog+'%'},170);
     L.classList.add('build');
-    setTimeout(function(){L.classList.add('riding')},1700);
-    setTimeout(function(){L.classList.add('peak')},3150);
-    var close=function(){setTimeout(finish,Math.max(0,3800-(performance.now()-t0)))};
+    setTimeout(function(){L.classList.add('riding')},1600);
+    setTimeout(function(){                     /* release GPU layers we no longer move */
+      [].forEach.call(L.querySelectorAll('.ld-bar,.ld-saddle,.ld-frame'),function(e){e.style.willChange='auto'});
+    },2600);
+    setTimeout(function(){L.classList.add('peak')},2950);
+    var close=function(){setTimeout(finish,Math.max(0,3650-(performance.now()-t0)))};
     if(document.readyState==='complete')close();
     else addEventListener('load',close);
     setTimeout(finish,6200);
