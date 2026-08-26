@@ -296,8 +296,8 @@ input.cell.wide{width:100%;text-align:left}
 <!-- MANUAL RESERVATION MODAL -->
 <div class="ovl" id="ovl">
   <div class="mod">
-    <h3>Manual reservation</h3>
-    <p class="mh">For phone and walk-in bookings. Availability and price are checked the same way as online.</p>
+    <h3 id="mTitle">Manual reservation</h3>
+    <p class="mh" id="mHint">For phone and walk-in bookings. Availability and price are checked the same way as online.</p>
     <div class="msg err" id="mErr"></div>
     <div class="two">
       <div class="f"><label for="mBike">Bike</label><select id="mBike"></select></div>
@@ -324,6 +324,18 @@ input.cell.wide{width:100%;text-align:left}
     </div>
     <div class="f" id="mAddrF" style="display:none"><label for="mAddr">Delivery address</label><input id="mAddr" type="text"></div>
     <div class="f"><label for="mNotes">Notes</label><textarea id="mNotes" rows="2"></textarea></div>
+
+    <div class="two" id="mEditOnly" style="display:none">
+      <div class="f"><label for="mStatus">Status</label><select id="mStatus">
+        <option value="new">New</option><option value="confirmed">Confirmed</option><option value="cancelled">Cancelled</option>
+      </select></div>
+      <div class="f"><label for="mPrice">Total € <span style="color:var(--stone);letter-spacing:0;text-transform:none">(blank = auto)</span></label><input id="mPrice" type="number" min="0" step="1" placeholder="auto"></div>
+    </div>
+    <label class="opt" id="mIgnoreWrap" style="display:none;cursor:pointer;margin-bottom:4px">
+      <input type="checkbox" id="mIgnore" style="width:auto;margin-right:10px">
+      <span class="tx" style="font-size:.86rem">Allow blocked dates (override a service or holiday block)</span>
+    </label>
+
     <div class="calcline">Estimated total: <b id="mTotal">€0</b> <span style="color:var(--stone);font-size:.78rem">— final amount is calculated on save</span></div>
     <div class="mact">
       <button class="btn btn-o btn-sm" id="mCancel">Cancel</button>
@@ -449,6 +461,7 @@ function renderRes(){
         </div>
         <div class="acts2">
           ${r.status!=='confirmed'?`<button class="btn btn-g btn-sm" data-act="confirmed">Confirm</button>`:''}
+          <button class="btn btn-o btn-sm" data-edit="${r.id}">Edit</button>
           ${r.status!=='cancelled'?`<button class="btn btn-o btn-sm" data-act="cancelled">Cancel</button>`:''}
           ${r.status==='cancelled'?`<button class="btn btn-o btn-sm" data-act="new">Reopen</button>`:''}
           <a class="btn btn-o btn-sm" href="mailto:${encodeURIComponent(r.email)}?subject=${encodeURIComponent('Venga Cycling — reservation '+r.code)}">Email customer</a>
@@ -460,6 +473,8 @@ function renderRes(){
     card.querySelectorAll('[data-act]').forEach(btn=>{
       btn.onclick=async e=>{e.stopPropagation();await setStatus(card.dataset.id,btn.dataset.act)};
     });
+    const ed=card.querySelector('[data-edit]');
+    if(ed)ed.onclick=e=>{e.stopPropagation();openEdit(ed.dataset.edit)};
   });
 }
 function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
@@ -674,9 +689,51 @@ function syncModalSizes(){
 $('mBike').onchange=()=>{syncModalSizes();estimate()};
 ['mFrom','mTo','mIns'].forEach(id=>$(id).onchange=estimate);
 $('mDel').onchange=()=>{$('mAddrF').style.display=$('mDel').value==='1'?'block':'none';estimate()};
+let EDIT_ID=null;
+
+function setModalMode(edit){
+  EDIT_ID=edit?EDIT_ID:null;
+  $('mTitle').textContent=edit?'Edit reservation':'Manual reservation';
+  $('mHint').textContent=edit
+    ? 'Change anything below. Availability is re-checked, but this reservation no longer competes with itself.'
+    : 'For phone and walk-in bookings. Availability and price are checked the same way as online.';
+  $('mEditOnly').style.display=edit?'grid':'none';
+  $('mIgnoreWrap').style.display=edit?'flex':'none';
+  $('mSave').textContent=edit?'Save changes':'Create reservation';
+}
+function clearModal(){
+  ['mName','mMail','mPhone','mNotes','mAddr','mFrom','mTo','mPrice'].forEach(i=>$(i).value='');
+  $('mAdd').querySelectorAll('.chip.on').forEach(c=>c.classList.remove('on'));
+  $('mIns').value='none'; $('mDel').value='0'; $('mAddrF').style.display='none';
+  $('mIgnore').checked=false; $('mErr').classList.remove('on');
+}
+
+function openEdit(id){
+  const r=D.res.find(x=>x.id===id); if(!r){bad('Could not find that reservation.');return}
+  EDIT_ID=id;
+  clearModal(); setModalMode(true);
+  $('mBike').value=r.bike_id; syncModalSizes();
+  $('mSize').value=r.size;
+  $('mFrom').removeAttribute('min'); $('mTo').removeAttribute('min'); /* past bookings stay editable */
+  $('mFrom').value=r.start_date; $('mTo').value=r.end_date;
+  $('mTime').value=String(r.pickup_time).slice(0,5);
+  $('mIns').value=r.insurance;
+  (r.addons||[]).forEach(s=>{const c=$('mAdd').querySelector(`[data-s="${s}"]`);if(c)c.classList.add('on')});
+  $('mName').value=r.customer_name||''; $('mMail').value=r.email||'';
+  $('mPhone').value=r.phone||''; $('mNotes').value=r.notes||'';
+  $('mDel').value=r.delivery?'1':'0';
+  $('mAddrF').style.display=r.delivery?'block':'none';
+  $('mAddr').value=r.delivery_address||'';
+  $('mStatus').value=r.status;
+  $('mPrice').value=''; $('mPrice').placeholder=`auto (now ${Number(r.total_price)})`;
+  estimate();
+  $('ovl').classList.add('on');
+}
+
 $('addRes').onclick=()=>{
+  EDIT_ID=null; clearModal(); setModalMode(false);
   const t=iso(new Date());$('mFrom').min=t;$('mTo').min=t;
-  $('mErr').classList.remove('on');$('ovl').classList.add('on');
+  $('ovl').classList.add('on');
 };
 $('mCancel').onclick=()=>$('ovl').classList.remove('on');
 $('ovl').onclick=e=>{if(e.target===$('ovl'))$('ovl').classList.remove('on')};
@@ -696,33 +753,50 @@ function estimate(){
   if($('mDel').value==='1')sum+=+(D.settings.delivery_fee??100);
   $('mTotal').textContent=money(sum);
 }
-const RPC_ERR={NO_AVAILABILITY:'No stock left for that bike, size and date range.',SIZE_NOT_AVAILABLE:'That size has no units.',PICKUP_OUTSIDE_HOURS:'Pickup must be 09:00–12:30 or 16:00–18:30.',DELIVERY_ADDRESS_REQUIRED:'Add the delivery address.',START_IN_PAST:'The first day is in the past.',INVALID_DATES:'The last day must be on or after the first day.',BAD_EMAIL:'That email address looks wrong.',MISSING_CONTACT:'Name and email are required.',TOO_LONG:'Rentals over 60 days must be handled manually.'};
+const RPC_ERR={NO_AVAILABILITY:'No stock left for that bike, size and date range.',SIZE_NOT_AVAILABLE:'That size has no units.',PICKUP_OUTSIDE_HOURS:'Pickup must be 09:00–12:30 or 16:00–18:30.',DELIVERY_ADDRESS_REQUIRED:'Add the delivery address.',START_IN_PAST:'The first day is in the past.',INVALID_DATES:'The last day must be on or after the first day.',BAD_EMAIL:'That email address looks wrong.',MISSING_CONTACT:'Name and email are required.',TOO_LONG:'Rentals over 60 days must be handled manually.',DATE_BLOCKED:'Those dates are blocked for service or holiday. Tick "Allow blocked dates" to override.',RESERVATION_NOT_FOUND:'That reservation no longer exists — refresh the page.'};
+
 $('mSave').onclick=async()=>{
-  const btn=$('mSave');btn.disabled=true;btn.textContent='Saving…';$('mErr').classList.remove('on');
+  const btn=$('mSave');const editing=!!EDIT_ID;
+  btn.disabled=true;btn.textContent='Saving…';$('mErr').classList.remove('on');
+  const addons=[...$('mAdd').querySelectorAll('.chip.on')].map(c=>c.dataset.s);
+  const common={
+    p_bike:$('mBike').value,p_size:$('mSize').value,p_start:$('mFrom').value,p_end:$('mTo').value,
+    p_pickup:$('mTime').value,p_delivery:$('mDel').value==='1',
+    p_delivery_address:$('mDel').value==='1'?$('mAddr').value.trim():null,
+    p_insurance:$('mIns').value,p_addons:addons,
+    p_name:$('mName').value.trim(),p_email:$('mMail').value.trim(),
+    p_phone:$('mPhone').value.trim()||null,p_notes:$('mNotes').value.trim()||null
+  };
   try{
-    const {data,error}=await sb.rpc('create_reservation',{
-      p_bike:$('mBike').value,p_size:$('mSize').value,p_start:$('mFrom').value,p_end:$('mTo').value,
-      p_pickup:$('mTime').value,p_delivery:$('mDel').value==='1',
-      p_delivery_address:$('mDel').value==='1'?$('mAddr').value.trim():null,
-      p_insurance:$('mIns').value,
-      p_addons:[...$('mAdd').querySelectorAll('.chip.on')].map(c=>c.dataset.s),
-      p_name:$('mName').value.trim(),p_email:$('mMail').value.trim(),
-      p_phone:$('mPhone').value.trim()||null,p_notes:$('mNotes').value.trim()||null
-    });
+    let data,error;
+    if(editing){
+      ({data,error}=await sb.rpc('update_reservation',{
+        ...common, p_id:EDIT_ID, p_status:$('mStatus').value,
+        p_price_override:$('mPrice').value===''?null:+$('mPrice').value,
+        p_ignore_blocks:$('mIgnore').checked
+      }));
+    }else{
+      ({data,error}=await sb.rpc('create_reservation',common));
+    }
     if(error)throw error;
-    // mark as manual + confirmed
-    await sb.from('reservations').update({source:'manual',status:'confirmed'}).eq('code',data.code);
+    if(!editing){
+      await sb.from('reservations').update({source:'manual',status:'confirmed'}).eq('code',data.code);
+    }
     $('ovl').classList.remove('on');
-    ['mName','mMail','mPhone','mNotes','mAddr'].forEach(i=>$(i).value='');
-    $('mAdd').querySelectorAll('.chip.on').forEach(c=>c.classList.remove('on'));
+    EDIT_ID=null; clearModal();
     await loadAll();
-    ok(`Reservation ${data.code} created and confirmed — ${money(data.total)}.`);
+    if(editing){
+      const extra=(data.calculated!=null&&+data.total!==+data.calculated)?` (manual price; calculated ${money(data.calculated)})`:'';
+      ok(`Reservation ${data.code} updated — ${money(data.total)}${extra}.`);
+    }else{
+      ok(`Reservation ${data.code} created and confirmed — ${money(data.total)}.`);
+    }
   }catch(e){
     const k=Object.keys(RPC_ERR).find(k=>(e.message||'').includes(k));
-    flash($('mErr'),k?RPC_ERR[k]:'Could not create the reservation. Check the fields and try again.',6000);
+    flash($('mErr'),k?RPC_ERR[k]:'Could not save. Check the fields and try again.',6000);
     console.error(e);
   }
-  btn.disabled=false;btn.textContent='Create reservation';
+  btn.disabled=false;btn.textContent=editing?'Save changes':'Create reservation';
 };
 </script>
 </body>
