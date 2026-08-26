@@ -124,6 +124,7 @@ h1.pt{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:u
 .tl-cell.we{background:rgba(190,157,82,.04)}
 .tl-cell.p{background:rgba(190,157,82,.22);color:var(--gold-soft)}
 .tl-cell.f{background:rgba(201,112,74,.3);color:#F3D9CE}
+.tl-cell.b{background:repeating-linear-gradient(45deg,rgba(142,134,119,.28),rgba(142,134,119,.28) 4px,transparent 4px,transparent 8px);color:var(--stone)}
 
 /* ---------- TABLE (bikes / addons) ---------- */
 .tblwrap{overflow-x:auto;background:var(--coal);border:1px solid rgba(190,157,82,.16)}
@@ -187,6 +188,7 @@ input.cell.wide{width:100%;text-align:left}
       <div class="tabs">
         <button class="tab on" data-p="res">Reservations<span class="bdg" id="bNew" style="display:none">0</span></button>
         <button class="tab" data-p="cal">Occupancy</button>
+        <button class="tab" data-p="blk">Blocked dates</button>
         <button class="tab" data-p="fleet">Fleet &amp; prices</button>
         <button class="tab" data-p="ext">Extras</button>
         <button class="tab" data-p="out" style="color:var(--stone)">Sign out</button>
@@ -219,13 +221,35 @@ input.cell.wide{width:100%;text-align:left}
     <!-- OCCUPANCY -->
     <section class="pane" id="p-cal">
       <h1 class="pt">Occupancy</h1>
-      <p class="sub">Booked units per bike and size. Orange means fully booked — no stock left that day.</p>
+      <p class="sub">Booked units per bike and size. Orange means fully booked, hatched × means blocked for service or holiday.</p>
       <div class="bar">
         <button class="btn btn-o btn-sm" id="tlPrev">‹ Previous</button>
         <b id="tlLabel" class="dsp" style="font-size:1rem;min-width:170px;text-align:center"></b>
         <button class="btn btn-o btn-sm" id="tlNext">Next ›</button>
       </div>
       <div class="tl-scroll"><div class="tl" id="tl"></div></div>
+    </section>
+
+    <!-- BLOCKED DATES -->
+    <section class="pane" id="p-blk">
+      <h1 class="pt">Blocked dates</h1>
+      <p class="sub">Close dates for service, holidays or repairs. Blocked days disappear from the booking calendar and can't be reserved online.</p>
+
+      <div style="background:var(--coal);border:1px solid rgba(190,157,82,.16);padding:20px;margin-bottom:22px">
+        <div class="msg err" id="blkErr"></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;align-items:end">
+          <div class="f" style="margin:0"><label for="bkBike">Bike</label>
+            <select id="bkBike"><option value="">All bikes (shop closed)</option></select></div>
+          <div class="f" style="margin:0"><label for="bkSize">Size</label>
+            <select id="bkSize"><option value="">All sizes</option></select></div>
+          <div class="f" style="margin:0"><label for="bkFrom">From</label><input id="bkFrom" type="date"></div>
+          <div class="f" style="margin:0"><label for="bkTo">To</label><input id="bkTo" type="date"></div>
+          <div class="f" style="margin:0"><label for="bkWhy">Reason</label><input id="bkWhy" type="text" placeholder="Service, holiday…"></div>
+          <button class="btn btn-g btn-sm" id="bkAdd" style="height:42px">Block dates</button>
+        </div>
+      </div>
+
+      <div class="rlist" id="blkList"></div>
     </section>
 
     <!-- FLEET -->
@@ -323,7 +347,7 @@ const fmt=s=>{const d=parseD(s);return `${d.getDate()} ${MO[d.getMonth()]}`};
 const fmtY=s=>{const d=parseD(s);return `${d.getDate()} ${MO[d.getMonth()]} ${d.getFullYear()}`};
 const seasonOf=s=>[3,4,5,9,10].includes(parseD(s).getMonth()+1)?'high':'low';
 
-const D={bikes:[],sizes:[],prices:[],addons:[],settings:{},res:[]};
+const D={bikes:[],sizes:[],prices:[],addons:[],settings:{},res:[],blocks:[]};
 const UI={filter:'new',q:'',tlMonth:new Date(new Date().getFullYear(),new Date().getMonth(),1),dirtyFleet:false,dirtyExt:false};
 
 function flash(el,txt,ms=3200){el.textContent=txt;el.classList.add('on');setTimeout(()=>el.classList.remove('on'),ms)}
@@ -350,24 +374,26 @@ document.querySelectorAll('.tab').forEach(t=>{
     document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
     $('p-'+t.dataset.p).classList.add('on');
     if(t.dataset.p==='cal')drawTimeline();
+    if(t.dataset.p==='blk')renderBlocks();
     window.scrollTo({top:0,behavior:'smooth'});
   };
 });
 
 /* ===== LOAD ===== */
 async function loadAll(){
-  const [b,s,p,a,st,r]=await Promise.all([
+  const [b,s,p,a,st,r,bl]=await Promise.all([
     sb.from('bikes').select('*').order('sort'),
     sb.from('bike_sizes').select('*'),
     sb.from('bike_prices').select('*'),
     sb.from('addons').select('*').order('sort'),
     sb.from('settings').select('*').eq('key','general').maybeSingle(),
-    sb.from('reservations').select('*').order('created_at',{ascending:false})
+    sb.from('reservations').select('*').order('created_at',{ascending:false}),
+    sb.from('blackouts').select('*')
   ]);
   if(b.error||r.error){bad('Could not load data. Check your connection and refresh.');return}
   D.bikes=b.data||[];D.sizes=s.data||[];D.prices=p.data||[];D.addons=a.data||[];
-  D.settings=st.data?.value||{delivery_fee:100};D.res=r.data||[];
-  renderRes();renderKpis();renderFleet();renderExt();fillModalBikes();
+  D.settings=st.data?.value||{delivery_fee:100};D.res=r.data||[];D.blocks=bl.data||[];
+  renderRes();renderKpis();renderFleet();renderExt();fillModalBikes();fillBlkSelects();renderBlocks();
 }
 const bikeById=id=>D.bikes.find(b=>b.id===id);
 const sizesOf=id=>D.sizes.filter(s=>s.bike_id===id).sort((a,b)=>SIZES_ALL.indexOf(a.size)-SIZES_ALL.indexOf(b.size));
@@ -446,6 +472,65 @@ async function setStatus(id,status){
   ok(status==='confirmed'?'Reservation confirmed — the bike is locked for those dates.':(status==='cancelled'?'Reservation cancelled — the bike is available again.':'Reservation reopened.'));
 }
 
+/* ===== BLOCKED DATES ===== */
+function fillBlkSelects(){
+  $('bkBike').innerHTML='<option value="">All bikes (shop closed)</option>'+
+    D.bikes.map(b=>`<option value="${b.id}">${esc(b.name)}</option>`).join('');
+  syncBlkSizes();
+}
+function syncBlkSizes(){
+  const id=$('bkBike').value;
+  const list=id?sizesOf(id):[];
+  $('bkSize').innerHTML='<option value="">All sizes</option>'+list.map(s=>`<option value="${s.size}">${s.size}</option>`).join('');
+  $('bkSize').disabled=!id;
+}
+$('bkBike').onchange=syncBlkSizes;
+
+function renderBlocks(){
+  const t=iso(new Date());
+  const list=[...D.blocks].sort((a,b)=>a.start_date<b.start_date?-1:1);
+  if(!list.length){$('blkList').innerHTML='<div class="empty">No blocked dates. Everything in the calendar is bookable.</div>';return}
+  $('blkList').innerHTML=list.map(x=>{
+    const b=x.bike_id?bikeById(x.bike_id):null;
+    const past=x.end_date<t;
+    const scope=b?`${esc(b.name)}${x.size?` · size ${x.size}`:' · all sizes'}`:'All bikes — shop closed';
+    const days=Math.round((parseD(x.end_date)-parseD(x.start_date))/864e5)+1;
+    return `<div class="res" data-s="${past?'cancelled':'confirmed'}" data-blk="${x.id}">
+      <div class="res-h">
+        <span class="who" style="flex:1.4"><b>${scope}</b><span>${esc(x.reason||'No reason given')}</span></span>
+        <span class="dt">${fmtY(x.start_date)} → ${fmtY(x.end_date)}<span>${days} ${days===1?'day':'days'}${past?' · past':''}</span></span>
+        <span class="tagpill ${past?'cancelled':'confirmed'}">${past?'expired':'active'}</span>
+        <button class="btn btn-o btn-sm" data-del="${x.id}">Remove</button>
+      </div></div>`;
+  }).join('');
+  $('blkList').querySelectorAll('[data-del]').forEach(btn=>{
+    btn.onclick=async()=>{
+      const {error}=await sb.from('blackouts').delete().eq('id',btn.dataset.del);
+      if(error){bad('Could not remove that block.');return}
+      D.blocks=D.blocks.filter(x=>x.id!==btn.dataset.del);
+      renderBlocks();ok('Block removed — those dates are bookable again.');
+    };
+  });
+}
+$('bkAdd').onclick=async()=>{
+  $('blkErr').classList.remove('on');
+  const f=$('bkFrom').value,t=$('bkTo').value;
+  if(!f||!t){flash($('blkErr'),'Pick both a start and an end date.');return}
+  if(t<f){flash($('blkErr'),'The end date must be on or after the start date.');return}
+  const btn=$('bkAdd');btn.disabled=true;btn.textContent='Blocking…';
+  const {data,error}=await sb.from('blackouts').insert({
+    bike_id:$('bkBike').value||null,
+    size:$('bkBike').value?($('bkSize').value||null):null,
+    start_date:f,end_date:t,reason:$('bkWhy').value.trim()||null
+  }).select().single();
+  btn.disabled=false;btn.textContent='Block dates';
+  if(error){flash($('blkErr'),'Could not save that block. Check the dates and try again.');console.error(error);return}
+  D.blocks.push(data);
+  $('bkWhy').value='';$('bkFrom').value='';$('bkTo').value='';
+  renderBlocks();
+  ok('Dates blocked — they are no longer bookable online.');
+};
+
 /* ===== TIMELINE ===== */
 $('tlPrev').onclick=()=>{UI.tlMonth=new Date(UI.tlMonth.getFullYear(),UI.tlMonth.getMonth()-1,1);drawTimeline()};
 $('tlNext').onclick=()=>{UI.tlMonth=new Date(UI.tlMonth.getFullYear(),UI.tlMonth.getMonth()+1,1);drawTimeline()};
@@ -464,8 +549,10 @@ function drawTimeline(){
       for(let d=1;d<=days;d++){
         const ds=iso(new Date(y,m,d)),dw=new Date(y,m,d).getDay();
         const n=live.filter(r=>r.bike_id===b.id&&r.size===sz.size&&r.start_date<=ds&&r.end_date>=ds).length;
-        const cls=n===0?'':(n>=sz.qty?'f':'p');
-        html+=`<div class="tl-cell ${cls} ${dw===0||dw===6?'we':''}" title="${ds}: ${n}/${sz.qty}">${n||''}</div>`;
+        const blk=D.blocks.some(x=>x.start_date<=ds&&x.end_date>=ds&&(!x.bike_id||x.bike_id===b.id)&&(!x.size||x.size===sz.size));
+        const cls=blk?'b':(n===0?'':(n>=sz.qty?'f':'p'));
+        const tip=blk?`${ds}: blocked`:`${ds}: ${n}/${sz.qty}`;
+        html+=`<div class="tl-cell ${cls} ${dw===0||dw===6?'we':''}" title="${tip}">${blk?'×':(n||'')}</div>`;
       }
       html+='</div></div>';
     });
