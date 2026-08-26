@@ -6,6 +6,67 @@
 <title>Venga Cycling Mallorca — Premium Bike Rental in Port de Pollença</title>
 <meta name="description" content="Premium road, gravel, TT and e-bike rental in Port de Pollença, Mallorca. Giant & Liv bikes, curated routes to Cap de Formentor and Sa Calobra, personal fit and local support.">
 <link rel="stylesheet" href="assets/fonts.css">
+<script>
+/* runs before paint: decide whether the site is locked, so nothing flashes */
+(function(){try{
+  var q=location.search;
+  if(/[?&]preview=123450(&|$)/.test(q)){localStorage.setItem('venga_preview','ok')}
+  if(/[?&]lock(&|$)/.test(q)){localStorage.removeItem('venga_preview')}
+  if(localStorage.getItem('venga_preview')!=='ok'){document.documentElement.className+=' maint'}
+}catch(e){document.documentElement.className+=' maint'}})();
+</script>
+<style>
+/* ---------- maintenance gate ---------- */
+#maint{display:none}
+html.maint{overflow:hidden}
+html.maint body>*:not(#maint){display:none!important}
+html.maint #maint{display:flex}
+#maint{position:fixed;inset:0;z-index:9999;background:#0E0D0B;color:#F4F0E7;
+  align-items:center;justify-content:center;padding:clamp(20px,5vw,48px);overflow-y:auto;
+  background-image:radial-gradient(120% 90% at 76% 8%,rgba(190,157,82,.12),transparent 60%)}
+.mt-box{width:100%;max-width:760px;margin:auto}
+.mt-logo{font-family:'Archivo Var',Impact,sans-serif;font-stretch:125%;font-weight:800;text-transform:uppercase;
+  font-size:1.4rem;letter-spacing:.02em;margin-bottom:clamp(30px,7vw,58px)}
+.mt-logo b{color:#BE9D52}
+.mt-logo span{display:block;font-family:'Instrument Sans',system-ui,sans-serif;font-stretch:normal;
+  font-weight:500;font-size:.6rem;letter-spacing:.32em;color:#8E8677;margin-top:5px}
+.mt-h{font-family:'Archivo Var',Impact,sans-serif;font-stretch:125%;font-weight:800;text-transform:uppercase;
+  font-size:clamp(1.9rem,6vw,3.4rem);line-height:.96;letter-spacing:-.01em;margin-bottom:16px}
+.mt-h em{font-style:normal;color:#BE9D52}
+.mt-p{font-family:'Instrument Sans',system-ui,sans-serif;color:rgba(244,240,231,.76);
+  font-size:clamp(.94rem,1.6vw,1.04rem);line-height:1.6;max-width:52ch;margin-bottom:clamp(26px,5vw,40px)}
+.mt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:10px;margin-bottom:22px}
+.mt-card{display:block;background:#161410;border:1px solid rgba(190,157,82,.18);padding:17px 19px;
+  text-decoration:none;color:inherit;transition:border-color .3s,transform .3s;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.mt-card:not(.static):hover{border-color:#BE9D52;transform:translateY(-2px)}
+.mt-card small{display:block;font-family:'Instrument Sans',system-ui,sans-serif;font-size:.6rem;
+  letter-spacing:.2em;text-transform:uppercase;color:#BE9D52;font-weight:600;margin-bottom:7px}
+.mt-card b{display:block;font-family:'Instrument Sans',system-ui,sans-serif;font-size:.98rem;
+  font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.mt-card.mail{grid-column:span 2}
+.mt-card.mail b{font-size:.94rem}
+@media(max-width:560px){.mt-card.mail{grid-column:span 1}.mt-card.mail b{font-size:.84rem}}
+.mt-card span{display:block;font-family:'Instrument Sans',system-ui,sans-serif;font-size:.78rem;
+  color:#8E8677;margin-top:4px}
+.mt-fleet{font-family:'Instrument Sans',system-ui,sans-serif;font-size:.8rem;color:#8E8677;
+  border-left:2px solid rgba(190,157,82,.5);padding-left:14px;line-height:1.5;margin-bottom:clamp(28px,6vw,44px)}
+.mt-gate{border-top:1px solid rgba(190,157,82,.16);padding-top:20px}
+.mt-gate label{display:block;font-family:'Instrument Sans',system-ui,sans-serif;font-size:.6rem;
+  letter-spacing:.22em;text-transform:uppercase;color:#8E8677;font-weight:600;margin-bottom:9px}
+.mt-row{display:flex;gap:8px;max-width:340px}
+.mt-row input{flex:1;background:#161410;border:1px solid rgba(190,157,82,.22);color:#F4F0E7;
+  font-family:'Instrument Sans',system-ui,sans-serif;font-size:.94rem;padding:12px 14px;transition:border-color .25s}
+.mt-row input:focus{outline:none;border-color:#BE9D52}
+.mt-row button{background:#BE9D52;color:#0E0D0B;border:0;cursor:pointer;
+  font-family:'Instrument Sans',system-ui,sans-serif;font-size:.72rem;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;padding:12px 22px;transition:background .25s}
+.mt-row button:hover{background:#D9C08B}
+.mt-err{font-family:'Instrument Sans',system-ui,sans-serif;font-size:.78rem;color:#C9704A;
+  margin-top:9px;visibility:hidden}
+.mt-err.on{visibility:visible}
+@media(prefers-reduced-motion:reduce){.mt-card{transition:none}}
+</style>
 <style>
 :root{
   --ink:#0E0D0B;
@@ -503,6 +564,52 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold-soft);outline-
 </style>
 </head>
 <body>
+
+<!-- ==================== MAINTENANCE GATE ==================== -->
+<div id="maint" role="dialog" aria-modal="true" aria-label="Site under maintenance">
+  <div class="mt-box">
+    <div class="mt-logo">VENG<b>A</b><span>Cycling Mallorca</span></div>
+
+    <h1 class="mt-h">We're fine-tuning<br><em>the details.</em></h1>
+    <p class="mt-p">Our new website is almost ready. In the meantime the shop is open as usual —
+      call, email or drop by and we'll get you on a bike.</p>
+
+    <div class="mt-grid">
+      <a class="mt-card" href="tel:+34643217821">
+        <small>Phone &amp; WhatsApp</small>
+        <b>+34 643 217 821</b>
+        <span>Fastest way to reach us</span>
+      </a>
+      <a class="mt-card mail" href="mailto:hola@vengacyclingmallorca.com">
+        <small>E-mail</small>
+        <b>hola@vengacyclingmallorca.com</b>
+        <span>Bookings and questions</span>
+      </a>
+      <a class="mt-card" href="https://maps.google.com/?q=Carrer+de+Formentor+59,+07470+Port+de+Pollença" target="_blank" rel="noopener">
+        <small>Shop</small>
+        <b>Carrer de Formentor 59</b>
+        <span>07470 Port de Pollença, Mallorca</span>
+      </a>
+      <div class="mt-card static">
+        <small>Opening hours</small>
+        <b>Mon – Sun</b>
+        <span>09:00–13:00 &nbsp;/&nbsp; 16:00–19:00</span>
+      </div>
+    </div>
+
+    <div class="mt-fleet">Premium Giant &amp; Liv road, gravel, TT and e-bikes · personal fit · delivery across the island</div>
+
+    <form class="mt-gate" id="mtForm" autocomplete="off">
+      <label for="mtPass">Preview access</label>
+      <div class="mt-row">
+        <input id="mtPass" type="password" inputmode="numeric" placeholder="Enter code" aria-describedby="mtErr">
+        <button type="submit">Enter</button>
+      </div>
+      <div class="mt-err" id="mtErr" role="alert">That code isn't right. Try again.</div>
+    </form>
+  </div>
+</div>
+<!-- ================== /MAINTENANCE GATE ==================== -->
 
 <div id="progress" aria-hidden="true"></div>
 <div id="loader" aria-hidden="true">
@@ -1347,6 +1454,30 @@ drawClimbs();
   setTimeout(go,500);
   setTimeout(()=>{if(v.paused){document.getElementById('tapCue').style.display='flex';}},1400);
   v.addEventListener('playing',()=>{const c=document.getElementById('tapCue');if(c)c.style.display='none';});
+})();
+
+/* ---------- maintenance gate: unlock ---------- */
+(function(){
+  var f=document.getElementById('mtForm');if(!f)return;
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var v=document.getElementById('mtPass').value.trim();
+    var err=document.getElementById('mtErr');
+    if(v==='123450'){
+      try{localStorage.setItem('venga_preview','ok')}catch(_){}
+      document.documentElement.className=document.documentElement.className.replace(/\bmaint\b/,'');
+      document.getElementById('maint').remove();
+      try{sessionStorage.removeItem('venga_boot')}catch(_){}
+      location.reload();
+    }else{
+      err.classList.add('on');
+      document.getElementById('mtPass').value='';
+      document.getElementById('mtPass').focus();
+    }
+  });
+  document.getElementById('mtPass').addEventListener('input',function(){
+    document.getElementById('mtErr').classList.remove('on');
+  });
 })();
 </script>
 </body>
