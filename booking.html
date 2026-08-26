@@ -162,6 +162,35 @@ header p{color:rgba(244,240,231,.72);max-width:52ch}
 .sum-empty{padding:26px 22px;color:var(--stone);font-size:.88rem}
 .sum-note{padding:0 22px 20px;font-size:.74rem;color:var(--stone);line-height:1.5}
 
+/* ---------- MODE SWITCH + AVAILABILITY SEARCH ---------- */
+.mode{display:flex;gap:2px;margin:0 0 20px;flex-wrap:wrap}
+.mode-b{flex:1 1 190px;background:var(--coal);border:1px solid rgba(190,157,82,.2);color:var(--stone);font-family:var(--body);font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:14px 16px;cursor:pointer;transition:.28s}
+.mode-b:hover{color:var(--ivory);border-color:rgba(190,157,82,.45)}
+.mode-b.on{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.srch{display:none;background:var(--coal);border:1px solid rgba(190,157,82,.2);padding:20px;margin-bottom:24px}
+.srch.on{display:block}
+.srch-row{display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:end}
+@media(max-width:660px){.srch-row{grid-template-columns:1fr}}
+.srch-row .fld{margin:0}
+.srch-row .btn{height:48px;white-space:nowrap}
+.srch-note{margin-top:14px;font-size:.82rem;color:var(--stone);line-height:1.5}
+.srch-note b{color:var(--gold)}
+.srch-note.warn{color:#EFD9CE}
+
+/* availability results: size chips on cards */
+.bk .avail{display:block;margin-top:12px;padding-top:11px;border-top:1px solid rgba(190,157,82,.16)}
+.bk .avail .lb{display:block;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:7px}
+.bk .avail .row{display:flex;gap:5px;flex-wrap:wrap}
+.bk .avail .s{display:inline-block;font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:.78rem;padding:5px 9px;background:rgba(190,157,82,.16);color:var(--gold-soft);border:1px solid rgba(190,157,82,.3)}
+.bk .avail .s.no{background:transparent;color:var(--stone);border-color:rgba(142,134,119,.28);text-decoration:line-through;opacity:.6}
+.bk.out{opacity:.5}
+.bk.out .im img{filter:grayscale(1)}
+.bk .soldout{display:block;margin-top:12px;padding-top:11px;border-top:1px solid rgba(190,157,82,.16);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--stone);font-weight:600}
+
+/* ---------- SUMMARY CTA ---------- */
+.sum-cta{padding:16px 22px 4px}
+.sum-cta .btn{width:100%;padding:17px 20px}
+
 /* ---------- BUTTONS ---------- */
 .acts{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--body);font-size:.8rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;padding:16px 32px;border:0;cursor:pointer;transition:background .3s,color .3s,opacity .3s;position:relative}
@@ -217,7 +246,22 @@ footer{border-top:1px solid var(--line);padding:24px clamp(18px,4vw,44px);text-a
     <!-- STEP 1: BIKE -->
     <section class="step on" id="s1">
       <h2>Choose your bike</h2>
-      <p class="hint">Seven bikes in the fleet — road, women's, time trial, gravel and e-bike.</p>
+      <p class="hint">Browse the fleet, or start from your dates and see what's free.</p>
+
+      <div class="mode">
+        <button class="mode-b on" id="mBrowse" type="button">Browse the fleet</button>
+        <button class="mode-b" id="mSearch" type="button">Check availability by dates</button>
+      </div>
+
+      <div id="searchPanel" class="srch">
+        <div class="srch-row">
+          <div class="fld"><label for="sFrom">First day</label><input id="sFrom" type="date"></div>
+          <div class="fld"><label for="sTo">Last day</label><input id="sTo" type="date"></div>
+          <button class="btn btn-g" id="sGo" type="button">Show available bikes</button>
+        </div>
+        <div class="srch-note" id="sNote">Pick your dates — we'll show every bike and size that's free for the whole stay.</div>
+      </div>
+
       <div id="bikes" class="load"><div class="spin"></div>Loading the fleet…</div>
     </section>
 
@@ -310,7 +354,6 @@ footer{border-top:1px solid var(--line);padding:24px clamp(18px,4vw,44px);text-a
 
     <div class="acts" id="acts">
       <button class="btn btn-o" id="back" type="button">Back</button>
-      <button class="btn btn-g" id="next" type="button" disabled>Continue</button>
     </div>
   </main>
 
@@ -320,6 +363,7 @@ footer{border-top:1px solid var(--line);padding:24px clamp(18px,4vw,44px);text-a
       <div class="sum-h"><b>Your reservation</b><span id="sumSub">Nothing selected yet</span></div>
       <div id="sumBody" class="sum-empty">Choose a bike to start building your reservation.</div>
       <div class="tot"><span>Total</span><b id="sumTotal">€0</b></div>
+      <div class="sum-cta"><button class="btn btn-g" id="next" type="button" disabled>Continue</button></div>
       <div class="sum-note">Price includes VAT. Payment on pickup — we don't take card details online.</div>
     </div>
   </aside>
@@ -339,7 +383,8 @@ const S = {
   step: 1, bikes: [], addons: [], settings: null,
   bike: null, size: null, start: null, end: null,
   pickup: null, insurance: 'none', extras: new Set(),
-  delivery: false, booked: {}, blocked: {}, calMonth: null
+  delivery: false, booked: {}, blocked: {}, calMonth: null,
+  searchMode: false, avail: null
 };
 const STEPS = [
   {n:'01', t:'Bike'}, {n:'02', t:'Dates & size'}, {n:'03', t:'Pickup'},
@@ -439,21 +484,42 @@ function renderRail(){
 /* ============ BIKES ============ */
 function renderBikes(){
   $('bikes').className = 'bikes';
+  const av = S.avail;
   $('bikes').innerHTML = S.bikes.map(b => {
     const from = Math.min(+b.prices.low?.d1 || 999, +b.prices.high?.d1 || 999);
-    return `<button class="bk" type="button" aria-pressed="${S.bike?.id===b.id}" data-id="${b.id}">
+    let extra = '', out = '';
+    if(av){
+      const rows = av.rows.filter(r => r.bike_id === b.id);
+      const free = rows.filter(r => !r.blocked && (r.qty - r.booked_max) > 0);
+      if(free.length){
+        const order = ['XS','S','M','ML','L','XL'];
+        const chips = order.filter(s => rows.some(r => r.size === s)).map(s => {
+          const r = rows.find(x => x.size === s);
+          const ok = !r.blocked && (r.qty - r.booked_max) > 0;
+          return `<span class="s ${ok?'':'no'}"${ok?` data-pick="${s}"`:''}>${s}</span>`;
+        }).join('');
+        extra = `<span class="avail"><span class="lb">Free in your dates — tap a size</span><span class="row">${chips}</span></span>`;
+      }else{
+        out = ' out';
+        extra = `<span class="soldout">Not available for these dates</span>`;
+      }
+    }
+    return `<button class="bk${out}" type="button" aria-pressed="${S.bike?.id===b.id}" data-id="${b.id}"${out?' disabled':''}>
       <span class="im"><img src="${b.image_url}" alt="${b.name}" loading="lazy"></span>
       <span class="bd">
         <span class="cat">${b.category}</span>
         <h3>${b.name}</h3>
         <span class="gs">${b.gearset ?? ''}</span>
         <span class="fr">from <b>${money(from)}</b> / day</span>
+        ${extra}
       </span></button>`;
   }).join('');
   $('bikes').querySelectorAll('.bk').forEach(el => {
-    el.onclick = () => {
+    el.onclick = async ev => {
+      const chip = ev.target.closest('[data-pick]');
+      if(chip && S.avail){ await pickFromSearch(el.dataset.id, chip.dataset.pick); return; }
       const b = S.bikes.find(x => x.id === el.dataset.id);
-      if(S.bike?.id !== b.id){ S.size = null; S.start = S.end = null; S.booked = {}; S.blocked = {}; }
+      if(S.bike?.id !== b.id){ S.size = null; if(!S.avail){ S.start = S.end = null; } S.booked = {}; S.blocked = {}; }
       S.bike = b;
       renderBikes(); renderSizes(); paintSummary(); gate();
     };
@@ -607,6 +673,64 @@ function renderExtras(){
 }
 $('delBtn').onclick = () => { S.delivery = !S.delivery; renderExtras(); paintSummary(); gate(); };
 
+/* ============ AVAILABILITY SEARCH (step 1, mode B) ============ */
+function setMode(search){
+  S.searchMode = search;
+  $('mBrowse').classList.toggle('on', !search);
+  $('mSearch').classList.toggle('on', search);
+  $('searchPanel').classList.toggle('on', search);
+  if(!search){ S.avail = null; }
+  renderBikes();
+}
+$('mBrowse').onclick = () => setMode(false);
+$('mSearch').onclick = () => {
+  setMode(true);
+  const t = iso(today());
+  $('sFrom').min = t; $('sTo').min = t;
+  if(S.start) $('sFrom').value = S.start;
+  if(S.end) $('sTo').value = S.end;
+};
+$('sGo').onclick = async () => {
+  const f = $('sFrom').value, t = $('sTo').value;
+  const note = $('sNote');
+  note.classList.remove('warn');
+  if(!f || !t){ note.classList.add('warn'); note.textContent = 'Please pick both a first and a last day.'; return; }
+  if(t < f){ note.classList.add('warn'); note.textContent = 'The last day must be on or after the first day.'; return; }
+  const btn = $('sGo'); btn.disabled = true; btn.textContent = 'Checking…';
+  try{
+    const {data, error} = await sb.rpc('available_bikes', {p_start: f, p_end: t});
+    if(error) throw error;
+    S.avail = {from: f, to: t, rows: data ?? []};
+    S.start = f; S.end = t;
+    const days = Math.round((parse(t)-parse(f))/864e5)+1;
+    const freeBikes = new Set((data??[]).filter(r => !r.blocked && (r.qty - r.booked_max) > 0).map(r => r.bike_id));
+    note.innerHTML = freeBikes.size
+      ? `<b>${freeBikes.size} ${freeBikes.size===1?'bike':'bikes'}</b> available for ${days} ${days===1?'day':'days'} · ${fmtDate(f)} → ${fmtDate(t)} · <b>${seasonOf(f)} season</b>. Pick a size below to continue.`
+      : `Nothing is free for those dates. Try a shorter stay or different days — or email us and we'll find a way.`;
+    if(!freeBikes.size) note.classList.add('warn');
+    renderBikes(); paintSummary();
+  }catch(e){
+    note.classList.add('warn');
+    note.textContent = "We couldn't check availability right now. Please try again.";
+    console.error(e);
+  }
+  btn.disabled = false; btn.textContent = 'Show available bikes';
+};
+
+/* pick bike+size straight from the availability results */
+async function pickFromSearch(bikeId, size){
+  const b = S.bikes.find(x => x.id === bikeId);
+  if(!b) return;
+  S.bike = b; S.size = size;
+  S.booked = {}; S.blocked = {};
+  S.calMonth = new Date(parse(S.start).getFullYear(), parse(S.start).getMonth(), 1);
+  await loadBooked();
+  paintSummary();
+  S.step = 3;               /* dates + size already chosen — go to pickup time */
+  paint();
+  renderSlots();
+}
+
 /* ============ SUMMARY ============ */
 function paintSummary(){
   const box = $('sumBody'), sub = $('sumSub');
@@ -664,6 +788,11 @@ function paint(){
   document.querySelectorAll('.step').forEach(s => s.classList.remove('on'));
   $('s'+S.step).classList.add('on');
   renderRail(); gate();
+  if(S.step === 2 && S.size && !Object.keys(S.booked).length){
+    $('calWrap').style.display='block';
+    S.calMonth = S.calMonth ?? new Date(today().getFullYear(), today().getMonth(), 1);
+    loadBooked().then(renderCal);
+  }
   if(S.step === 3) renderSlots();
   if(S.step === 4) renderExtras();
   window.scrollTo({top:0, behavior:'smooth'});
@@ -743,7 +872,13 @@ function preselect(){
   const slug = new URLSearchParams(location.search).get('bike');
   if(!slug) return;
   const b = S.bikes.find(x => x.slug === slug);
-  if(b){ S.bike = b; renderBikes(); renderSizes(); paintSummary(); S.step = 2; paint(); }
+  if(b){
+    S.bike = b;
+    document.querySelector('.mode').style.display='none';
+    $('searchPanel').classList.remove('on');
+    $('s1').querySelector('.hint').textContent = 'You picked this bike on the site — now choose your size and dates.';
+    renderBikes(); renderSizes(); paintSummary(); S.step = 2; paint();
+  }
 }
 boot().then(() => { renderSlots(); preselect(); gate(); });
 </script>
