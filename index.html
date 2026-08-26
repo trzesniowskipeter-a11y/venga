@@ -285,6 +285,43 @@ footer small{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color
 .sheet .close:hover{background:var(--gold);color:var(--ink);border-color:var(--gold)}
 @media(max-width:820px){.sheet-grid{grid-template-columns:1fr}.sheet .ph{position:relative;min-height:240px;max-height:300px}}
 
+/* ============ ELEVATION PROFILES ============ */
+.route .prof{position:relative;z-index:2;height:40px;margin:2px 0 14px;padding-bottom:5px;border-bottom:1px solid rgba(190,157,82,.3)}
+.route .prof svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 1px 3px rgba(14,13,11,.85))}
+.prof-line{fill:none;stroke:var(--gold-soft);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.prof-area{stroke:none}
+
+/* The Climbs */
+#climbs{background:var(--ink);padding:clamp(70px,10vw,130px) 0}
+#climbs .head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;margin-bottom:clamp(36px,4.6vw,60px)}
+.climb-list{display:grid;gap:clamp(16px,2vw,26px)}
+.climb{position:relative;background:var(--coal);border:1px solid rgba(190,157,82,.16);padding:clamp(22px,3vw,34px);display:grid;grid-template-columns:minmax(250px,300px) 1fr;gap:clamp(20px,3vw,44px);align-items:center;transition:border-color .5s;clip-path:polygon(0 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%)}
+.climb:hover{border-color:rgba(190,157,82,.42)}
+@media(max-width:840px){.climb{grid-template-columns:1fr;gap:20px}}
+.climb .meta .num{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:.72rem;letter-spacing:.24em;color:var(--gold);display:block;margin-bottom:10px}
+.climb .meta h3{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:clamp(1.3rem,2.3vw,1.85rem);line-height:.98;margin-bottom:8px}
+.climb .meta p{font-size:.86rem;color:var(--stone);line-height:1.5}
+.climb .figs{display:flex;gap:22px;margin-top:16px;flex-wrap:wrap}
+.climb .figs div b{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:1.32rem;color:var(--gold-soft);display:block;line-height:1}
+.climb .figs div small{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--stone)}
+.climb .chart{position:relative;min-height:150px}
+.climb .chart svg{display:block;width:100%;height:auto;overflow:visible}
+.cl-line{fill:none;stroke:var(--gold);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round;
+  stroke-dasharray:var(--len);stroke-dashoffset:var(--len);transition:stroke-dashoffset 2.1s cubic-bezier(.32,.72,.24,1)}
+.climb.drawn .cl-line{stroke-dashoffset:0}
+.cl-area{opacity:0;transition:opacity 1.3s ease .5s}
+.climb.drawn .cl-area{opacity:1}
+.cl-grid{stroke:rgba(190,157,82,.14);stroke-width:1}
+.cl-tick{fill:var(--stone);font-family:var(--body);font-size:9px;letter-spacing:.08em}
+.cl-peak{fill:var(--gold);opacity:0;transition:opacity .6s ease 1.7s}
+.climb.drawn .cl-peak{opacity:1}
+.cl-peak-lbl{fill:var(--gold);font-family:var(--body);font-size:9.5px;font-weight:600;letter-spacing:.1em;opacity:0;transition:opacity .6s ease 1.85s}
+.climb.drawn .cl-peak-lbl{opacity:1}
+@media(prefers-reduced-motion:reduce){
+  .cl-line{stroke-dashoffset:0!important;transition:none}
+  .cl-area,.cl-peak,.cl-peak-lbl{opacity:1!important;transition:none}
+}
+
 /* ============ DETAIL BANDS ============ */
 .band{position:relative;height:clamp(380px,58vh,640px);overflow:hidden;display:flex;align-items:center;background:var(--ink)}
 .band img{position:absolute;inset:0;width:100%;height:114%;object-fit:cover;will-change:transform}
@@ -594,6 +631,19 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold-soft);outline-
   </div>
 </section>
 
+<section id="climbs">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="eyebrow rv">Know before you climb</div>
+        <h2 class="disp split d1"><span>The <em>climbs.</em></span></h2>
+      </div>
+      <a class="btn btn-gold rv d2" href="booking.html"><span>Book your bike</span></a>
+    </div>
+    <div class="climb-list" id="climbList"></div>
+  </div>
+</section>
+
 <section id="about">
   <div class="wrap grid">
     <div>
@@ -758,6 +808,8 @@ document.querySelectorAll('#navLinks a').forEach(a=>a.addEventListener('click',(
 /* reveals */
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.15});
 document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+/* let later-injected content (climb cards) join the same reveal */
+window.observeReveals=root=>(root||document).querySelectorAll('.rv:not(.in)').forEach(el=>io.observe(el));
 
 /* counters */
 const cio=new IntersectionObserver(es=>es.forEach(en=>{
@@ -862,6 +914,159 @@ setTimeout(()=>document.getElementById('loader').classList.add('done'),3200);
   }),{threshold:.1});
   io.observe(v.closest('#why'));
 })();
+
+/* ============ ELEVATION PROFILES ============ */
+/* Climb data — distances in km, elevation in m, gradients in %.
+   segs = [[km, gradient%], ...] describing how the road ramps up. */
+const CLIMBS=[
+  {
+    name:'Sa Calobra', sub:'Coll dels Reis',
+    blurb:'The road that climbs back out of the sea. Twenty-six hairpins, no flat metre to recover on, and the Nus de sa Corbata tying itself in a knot beneath you.',
+    km:9.5, elev:670, avg:7.0, max:12,
+    segs:[[1.2,6.5],[1.6,7.5],[1.4,6.8],[1.3,8.2],[1.5,7.0],[1.2,6.2],[1.3,7.8]],
+    mark:{at:.88,label:'Nus de sa Corbata'}
+  },
+  {
+    name:'Puig Major', sub:'from Sóller',
+    blurb:'The island\'s highest road. A long, relentless drag through the Tramuntana to the tunnel — the climb that tells you exactly what shape you are in.',
+    km:13.7, elev:830, avg:6.1, max:9,
+    segs:[[2.0,5.2],[2.4,6.4],[2.2,6.8],[2.6,5.8],[2.3,6.6],[2.2,5.9]],
+    mark:{at:1,label:'Tunnel · summit'}
+  },
+  {
+    name:'Cap de Formentor', sub:'from Port de Pollença',
+    blurb:'Not one climb but a dozen. Short brutal ramps, a cliff road above turquoise water, and the lighthouse waiting at the end of the island.',
+    km:19.0, elev:600, avg:3.2, max:12,
+    segs:[[2.2,6.0],[1.4,-3.5],[1.8,5.5],[2.0,-2.5],[2.4,7.2],[1.6,-4.0],[2.2,4.8],[1.8,-3.0],[2.0,6.4],[1.6,-2.0]],
+    mark:{at:.34,label:'Mirador des Colomer'}
+  }
+];
+
+/* build an elevation polyline from ramp segments */
+function profilePoints(segs, samplesPerKm=8, targetGain=null){
+  const pts=[]; let dist=0, alt=0;
+  pts.push({d:0,a:0});
+  segs.forEach(([len,grad],si)=>{
+    const n=Math.max(2,Math.round(len*samplesPerKm));
+    for(let i=1;i<=n;i++){
+      const step=len/n;
+      dist+=step;
+      /* undulate inside each ramp so the line reads like a real road, not a wedge */
+      const t=i/n;
+      const wob=Math.sin(t*Math.PI*2 + si)*0.9 + Math.sin(t*Math.PI*5 + si*2)*0.45;
+      alt+=step*1000*((grad+wob)/100);
+      pts.push({d:dist,a:alt});
+    }
+  });
+  /* scale so the drawn gain matches the published figure */
+  if(targetGain){
+    const lo=Math.min(...pts.map(p=>p.a)), hi=Math.max(...pts.map(p=>p.a));
+    const span=hi-lo;
+    if(span>0){ const k=targetGain/span; pts.forEach(p=>{p.a=(p.a-lo)*k}); }
+  }
+  return pts;
+}
+function pathFor(pts,w,h,pad=0){
+  const maxD=pts[pts.length-1].d;
+  const lo=Math.min(...pts.map(p=>p.a)), hi=Math.max(...pts.map(p=>p.a));
+  const span=(hi-lo)||1;
+  const X=d=>pad+(d/maxD)*(w-pad*2);
+  const Y=a=>h-pad-((a-lo)/span)*(h-pad*2);
+  let dStr='';
+  pts.forEach((p,i)=>{ dStr+=(i?'L':'M')+X(p.d).toFixed(1)+' '+Y(p.a).toFixed(1); });
+  return {d:dStr,X,Y,maxD,lo,hi};
+}
+
+/* mini profiles on route cards */
+function drawRouteProfiles(){
+  const mini={
+    'Cala, Views': [[6,1.5],[5,2.6],[6,1.2],[5,2.8],[8,1.4]],
+    'The Road': [[5,3.2],[4,5.5],[4,-3.0],[6,4.8],[6,-2.4],[8,3.6],[6,-2.0]],
+    'The Sa Calobra': [[14,2.2],[9,6.8],[10,-5.5],[12,3.4],[9,7.2],[10,-4.8],[16,2.6],[12,-3.2],[14,3.0]]
+  };
+  document.querySelectorAll('.route').forEach(card=>{
+    const h3=card.querySelector('h3'); if(!h3) return;
+    const key=Object.keys(mini).find(k=>h3.textContent.replace(/\s+/g,' ').includes(k));
+    if(!key) return;
+    const pts=profilePoints(mini[key],3);
+    const w=260,h=44;
+    const {d,X,Y,maxD}=pathFor(pts,w,h,3);
+    const uid='rg'+Math.random().toString(36).slice(2,7);
+    const svg=`<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="${uid}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#BE9D52" stop-opacity=".62"/>
+        <stop offset="100%" stop-color="#BE9D52" stop-opacity=".04"/>
+      </linearGradient></defs>
+      <path class="prof-area" fill="url(#${uid})" d="${d}L${X(maxD).toFixed(1)} ${h} L3 ${h} Z"/>
+      <path class="prof-line" d="${d}"/></svg>`;
+    const box=document.createElement('div');
+    box.className='prof'; box.innerHTML=svg;
+    card.querySelector('.rs').insertAdjacentElement('beforebegin',box);
+  });
+}
+
+/* big animated climb profiles */
+function drawClimbs(){
+  const host=document.getElementById('climbList'); if(!host) return;
+  host.innerHTML=CLIMBS.map((c,i)=>{
+    const pts=profilePoints(c.segs,10,c.elev);
+    const w=680,h=168;
+    const {d,X,Y,maxD,lo,hi}=pathFor(pts,w,h,16);
+    const uid='cg'+i;
+    /* landmark marker at its real place along the climb */
+    const targetD=maxD*c.mark.at;
+    let mi=0,bestDiff=1e9;
+    pts.forEach((p,k)=>{const diff=Math.abs(p.d-targetD);if(diff<bestDiff){bestDiff=diff;mi=k}});
+    const px=X(pts[mi].d),py=Y(pts[mi].a);
+    /* horizontal grid + km ticks */
+    let grid='';
+    for(let g=0;g<=3;g++){const y=16+((h-32)/3)*g;grid+=`<line class="cl-grid" x1="16" y1="${y.toFixed(1)}" x2="${w-16}" y2="${y.toFixed(1)}"/>`}
+    let ticks='';
+    const step=maxD>15?5:maxD>8?2:2;
+    for(let km=0;km<=Math.floor(maxD);km+=step){
+      ticks+=`<text class="cl-tick" x="${X(km).toFixed(1)}" y="${h-3}" text-anchor="middle">${km}</text>`;
+    }
+    ticks+=`<text class="cl-tick" x="${(w-16).toFixed(1)}" y="14" text-anchor="end">${c.elev} m climbed</text>`;
+    const len=Math.round(maxD*130);
+    return `<article class="climb rv" data-i="${i}">
+      <div class="meta">
+        <span class="num">${String(i+1).padStart(2,'0')} · ${c.sub}</span>
+        <h3>${c.name}</h3>
+        <p>${c.blurb}</p>
+        <div class="figs">
+          <div><b>${c.km}</b><small>km</small></div>
+          <div><b>${c.elev}</b><small>m up</small></div>
+          <div><b>${c.avg}%</b><small>avg</small></div>
+          <div><b>${c.max}%</b><small>max</small></div>
+        </div>
+      </div>
+      <div class="chart">
+        <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" role="img"
+             aria-label="${c.name}: ${c.km} km, ${c.elev} metres of climbing, ${c.avg}% average gradient">
+          <defs><linearGradient id="${uid}" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#BE9D52" stop-opacity=".34"/>
+            <stop offset="100%" stop-color="#BE9D52" stop-opacity="0"/>
+          </linearGradient></defs>
+          ${grid}
+          <path class="cl-area" fill="url(#${uid})" d="${d}L${X(maxD).toFixed(1)} ${h-16} L16 ${h-16} Z"/>
+          <path class="cl-line" style="--len:${len}" d="${d}"/>
+          <circle class="cl-peak" cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3.4"/>
+          <text class="cl-peak-lbl" x="${px.toFixed(1)}" y="${(py-9).toFixed(1)}"
+                text-anchor="${px>w*0.7?'end':(px<w*0.3?'start':'middle')}">${c.mark.label}</text>
+          ${ticks}
+        </svg>
+      </div>
+    </article>`;
+  }).join('');
+  /* draw on scroll */
+  const cio=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('drawn');cio.unobserve(e.target)}
+  }),{threshold:.35});
+  host.querySelectorAll('.climb').forEach(el=>cio.observe(el));
+  if(window.observeReveals) window.observeReveals(host);
+}
+drawRouteProfiles();
+drawClimbs();
 
 /* hero video autoplay nudge + tap-to-play fallback */
 (function(){
