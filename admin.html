@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Venga — Admin</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<style>
+:root{
+  --ink:#0E0D0B; --coal:#161410; --coal-2:#1E1B15;
+  --gold:#BE9D52; --gold-soft:#D9C08B;
+  --ivory:#F4F0E7; --stone:#8E8677;
+  --line:rgba(190,157,82,.28);
+  --new:#C9A227; --ok:#7FA86B; --dead:#8B5E52; --warn:#C9704A;
+  --disp:'Archivo Var',Impact,sans-serif;
+  --body:'Instrument Sans',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--body);background:var(--ink);color:var(--ivory);line-height:1.55;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit}
+a{color:inherit}
+.dsp{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;letter-spacing:-.01em}
+
+/* ---------- LOGIN ---------- */
+#login{min-height:100vh;display:grid;place-items:center;padding:24px}
+.lbox{width:100%;max-width:390px;background:var(--coal);border:1px solid var(--line);padding:38px 34px;clip-path:polygon(0 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%)}
+.lbox .lg{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:1.3rem;margin-bottom:4px}
+.lbox .lg b{color:var(--gold)}
+.lbox p{color:var(--stone);font-size:.84rem;margin-bottom:26px}
+.f{margin-bottom:15px}
+.f label{display:block;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:6px}
+.f input,.f select,.f textarea{width:100%;background:var(--ink);border:1px solid rgba(190,157,82,.24);color:var(--ivory);font-size:.94rem;padding:12px 14px;transition:border-color .25s}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--gold)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:.76rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;padding:13px 24px;border:0;cursor:pointer;transition:.25s}
+.btn-g{background:var(--gold);color:var(--ink)}
+.btn-g:hover:not(:disabled){background:var(--gold-soft)}
+.btn-o{background:transparent;color:var(--ivory);border:1px solid rgba(244,240,231,.3)}
+.btn-o:hover{border-color:var(--gold);color:var(--gold)}
+.btn-sm{padding:8px 14px;font-size:.68rem;letter-spacing:.12em}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.msg{font-size:.82rem;padding:11px 14px;margin-bottom:14px;display:none}
+.msg.on{display:block}
+.msg.err{border-left:2px solid var(--warn);background:rgba(201,112,74,.12);color:#F0D8CD}
+.msg.good{border-left:2px solid var(--ok);background:rgba(127,168,107,.12);color:#DCEBD4}
+
+/* ---------- SHELL ---------- */
+#app{display:none;min-height:100vh}
+.top{position:sticky;top:0;z-index:50;background:rgba(14,13,11,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:0 clamp(14px,3vw,28px)}
+.top-in{display:flex;align-items:center;gap:20px;height:60px;max-width:1500px;margin:0 auto}
+.brand{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:1.06rem}
+.brand b{color:var(--gold)}
+.brand span{font-family:var(--body);font-stretch:normal;font-weight:500;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--stone);margin-left:10px}
+.tabs{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap}
+.tab{background:none;border:0;border-bottom:2px solid transparent;color:var(--stone);font-size:.76rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:8px 14px;cursor:pointer;transition:.25s;position:relative}
+.tab:hover{color:var(--ivory)}
+.tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.tab .bdg{display:inline-block;min-width:18px;padding:1px 5px;margin-left:6px;background:var(--new);color:var(--ink);font-size:.62rem;font-weight:700;border-radius:9px;letter-spacing:0}
+.wrap{max-width:1500px;margin:0 auto;padding:clamp(18px,3vw,30px) clamp(14px,3vw,28px) 70px}
+.pane{display:none}
+.pane.on{display:block}
+h1.pt{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:clamp(1.3rem,2.4vw,1.8rem);margin-bottom:4px}
+.sub{color:var(--stone);font-size:.86rem;margin-bottom:22px}
+
+/* ---------- STATS ---------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;margin-bottom:26px}
+.kpi{background:var(--coal);border:1px solid rgba(190,157,82,.16);padding:16px 18px}
+.kpi b{display:block;font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:1.9rem;line-height:1;color:var(--gold)}
+.kpi span{display:block;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--stone);margin-top:6px}
+
+/* ---------- TOOLBAR ---------- */
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.bar .grow{flex:1;min-width:180px}
+.bar input,.bar select{background:var(--coal);border:1px solid rgba(190,157,82,.22);color:var(--ivory);font-size:.88rem;padding:10px 13px}
+.bar input:focus,.bar select:focus{outline:none;border-color:var(--gold)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:var(--coal);border:1px solid rgba(190,157,82,.2);color:var(--stone);font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:9px 14px;cursor:pointer;transition:.25s}
+.chip:hover{border-color:var(--gold);color:var(--ivory)}
+.chip.on{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+
+/* ---------- RESERVATION CARDS ---------- */
+.rlist{display:grid;gap:10px}
+.res{background:var(--coal);border:1px solid rgba(190,157,82,.16);border-left:3px solid var(--stone);transition:border-color .25s}
+.res[data-s="new"]{border-left-color:var(--new)}
+.res[data-s="confirmed"]{border-left-color:var(--ok)}
+.res[data-s="cancelled"]{border-left-color:var(--dead);opacity:.62}
+.res-h{display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer;flex-wrap:wrap}
+.res-h .cd{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:.94rem;letter-spacing:.1em;color:var(--gold);min-width:66px}
+.res-h .who{flex:1;min-width:150px}
+.res-h .who b{display:block;font-size:.94rem;font-weight:600}
+.res-h .who span{font-size:.76rem;color:var(--stone)}
+.res-h .bk{font-size:.82rem;color:rgba(244,240,231,.8);min-width:150px}
+.res-h .bk span{display:block;font-size:.72rem;color:var(--stone)}
+.res-h .dt{font-size:.82rem;min-width:140px}
+.res-h .dt span{display:block;font-size:.72rem;color:var(--stone)}
+.res-h .pz{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:1.16rem;color:var(--gold);min-width:78px;text-align:right}
+.tagpill{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:4px 9px;white-space:nowrap}
+.tagpill.new{background:rgba(201,162,39,.18);color:var(--new)}
+.tagpill.confirmed{background:rgba(127,168,107,.18);color:var(--ok)}
+.tagpill.cancelled{background:rgba(139,94,82,.2);color:var(--dead)}
+.tagpill.manual{background:rgba(190,157,82,.14);color:var(--stone)}
+.res-b{display:none;padding:0 18px 18px;border-top:1px solid rgba(190,157,82,.12);margin-top:0}
+.res.open .res-b{display:block}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;padding-top:16px}
+.dgrid div small{display:block;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+.dgrid div p{font-size:.88rem;word-break:break-word}
+.acts2{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid rgba(190,157,82,.12)}
+.empty{padding:44px 20px;text-align:center;color:var(--stone);font-size:.9rem;background:var(--coal);border:1px dashed rgba(190,157,82,.2)}
+
+/* ---------- TIMELINE ---------- */
+.tl-scroll{overflow-x:auto;background:var(--coal);border:1px solid rgba(190,157,82,.16);padding:0}
+.tl{min-width:900px}
+.tl-row{display:grid;grid-template-columns:190px 1fr;border-bottom:1px solid rgba(190,157,82,.1)}
+.tl-row:last-child{border-bottom:0}
+.tl-row.hd{position:sticky;top:0;background:var(--coal-2);z-index:2}
+.tl-lbl{padding:10px 14px;font-size:.8rem;border-right:1px solid rgba(190,157,82,.14);display:flex;flex-direction:column;justify-content:center}
+.tl-lbl b{font-weight:600;font-size:.84rem;line-height:1.2}
+.tl-lbl span{font-size:.68rem;color:var(--stone)}
+.tl-days{display:grid}
+.tl-d{border-right:1px solid rgba(190,157,82,.07);font-size:.6rem;text-align:center;padding:8px 0;color:var(--stone)}
+.tl-d.we{background:rgba(190,157,82,.05)}
+.tl-d b{display:block;font-size:.72rem;color:var(--ivory);font-weight:600}
+.tl-cell{border-right:1px solid rgba(190,157,82,.07);min-height:38px;display:grid;place-items:center;font-size:.68rem;font-weight:700}
+.tl-cell.we{background:rgba(190,157,82,.04)}
+.tl-cell.p{background:rgba(190,157,82,.22);color:var(--gold-soft)}
+.tl-cell.f{background:rgba(201,112,74,.3);color:#F3D9CE}
+
+/* ---------- TABLE (bikes / addons) ---------- */
+.tblwrap{overflow-x:auto;background:var(--coal);border:1px solid rgba(190,157,82,.16)}
+table{width:100%;border-collapse:collapse;min-width:760px}
+#tFleet{min-width:1320px}
+#tFleet td.nm{min-width:186px}
+th{background:var(--coal-2);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600;text-align:left;padding:12px 14px;white-space:nowrap}
+td{padding:11px 14px;border-top:1px solid rgba(190,157,82,.1);font-size:.88rem;vertical-align:middle}
+td.nm b{display:block;font-weight:600;line-height:1.25}
+td.nm span{font-size:.72rem;color:var(--stone)}
+input.cell{width:76px;background:var(--ink);border:1px solid rgba(190,157,82,.22);color:var(--ivory);font-size:.86rem;padding:7px 9px;text-align:right}
+input.cell:focus{outline:none;border-color:var(--gold)}
+input.cell.wide{width:100%;text-align:left}
+.szrow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;min-width:230px}
+.szitem{display:flex;align-items:center;gap:5px;background:var(--ink);border:1px solid rgba(190,157,82,.2);padding:4px 8px}
+.szitem b{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:.8rem;min-width:26px}
+.szitem input{width:44px;background:transparent;border:0;border-bottom:1px solid rgba(190,157,82,.3);color:var(--ivory);font-size:.84rem;text-align:center;padding:2px}
+.szitem input:focus{outline:none;border-bottom-color:var(--gold)}
+.tog{position:relative;width:42px;height:22px;background:rgba(142,134,119,.3);border:0;cursor:pointer;transition:.25s}
+.tog::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;background:var(--stone);transition:.25s}
+.tog.on{background:rgba(190,157,82,.32)}
+.tog.on::after{left:23px;background:var(--gold)}
+.savebar{position:sticky;bottom:0;background:rgba(22,20,16,.97);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:14px clamp(14px,3vw,28px);display:flex;gap:12px;align-items:center;justify-content:flex-end;margin:0 calc(-1 * clamp(14px,3vw,28px)) -70px}
+.savebar span{margin-right:auto;font-size:.82rem;color:var(--stone)}
+
+/* ---------- MODAL ---------- */
+.ovl{position:fixed;inset:0;background:rgba(6,5,4,.82);backdrop-filter:blur(5px);z-index:90;display:none;align-items:flex-start;justify-content:center;padding:24px;overflow-y:auto}
+.ovl.on{display:flex}
+.mod{background:var(--coal);border:1px solid var(--line);width:100%;max-width:620px;margin:auto;padding:28px}
+.mod h3{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:1.2rem;margin-bottom:4px}
+.mod .mh{color:var(--stone);font-size:.84rem;margin-bottom:20px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+@media(max-width:560px){.two{grid-template-columns:1fr}}
+.mact{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap}
+.calcline{background:var(--ink);border-left:2px solid var(--gold);padding:12px 15px;font-size:.86rem;margin-top:4px}
+.calcline b{color:var(--gold);font-family:var(--disp);font-stretch:125%;font-size:1.1rem}
+.spin{width:24px;height:24px;border:2px solid rgba(190,157,82,.25);border-top-color:var(--gold);border-radius:50%;animation:sp .8s linear infinite;margin:30px auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="lbox">
+    <div class="lg">VENG<b>A</b></div>
+    <p>Reservation management</p>
+    <div class="msg err" id="lErr"></div>
+    <div class="f"><label for="le">Email</label><input id="le" type="email" autocomplete="username"></div>
+    <div class="f"><label for="lp">Password</label><input id="lp" type="password" autocomplete="current-password"></div>
+    <button class="btn btn-g" id="lBtn" style="width:100%;margin-top:8px">Sign in</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="top">
+    <div class="top-in">
+      <div class="brand">VENG<b>A</b><span>Admin</span></div>
+      <div class="tabs">
+        <button class="tab on" data-p="res">Reservations<span class="bdg" id="bNew" style="display:none">0</span></button>
+        <button class="tab" data-p="cal">Occupancy</button>
+        <button class="tab" data-p="fleet">Fleet &amp; prices</button>
+        <button class="tab" data-p="ext">Extras</button>
+        <button class="tab" data-p="out" style="color:var(--stone)">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="msg good" id="okMsg"></div>
+    <div class="msg err" id="erMsg"></div>
+
+    <!-- RESERVATIONS -->
+    <section class="pane on" id="p-res">
+      <h1 class="pt">Reservations</h1>
+      <p class="sub">New requests appear here first. Confirm to lock the bike, cancel to release it.</p>
+      <div class="kpis" id="kpis"></div>
+      <div class="bar">
+        <div class="chips" id="fchips">
+          <button class="chip on" data-f="new">New</button>
+          <button class="chip" data-f="confirmed">Confirmed</button>
+          <button class="chip" data-f="cancelled">Cancelled</button>
+          <button class="chip" data-f="all">All</button>
+        </div>
+        <div class="grow"><input id="q" type="search" placeholder="Search name, email, code…" style="width:100%"></div>
+        <button class="btn btn-g btn-sm" id="addRes">+ Manual reservation</button>
+      </div>
+      <div class="rlist" id="rlist"><div class="spin"></div></div>
+    </section>
+
+    <!-- OCCUPANCY -->
+    <section class="pane" id="p-cal">
+      <h1 class="pt">Occupancy</h1>
+      <p class="sub">Booked units per bike and size. Orange means fully booked — no stock left that day.</p>
+      <div class="bar">
+        <button class="btn btn-o btn-sm" id="tlPrev">‹ Previous</button>
+        <b id="tlLabel" class="dsp" style="font-size:1rem;min-width:170px;text-align:center"></b>
+        <button class="btn btn-o btn-sm" id="tlNext">Next ›</button>
+      </div>
+      <div class="tl-scroll"><div class="tl" id="tl"></div></div>
+    </section>
+
+    <!-- FLEET -->
+    <section class="pane" id="p-fleet">
+      <h1 class="pt">Fleet &amp; prices</h1>
+      <p class="sub">Edit stock per size, season rates and insurance. Rates follow the day bands: 1 day, 3–4 days, 5–6 days, 7+ days, plus each extra day.</p>
+      <div class="tblwrap">
+        <table id="tFleet"><thead><tr>
+          <th>Bike</th><th>Live</th><th>Stock per size</th>
+          <th colspan="5" style="text-align:center;border-left:1px solid rgba(190,157,82,.14)">Low season €</th>
+          <th colspan="5" style="text-align:center;border-left:1px solid rgba(190,157,82,.14)">High season €</th>
+          <th colspan="2" style="text-align:center;border-left:1px solid rgba(190,157,82,.14)">Insurance €</th>
+        </tr><tr>
+          <th></th><th></th><th></th>
+          <th style="border-left:1px solid rgba(190,157,82,.14)">1d</th><th>3d</th><th>5d</th><th>7d</th><th>+day</th>
+          <th style="border-left:1px solid rgba(190,157,82,.14)">1d</th><th>3d</th><th>5d</th><th>7d</th><th>+day</th>
+          <th style="border-left:1px solid rgba(190,157,82,.14)">Basic</th><th>Full</th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+      <div class="savebar"><span id="fleetHint">Change any value, then save.</span>
+        <button class="btn btn-o btn-sm" id="fleetReload">Discard</button>
+        <button class="btn btn-g btn-sm" id="fleetSave">Save changes</button></div>
+    </section>
+
+    <!-- EXTRAS -->
+    <section class="pane" id="p-ext">
+      <h1 class="pt">Extras &amp; settings</h1>
+      <p class="sub">Add-on prices and the delivery fee. "Long stay" price applies from the day threshold onwards.</p>
+      <div class="tblwrap">
+        <table id="tExt"><thead><tr>
+          <th>Extra</th><th>Live</th><th>Price €</th><th>Long stay €</th><th>From day</th><th>On request</th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+      <div style="background:var(--coal);border:1px solid rgba(190,157,82,.16);padding:18px;margin-top:16px;max-width:340px">
+        <div class="f" style="margin:0"><label for="delFee">Delivery fee € (flat, anywhere)</label><input id="delFee" type="number" min="0" step="1"></div>
+      </div>
+      <div class="savebar"><span>Extras and delivery fee</span>
+        <button class="btn btn-o btn-sm" id="extReload">Discard</button>
+        <button class="btn btn-g btn-sm" id="extSave">Save changes</button></div>
+    </section>
+  </div>
+</div>
+
+<!-- MANUAL RESERVATION MODAL -->
+<div class="ovl" id="ovl">
+  <div class="mod">
+    <h3>Manual reservation</h3>
+    <p class="mh">For phone and walk-in bookings. Availability and price are checked the same way as online.</p>
+    <div class="msg err" id="mErr"></div>
+    <div class="two">
+      <div class="f"><label for="mBike">Bike</label><select id="mBike"></select></div>
+      <div class="f"><label for="mSize">Size</label><select id="mSize"></select></div>
+    </div>
+    <div class="two">
+      <div class="f"><label for="mFrom">First day</label><input id="mFrom" type="date"></div>
+      <div class="f"><label for="mTo">Last day</label><input id="mTo" type="date"></div>
+    </div>
+    <div class="two">
+      <div class="f"><label for="mTime">Pickup</label><select id="mTime"></select></div>
+      <div class="f"><label for="mIns">Insurance</label><select id="mIns">
+        <option value="none">None</option><option value="basic">Basic</option><option value="full">FULL &amp; SOS</option>
+      </select></div>
+    </div>
+    <div class="f"><label>Extras</label><div class="chips" id="mAdd"></div></div>
+    <div class="two">
+      <div class="f"><label for="mName">Customer name</label><input id="mName" type="text"></div>
+      <div class="f"><label for="mMail">Email</label><input id="mMail" type="email"></div>
+    </div>
+    <div class="two">
+      <div class="f"><label for="mPhone">Phone</label><input id="mPhone" type="tel"></div>
+      <div class="f"><label for="mDel">Delivery</label><select id="mDel"><option value="0">Pickup in shop</option><option value="1">Delivery</option></select></div>
+    </div>
+    <div class="f" id="mAddrF" style="display:none"><label for="mAddr">Delivery address</label><input id="mAddr" type="text"></div>
+    <div class="f"><label for="mNotes">Notes</label><textarea id="mNotes" rows="2"></textarea></div>
+    <div class="calcline">Estimated total: <b id="mTotal">€0</b> <span style="color:var(--stone);font-size:.78rem">— final amount is calculated on save</span></div>
+    <div class="mact">
+      <button class="btn btn-o btn-sm" id="mCancel">Cancel</button>
+      <button class="btn btn-g btn-sm" id="mSave">Create reservation</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SB_URL="https://gyjurizatltplidhdyei.supabase.co";
+const SB_KEY="sb_publishable_tnL3RCcKwMTQVWPAlKV58g_iNPgbqy0";
+const sb=supabase.createClient(SB_URL,SB_KEY);
+const $=i=>document.getElementById(i);
+const SIZES_ALL=['XXS','XS','S','M','ML','L','XL','XXL'];
+const MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const money=n=>'€'+Number(n||0).toLocaleString('en-GB',{maximumFractionDigits:0});
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const parseD=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const fmt=s=>{const d=parseD(s);return `${d.getDate()} ${MO[d.getMonth()]}`};
+const fmtY=s=>{const d=parseD(s);return `${d.getDate()} ${MO[d.getMonth()]} ${d.getFullYear()}`};
+const seasonOf=s=>[3,4,5,9,10].includes(parseD(s).getMonth()+1)?'high':'low';
+
+const D={bikes:[],sizes:[],prices:[],addons:[],settings:{},res:[]};
+const UI={filter:'new',q:'',tlMonth:new Date(new Date().getFullYear(),new Date().getMonth(),1),dirtyFleet:false,dirtyExt:false};
+
+function flash(el,txt,ms=3200){el.textContent=txt;el.classList.add('on');setTimeout(()=>el.classList.remove('on'),ms)}
+const ok=t=>flash($('okMsg'),t); const bad=t=>flash($('erMsg'),t,5000);
+
+/* ===== AUTH ===== */
+$('lBtn').onclick=async()=>{
+  const b=$('lBtn');b.disabled=true;b.textContent='Signing in…';
+  $('lErr').classList.remove('on');
+  const {error}=await sb.auth.signInWithPassword({email:$('le').value.trim(),password:$('lp').value});
+  if(error){flash($('lErr'),'Those details don\'t match an account. Check the email and password.',5000);b.disabled=false;b.textContent='Sign in';return}
+  start();
+};
+$('lp').addEventListener('keydown',e=>{if(e.key==='Enter')$('lBtn').click()});
+sb.auth.getSession().then(({data})=>{if(data.session)start()});
+
+async function start(){$('login').style.display='none';$('app').style.display='block';await loadAll()}
+
+/* ===== TABS ===== */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick=async()=>{
+    if(t.dataset.p==='out'){await sb.auth.signOut();location.reload();return}
+    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+    document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+    $('p-'+t.dataset.p).classList.add('on');
+    if(t.dataset.p==='cal')drawTimeline();
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+});
+
+/* ===== LOAD ===== */
+async function loadAll(){
+  const [b,s,p,a,st,r]=await Promise.all([
+    sb.from('bikes').select('*').order('sort'),
+    sb.from('bike_sizes').select('*'),
+    sb.from('bike_prices').select('*'),
+    sb.from('addons').select('*').order('sort'),
+    sb.from('settings').select('*').eq('key','general').maybeSingle(),
+    sb.from('reservations').select('*').order('created_at',{ascending:false})
+  ]);
+  if(b.error||r.error){bad('Could not load data. Check your connection and refresh.');return}
+  D.bikes=b.data||[];D.sizes=s.data||[];D.prices=p.data||[];D.addons=a.data||[];
+  D.settings=st.data?.value||{delivery_fee:100};D.res=r.data||[];
+  renderRes();renderKpis();renderFleet();renderExt();fillModalBikes();
+}
+const bikeById=id=>D.bikes.find(b=>b.id===id);
+const sizesOf=id=>D.sizes.filter(s=>s.bike_id===id).sort((a,b)=>SIZES_ALL.indexOf(a.size)-SIZES_ALL.indexOf(b.size));
+const priceOf=(id,se)=>D.prices.find(p=>p.bike_id===id&&p.season===se);
+
+/* ===== KPIs ===== */
+function renderKpis(){
+  const t=iso(new Date());
+  const newN=D.res.filter(r=>r.status==='new').length;
+  const active=D.res.filter(r=>r.status!=='cancelled'&&r.end_date>=t).length;
+  const outNow=D.res.filter(r=>r.status==='confirmed'&&r.start_date<=t&&r.end_date>=t).length;
+  const rev=D.res.filter(r=>r.status!=='cancelled').reduce((s,r)=>s+ +r.total_price,0);
+  $('kpis').innerHTML=`
+    <div class="kpi"><b>${newN}</b><span>Awaiting confirmation</span></div>
+    <div class="kpi"><b>${active}</b><span>Upcoming &amp; current</span></div>
+    <div class="kpi"><b>${outNow}</b><span>Bikes out today</span></div>
+    <div class="kpi"><b>${money(rev)}</b><span>Booked value</span></div>`;
+  const bg=$('bNew');bg.style.display=newN?'inline-block':'none';bg.textContent=newN;
+}
+
+/* ===== RESERVATIONS ===== */
+$('fchips').querySelectorAll('.chip').forEach(c=>{
+  c.onclick=()=>{UI.filter=c.dataset.f;$('fchips').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c));renderRes()};
+});
+$('q').oninput=e=>{UI.q=e.target.value.toLowerCase();renderRes()};
+
+function renderRes(){
+  let list=D.res.filter(r=>UI.filter==='all'?true:r.status===UI.filter);
+  if(UI.q)list=list.filter(r=>[r.customer_name,r.email,r.code,r.phone||''].join(' ').toLowerCase().includes(UI.q));
+  if(!list.length){$('rlist').innerHTML=`<div class="empty">${UI.q?'Nothing matches that search.':'No reservations in this view yet.'}</div>`;return}
+  $('rlist').innerHTML=list.map(r=>{
+    const b=bikeById(r.bike_id);
+    const ex=(r.addons||[]).map(s=>D.addons.find(a=>a.slug===s)?.name).filter(Boolean);
+    return `<div class="res" data-s="${r.status}" data-id="${r.id}">
+      <div class="res-h">
+        <span class="cd">${r.code}</span>
+        <span class="who"><b>${esc(r.customer_name)}</b><span>${esc(r.email)}</span></span>
+        <span class="bk">${esc(b?.name||'—')}<span>Size ${r.size}</span></span>
+        <span class="dt">${fmt(r.start_date)} → ${fmt(r.end_date)}<span>${r.days} days · pickup ${String(r.pickup_time).slice(0,5)}</span></span>
+        <span class="tagpill ${r.status}">${r.status}</span>
+        ${r.source==='manual'?'<span class="tagpill manual">manual</span>':''}
+        <span class="pz">${money(r.total_price)}</span>
+      </div>
+      <div class="res-b">
+        <div class="dgrid">
+          <div><small>Phone</small><p>${esc(r.phone||'—')}</p></div>
+          <div><small>Insurance</small><p>${r.insurance==='none'?'None':(r.insurance==='basic'?'Basic':'FULL & SOS')}</p></div>
+          <div><small>Extras</small><p>${ex.length?esc(ex.join(', ')):'—'}</p></div>
+          <div><small>Delivery</small><p>${r.delivery?esc(r.delivery_address||'yes')+` (${money(r.delivery_fee)})`:'Pickup in shop'}</p></div>
+          <div><small>Season</small><p>${seasonOf(r.start_date)}</p></div>
+          <div><small>Booked on</small><p>${new Date(r.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})}</p></div>
+          ${r.notes?`<div style="grid-column:1/-1"><small>Notes</small><p>${esc(r.notes)}</p></div>`:''}
+        </div>
+        <div class="acts2">
+          ${r.status!=='confirmed'?`<button class="btn btn-g btn-sm" data-act="confirmed">Confirm</button>`:''}
+          ${r.status!=='cancelled'?`<button class="btn btn-o btn-sm" data-act="cancelled">Cancel</button>`:''}
+          ${r.status==='cancelled'?`<button class="btn btn-o btn-sm" data-act="new">Reopen</button>`:''}
+          <a class="btn btn-o btn-sm" href="mailto:${encodeURIComponent(r.email)}?subject=${encodeURIComponent('Venga Cycling — reservation '+r.code)}">Email customer</a>
+        </div>
+      </div></div>`;
+  }).join('');
+  $('rlist').querySelectorAll('.res').forEach(card=>{
+    card.querySelector('.res-h').onclick=()=>card.classList.toggle('open');
+    card.querySelectorAll('[data-act]').forEach(btn=>{
+      btn.onclick=async e=>{e.stopPropagation();await setStatus(card.dataset.id,btn.dataset.act)};
+    });
+  });
+}
+function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+async function setStatus(id,status){
+  const {error}=await sb.from('reservations').update({status}).eq('id',id);
+  if(error){bad('Could not update that reservation.');return}
+  const r=D.res.find(x=>x.id===id);if(r)r.status=status;
+  renderRes();renderKpis();
+  ok(status==='confirmed'?'Reservation confirmed — the bike is locked for those dates.':(status==='cancelled'?'Reservation cancelled — the bike is available again.':'Reservation reopened.'));
+}
+
+/* ===== TIMELINE ===== */
+$('tlPrev').onclick=()=>{UI.tlMonth=new Date(UI.tlMonth.getFullYear(),UI.tlMonth.getMonth()-1,1);drawTimeline()};
+$('tlNext').onclick=()=>{UI.tlMonth=new Date(UI.tlMonth.getFullYear(),UI.tlMonth.getMonth()+1,1);drawTimeline()};
+function drawTimeline(){
+  const y=UI.tlMonth.getFullYear(),m=UI.tlMonth.getMonth();
+  const days=new Date(y,m+1,0).getDate();
+  $('tlLabel').textContent=`${['January','February','March','April','May','June','July','August','September','October','November','December'][m]} ${y}`;
+  const gt=`grid-template-columns:repeat(${days},minmax(26px,1fr))`;
+  let html=`<div class="tl-row hd"><div class="tl-lbl"><b>Bike / size</b><span>${days} days</span></div><div class="tl-days" style="${gt}">`;
+  for(let d=1;d<=days;d++){const dw=new Date(y,m,d).getDay();html+=`<div class="tl-d ${dw===0||dw===6?'we':''}"><b>${d}</b>${['Su','Mo','Tu','We','Th','Fr','Sa'][dw]}</div>`}
+  html+='</div></div>';
+  const live=D.res.filter(r=>r.status!=='cancelled');
+  D.bikes.forEach(b=>{
+    sizesOf(b.id).forEach(sz=>{
+      html+=`<div class="tl-row"><div class="tl-lbl"><b>${esc(b.name.replace(/^(Giant|Liv)\s/,''))}</b><span>Size ${sz.size} · ${sz.qty} in stock</span></div><div class="tl-days" style="${gt}">`;
+      for(let d=1;d<=days;d++){
+        const ds=iso(new Date(y,m,d)),dw=new Date(y,m,d).getDay();
+        const n=live.filter(r=>r.bike_id===b.id&&r.size===sz.size&&r.start_date<=ds&&r.end_date>=ds).length;
+        const cls=n===0?'':(n>=sz.qty?'f':'p');
+        html+=`<div class="tl-cell ${cls} ${dw===0||dw===6?'we':''}" title="${ds}: ${n}/${sz.qty}">${n||''}</div>`;
+      }
+      html+='</div></div>';
+    });
+  });
+  $('tl').innerHTML=html;
+}
+
+/* ===== FLEET ===== */
+function renderFleet(){
+  const tb=$('tFleet').querySelector('tbody');
+  tb.innerHTML=D.bikes.map(b=>{
+    const lo=priceOf(b.id,'low')||{},hi=priceOf(b.id,'high')||{};
+    const szs=sizesOf(b.id);
+    const cell=(pid,f,v)=>`<td><input class="cell" type="number" min="0" step="1" data-p="${pid}" data-f="${f}" value="${v??0}"></td>`;
+    return `<tr data-b="${b.id}">
+      <td class="nm"><b>${esc(b.name)}</b><span>${esc(b.category)}</span></td>
+      <td><button class="tog ${b.active?'on':''}" data-act-b="${b.id}" title="Show on the site"></button></td>
+      <td><div class="szrow">
+        ${SIZES_ALL.map(s=>{const f=szs.find(x=>x.size===s);
+          return f?`<span class="szitem"><b>${s}</b><input type="number" min="0" step="1" data-sz="${f.id}" value="${f.qty}"></span>`:''}).join('')}
+        <button class="btn btn-o btn-sm" data-addsz="${b.id}" style="padding:5px 10px">+ size</button>
+      </div></td>
+      ${cell(lo.id,'d1',lo.d1)}${cell(lo.id,'d3',lo.d3)}${cell(lo.id,'d5',lo.d5)}${cell(lo.id,'d7',lo.d7)}${cell(lo.id,'extra',lo.extra)}
+      ${cell(hi.id,'d1',hi.d1)}${cell(hi.id,'d3',hi.d3)}${cell(hi.id,'d5',hi.d5)}${cell(hi.id,'d7',hi.d7)}${cell(hi.id,'extra',hi.extra)}
+      <td><input class="cell" type="number" min="0" data-ins="${b.id}" data-f="ins_basic" value="${b.ins_basic}"></td>
+      <td><input class="cell" type="number" min="0" data-ins="${b.id}" data-f="ins_full" value="${b.ins_full}"></td>
+    </tr>`;
+  }).join('');
+  tb.querySelectorAll('.tog[data-act-b]').forEach(t=>{
+    t.onclick=()=>{t.classList.toggle('on');UI.dirtyFleet=true;$('fleetHint').textContent='Unsaved changes'};
+  });
+  tb.querySelectorAll('input').forEach(i=>i.oninput=()=>{UI.dirtyFleet=true;$('fleetHint').textContent='Unsaved changes'});
+  tb.querySelectorAll('[data-addsz]').forEach(btn=>{
+    btn.onclick=async()=>{
+      const have=sizesOf(btn.dataset.addsz).map(s=>s.size);
+      const free=SIZES_ALL.filter(s=>!have.includes(s));
+      if(!free.length){bad('All eight sizes already exist for this bike.');return}
+      const pick=prompt(`Add which size? Available: ${free.join(', ')}`,free[0]);
+      if(!pick)return;
+      const size=pick.trim().toUpperCase();
+      if(!free.includes(size)){bad(`"${pick}" isn't one of the available sizes.`);return}
+      const {data,error}=await sb.from('bike_sizes').insert({bike_id:btn.dataset.addsz,size,qty:1}).select().single();
+      if(error){bad('Could not add that size.');return}
+      D.sizes.push(data);renderFleet();ok(`Size ${size} added with 1 unit — set the stock and save.`);
+    };
+  });
+}
+$('fleetReload').onclick=async()=>{await loadAll();UI.dirtyFleet=false;$('fleetHint').textContent='Changes discarded.'};
+$('fleetSave').onclick=async()=>{
+  const btn=$('fleetSave');btn.disabled=true;btn.textContent='Saving…';
+  try{
+    const tb=$('tFleet').querySelector('tbody');
+    const pr={},jobs=[];
+    tb.querySelectorAll('input[data-p]').forEach(i=>{(pr[i.dataset.p]=pr[i.dataset.p]||{})[i.dataset.f]=+i.value||0});
+    Object.entries(pr).forEach(([id,vals])=>jobs.push(sb.from('bike_prices').update(vals).eq('id',id)));
+    tb.querySelectorAll('input[data-sz]').forEach(i=>jobs.push(sb.from('bike_sizes').update({qty:+i.value||0}).eq('id',i.dataset.sz)));
+    const ins={};
+    tb.querySelectorAll('input[data-ins]').forEach(i=>{(ins[i.dataset.ins]=ins[i.dataset.ins]||{})[i.dataset.f]=+i.value||0});
+    tb.querySelectorAll('.tog[data-act-b]').forEach(t=>{(ins[t.dataset.actB]=ins[t.dataset.actB]||{}).active=t.classList.contains('on')});
+    Object.entries(ins).forEach(([id,vals])=>jobs.push(sb.from('bikes').update(vals).eq('id',id)));
+    const rs=await Promise.all(jobs);
+    const err=rs.find(r=>r.error);
+    if(err)throw err.error;
+    await loadAll();UI.dirtyFleet=false;$('fleetHint').textContent='All changes saved.';ok('Fleet and prices updated — the booking page uses the new values immediately.');
+  }catch(e){bad('Could not save everything. Nothing was lost — check the values and try again.');console.error(e)}
+  btn.disabled=false;btn.textContent='Save changes';
+};
+
+/* ===== EXTRAS ===== */
+function renderExt(){
+  $('tExt').querySelector('tbody').innerHTML=D.addons.map(a=>`
+    <tr data-a="${a.id}">
+      <td class="nm"><b>${esc(a.name)}</b><span>${esc(a.description||'')}</span></td>
+      <td><button class="tog ${a.active?'on':''}" data-ta="${a.id}"></button></td>
+      <td><input class="cell" type="number" min="0" step="1" data-f="price" value="${a.price??''}" ${a.quote_only?'disabled':''}></td>
+      <td><input class="cell" type="number" min="0" step="1" data-f="price_long" value="${a.price_long??''}" ${a.quote_only?'disabled':''}></td>
+      <td><input class="cell" type="number" min="1" step="1" data-f="long_threshold" value="${a.long_threshold??''}" ${a.quote_only?'disabled':''}></td>
+      <td><button class="tog ${a.quote_only?'on':''}" data-tq="${a.id}" title="Price agreed individually"></button></td>
+    </tr>`).join('');
+  $('delFee').value=D.settings.delivery_fee??100;
+  $('tExt').querySelectorAll('.tog').forEach(t=>t.onclick=()=>t.classList.toggle('on'));
+}
+$('extReload').onclick=async()=>{await loadAll();ok('Changes discarded.')};
+$('extSave').onclick=async()=>{
+  const btn=$('extSave');btn.disabled=true;btn.textContent='Saving…';
+  try{
+    const jobs=[];
+    $('tExt').querySelectorAll('tbody tr').forEach(tr=>{
+      const v={};
+      tr.querySelectorAll('input[data-f]').forEach(i=>{v[i.dataset.f]=i.value===''?null:+i.value});
+      v.active=tr.querySelector('.tog[data-ta]').classList.contains('on');
+      v.quote_only=tr.querySelector('.tog[data-tq]').classList.contains('on');
+      jobs.push(sb.from('addons').update(v).eq('id',tr.dataset.a));
+    });
+    const s={...D.settings,delivery_fee:+$('delFee').value||0};
+    jobs.push(sb.from('settings').update({value:s}).eq('key','general'));
+    const rs=await Promise.all(jobs);
+    const err=rs.find(r=>r.error);if(err)throw err.error;
+    await loadAll();ok('Extras and delivery fee updated.');
+  }catch(e){bad('Could not save the extras. Check the values and try again.');console.error(e)}
+  btn.disabled=false;btn.textContent='Save changes';
+};
+
+/* ===== MANUAL RESERVATION ===== */
+function slots(){const o=[];[['09:00','12:30'],['16:00','18:30']].forEach(([a,b])=>{
+  let[h,m]=a.split(':').map(Number);const[eh,em]=b.split(':').map(Number);
+  while(h*60+m<=eh*60+em){o.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);m+=30;if(m>=60){m=0;h++}}});return o}
+function fillModalBikes(){
+  $('mBike').innerHTML=D.bikes.map(b=>`<option value="${b.id}">${esc(b.name)}</option>`).join('');
+  $('mTime').innerHTML=slots().map(t=>`<option>${t}</option>`).join('');
+  $('mAdd').innerHTML=D.addons.filter(a=>a.active&&!a.quote_only).map(a=>`<button class="chip" data-s="${a.slug}">${esc(a.name.split('(')[0].trim())}</button>`).join('');
+  $('mAdd').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{c.classList.toggle('on');estimate()});
+  syncModalSizes();
+}
+function syncModalSizes(){
+  const szs=sizesOf($('mBike').value);
+  $('mSize').innerHTML=szs.map(s=>`<option value="${s.size}">${s.size} (${s.qty} in stock)</option>`).join('')||'<option value="">No sizes</option>';
+}
+$('mBike').onchange=()=>{syncModalSizes();estimate()};
+['mFrom','mTo','mIns'].forEach(id=>$(id).onchange=estimate);
+$('mDel').onchange=()=>{$('mAddrF').style.display=$('mDel').value==='1'?'block':'none';estimate()};
+$('addRes').onclick=()=>{
+  const t=iso(new Date());$('mFrom').min=t;$('mTo').min=t;
+  $('mErr').classList.remove('on');$('ovl').classList.add('on');
+};
+$('mCancel').onclick=()=>$('ovl').classList.remove('on');
+$('ovl').onclick=e=>{if(e.target===$('ovl'))$('ovl').classList.remove('on')};
+
+function estimate(){
+  const bid=$('mBike').value,f=$('mFrom').value,t=$('mTo').value;
+  if(!bid||!f||!t||t<f){$('mTotal').textContent=money(0);return}
+  const days=Math.round((parseD(t)-parseD(f))/864e5)+1;
+  const p=priceOf(bid,seasonOf(f));if(!p){$('mTotal').textContent=money(0);return}
+  let sum= days<=1?+p.d1 : days===2?2*+p.d1 : days<=4?+p.d3+(days-3)*+p.extra : days<=6?+p.d5+(days-5)*+p.extra : +p.d7+(days-7)*+p.extra;
+  const b=bikeById(bid),ins=$('mIns').value;
+  if(ins==='basic')sum+=+b.ins_basic; if(ins==='full')sum+=+b.ins_full;
+  $('mAdd').querySelectorAll('.chip.on').forEach(c=>{
+    const a=D.addons.find(x=>x.slug===c.dataset.s);
+    if(a)sum+= (a.long_threshold&&days>=a.long_threshold)?+(a.price_long??a.price??0):+(a.price??0);
+  });
+  if($('mDel').value==='1')sum+=+(D.settings.delivery_fee??100);
+  $('mTotal').textContent=money(sum);
+}
+const RPC_ERR={NO_AVAILABILITY:'No stock left for that bike, size and date range.',SIZE_NOT_AVAILABLE:'That size has no units.',PICKUP_OUTSIDE_HOURS:'Pickup must be 09:00–12:30 or 16:00–18:30.',DELIVERY_ADDRESS_REQUIRED:'Add the delivery address.',START_IN_PAST:'The first day is in the past.',INVALID_DATES:'The last day must be on or after the first day.',BAD_EMAIL:'That email address looks wrong.',MISSING_CONTACT:'Name and email are required.',TOO_LONG:'Rentals over 60 days must be handled manually.'};
+$('mSave').onclick=async()=>{
+  const btn=$('mSave');btn.disabled=true;btn.textContent='Saving…';$('mErr').classList.remove('on');
+  try{
+    const {data,error}=await sb.rpc('create_reservation',{
+      p_bike:$('mBike').value,p_size:$('mSize').value,p_start:$('mFrom').value,p_end:$('mTo').value,
+      p_pickup:$('mTime').value,p_delivery:$('mDel').value==='1',
+      p_delivery_address:$('mDel').value==='1'?$('mAddr').value.trim():null,
+      p_insurance:$('mIns').value,
+      p_addons:[...$('mAdd').querySelectorAll('.chip.on')].map(c=>c.dataset.s),
+      p_name:$('mName').value.trim(),p_email:$('mMail').value.trim(),
+      p_phone:$('mPhone').value.trim()||null,p_notes:$('mNotes').value.trim()||null
+    });
+    if(error)throw error;
+    // mark as manual + confirmed
+    await sb.from('reservations').update({source:'manual',status:'confirmed'}).eq('code',data.code);
+    $('ovl').classList.remove('on');
+    ['mName','mMail','mPhone','mNotes','mAddr'].forEach(i=>$(i).value='');
+    $('mAdd').querySelectorAll('.chip.on').forEach(c=>c.classList.remove('on'));
+    await loadAll();
+    ok(`Reservation ${data.code} created and confirmed — ${money(data.total)}.`);
+  }catch(e){
+    const k=Object.keys(RPC_ERR).find(k=>(e.message||'').includes(k));
+    flash($('mErr'),k?RPC_ERR[k]:'Could not create the reservation. Check the fields and try again.',6000);
+    console.error(e);
+  }
+  btn.disabled=false;btn.textContent='Create reservation';
+};
+</script>
+</body>
+</html>
