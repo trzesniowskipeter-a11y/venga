@@ -83,8 +83,8 @@ html.maint #maint{display:flex}
   --body:'Instrument Sans',system-ui,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{font-family:var(--body);background:var(--ink);color:var(--ivory);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html{scroll-behavior:smooth;overflow-x:hidden;overscroll-behavior-x:none;width:100%}
+body{font-family:var(--body);background:var(--ink);color:var(--ivory);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;overscroll-behavior-x:none;width:100%;position:relative}
 img{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 .disp{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;line-height:.92;letter-spacing:-.01em}
@@ -266,7 +266,7 @@ h1 .gold{color:var(--gold)}
 
 /* ---------- ticker ---------- */
 #ticker{background:var(--gold);color:var(--ink);overflow:hidden;padding:14px 0;transform:skewY(-1.2deg);margin:-14px 0;position:relative;z-index:5}
-.ticker-track{display:flex;gap:0;width:max-content;animation:tick 34s linear infinite}
+.ticker-track{display:flex;gap:0;width:max-content;animation:tick 34s linear infinite;pointer-events:none}
 #ticker:hover .ticker-track{animation-play-state:paused}
 .ticker-track span{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:.95rem;letter-spacing:.12em;padding:0 30px;white-space:nowrap;display:flex;align-items:center;gap:30px}
 .ticker-track span::after{content:"◤";font-size:.6rem}
@@ -298,7 +298,7 @@ h1 .gold{color:var(--gold)}
 .fleet-hint{font-size:.74rem;letter-spacing:.24em;text-transform:uppercase;color:var(--stone);display:flex;align-items:center;gap:12px}
 .fleet-hint::after{content:"→";color:var(--gold);animation:nudge 1.6s ease-in-out infinite}
 @keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(8px)}}
-.rail-outer{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:clamp(80px,9vw,120px);cursor:grab;scroll-padding-left:clamp(20px,4vw,56px)}
+.rail-outer{overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:clamp(80px,9vw,120px);cursor:grab;scroll-padding-left:clamp(20px,4vw,56px)}
 .rail-outer::-webkit-scrollbar{display:none}
 .rail{display:flex;gap:clamp(18px,2.4vw,34px);width:max-content;padding:0 clamp(20px,4vw,56px)}
 .bike{width:clamp(300px,34vw,460px);scroll-snap-align:start;background:var(--coal-2);border:1px solid rgba(190,157,82,.14);position:relative;transition:transform .5s cubic-bezier(.2,.7,.2,1),border-color .4s;display:flex;flex-direction:column}
@@ -621,6 +621,33 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold-soft);outline-
   .split>span{transform:none!important}
   .shine::after{display:none}
 }
+
+/* ================= MOBILE POLISH ================= */
+/* headings never hide under the sticky nav when jumping from the menu */
+section[id]{scroll-margin-top:76px}
+
+@media(max-width:840px){
+  /* island: the horizontal road and its pins belong to the desktop layout only */
+  .isl-road,.isl-dot,.isl-prog{display:none!important}
+  .isl-scene{height:auto;min-height:0;padding:clamp(28px,7vw,48px) 0}
+  .isl-card{position:relative;left:auto;bottom:auto;max-width:none;
+    padding:0 clamp(18px,5vw,28px)}
+  .isl-scene img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+  .isl-scene::before{background:linear-gradient(180deg,rgba(14,13,11,.72),rgba(14,13,11,.9))}
+
+  /* climb charts: taller so the line is readable on a narrow screen */
+  .climb .chart{min-height:132px}
+  .climb .figs{gap:16px}
+
+  /* nothing may poke past the edge */
+  .wrap,.climb,.isl-card{max-width:100%}
+  img,svg,video{max-width:100%}
+}
+@media(max-width:520px){
+  .climb .figs div b{font-size:1.16rem}
+  .climb .meta h3{font-size:clamp(1.5rem,7.4vw,2rem)}
+}
+
 </style>
 </head>
 <body>
@@ -1306,6 +1333,115 @@ if(!RM){
 
   document.getElementById('ldSkip').onclick=finish;
 })();
+
+/* ============ ELEVATION PROFILES ============ */
+const CLIMBS=[
+  {name:'Sa Calobra',sub:'Coll dels Reis',
+   blurb:'The road that climbs back out of the sea. Twenty-six hairpins, no flat metre to recover on, and the Nus de sa Corbata tying itself in a knot beneath you.',
+   km:9.5,elev:670,avg:7.0,max:12,
+   segs:[[1.2,6.5],[1.6,7.5],[1.4,6.8],[1.3,8.2],[1.5,7.0],[1.2,6.2],[1.3,7.8]],
+   mark:{at:.88,label:'Nus de sa Corbata'}},
+  {name:'Puig Major',sub:'from S\u00f3ller',
+   blurb:"The island's highest road. A long, relentless drag through the Tramuntana to the tunnel \u2014 the climb that tells you exactly what shape you are in.",
+   km:13.7,elev:830,avg:6.1,max:9,
+   segs:[[2.0,5.2],[2.4,6.4],[2.2,6.8],[2.6,5.8],[2.3,6.6],[2.2,5.9]],
+   mark:{at:1,label:'Tunnel \u00b7 summit'}},
+  {name:'Cap de Formentor',sub:'from Port de Pollen\u00e7a',
+   blurb:'Not one climb but a dozen. Short brutal ramps, a cliff road above turquoise water, and the lighthouse waiting at the end of the island.',
+   km:19.0,elev:600,avg:3.2,max:12,
+   segs:[[2.2,6.0],[1.4,-3.5],[1.8,5.5],[2.0,-2.5],[2.4,7.2],[1.6,-4.0],[2.2,4.8],[1.8,-3.0],[2.0,6.4],[1.6,-2.0]],
+   mark:{at:.34,label:'Mirador des Colomer'}}
+];
+function profilePoints(segs,samplesPerKm,targetGain){
+  samplesPerKm=samplesPerKm||8;
+  var pts=[],d=0,a=0;pts.push({d:0,a:0});
+  segs.forEach(function(seg,si){
+    var len=seg[0],g=seg[1],n=Math.max(2,Math.round(len*samplesPerKm));
+    for(var i=1;i<=n;i++){
+      var st=len/n,t=i/n;d+=st;
+      var wob=Math.sin(t*Math.PI*2+si)*0.9+Math.sin(t*Math.PI*5+si*2)*0.45;
+      a+=st*1000*((g+wob)/100);pts.push({d:d,a:a});
+    }
+  });
+  if(targetGain){
+    var lo=Math.min.apply(null,pts.map(function(p){return p.a})),
+        hi=Math.max.apply(null,pts.map(function(p){return p.a})),sp=hi-lo;
+    if(sp>0){var k=targetGain/sp;pts.forEach(function(p){p.a=(p.a-lo)*k})}
+  }
+  return pts;
+}
+function pathFor(pts,w,h,pad){
+  pad=pad||0;
+  var maxD=pts[pts.length-1].d,
+      lo=Math.min.apply(null,pts.map(function(p){return p.a})),
+      hi=Math.max.apply(null,pts.map(function(p){return p.a})),span=(hi-lo)||1;
+  var X=function(d){return pad+(d/maxD)*(w-pad*2)},
+      Y=function(a){return h-pad-((a-lo)/span)*(h-pad*2)},dStr='';
+  pts.forEach(function(p,i){dStr+=(i?'L':'M')+X(p.d).toFixed(1)+' '+Y(p.a).toFixed(1)});
+  return {d:dStr,X:X,Y:Y,maxD:maxD,lo:lo,hi:hi};
+}
+function drawRouteProfiles(){
+  var mini={
+    'Cala, Views':[[6,1.5],[5,2.6],[6,1.2],[5,2.8],[8,1.4]],
+    'The Road':[[5,3.2],[4,5.5],[4,-3.0],[6,4.8],[6,-2.4],[8,3.6],[6,-2.0]],
+    'The Sa Calobra':[[14,2.2],[9,6.8],[10,-5.5],[12,3.4],[9,7.2],[10,-4.8],[16,2.6],[12,-3.2],[14,3.0]]
+  };
+  document.querySelectorAll('.route').forEach(function(card){
+    if(card.querySelector('.prof'))return;
+    var h3=card.querySelector('h3');if(!h3)return;
+    var key=Object.keys(mini).find(function(k){return h3.textContent.replace(/\s+/g,' ').indexOf(k)>=0});
+    if(!key)return;
+    var pts=profilePoints(mini[key],3),w=260,h=44,g=pathFor(pts,w,h,3),
+        uid='rg'+Math.random().toString(36).slice(2,7);
+    var svg='<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" aria-hidden="true">'+
+      '<defs><linearGradient id="'+uid+'" x1="0" y1="0" x2="0" y2="1">'+
+      '<stop offset="0%" stop-color="#BE9D52" stop-opacity=".62"/>'+
+      '<stop offset="100%" stop-color="#BE9D52" stop-opacity=".04"/></linearGradient></defs>'+
+      '<path class="prof-area" fill="url(#'+uid+')" d="'+g.d+'L'+g.X(g.maxD).toFixed(1)+' '+h+' L3 '+h+' Z"/>'+
+      '<path class="prof-line" d="'+g.d+'"/></svg>';
+    var box=document.createElement('div');box.className='prof';box.innerHTML=svg;
+    var rs=card.querySelector('.rs');if(rs)rs.insertAdjacentElement('beforebegin',box);
+  });
+}
+function drawClimbs(){
+  var host=document.getElementById('climbList');if(!host||host.children.length)return;
+  host.innerHTML=CLIMBS.map(function(c,i){
+    var pts=profilePoints(c.segs,10,c.elev),w=680,h=168,g=pathFor(pts,w,h,16),uid='cg'+i;
+    var targetD=g.maxD*c.mark.at,mi=0,best=1e9;
+    pts.forEach(function(p,k){var df=Math.abs(p.d-targetD);if(df<best){best=df;mi=k}});
+    var px=g.X(pts[mi].d),py=g.Y(pts[mi].a),grid='';
+    for(var q=0;q<=3;q++){var y=16+((h-32)/3)*q;
+      grid+='<line class="cl-grid" x1="16" y1="'+y.toFixed(1)+'" x2="'+(w-16)+'" y2="'+y.toFixed(1)+'"/>'}
+    var ticks='',step=g.maxD>15?5:2;
+    for(var km=0;km<=Math.floor(g.maxD);km+=step){
+      ticks+='<text class="cl-tick" x="'+g.X(km).toFixed(1)+'" y="'+(h-3)+'" text-anchor="middle">'+km+'</text>'}
+    ticks+='<text class="cl-tick" x="'+(w-16)+'" y="14" text-anchor="end">'+c.elev+' m climbed</text>';
+    var len=Math.round(g.maxD*130);
+    return '<article class="climb rv" data-i="'+i+'">'+
+      '<div class="meta"><span class="num">'+String(i+1).padStart(2,'0')+' \u00b7 '+c.sub+'</span>'+
+      '<h3>'+c.name+'</h3><p>'+c.blurb+'</p>'+
+      '<div class="figs"><div><b>'+c.km+'</b><small>km</small></div>'+
+      '<div><b>'+c.elev+'</b><small>m up</small></div>'+
+      '<div><b>'+c.avg+'%</b><small>avg</small></div>'+
+      '<div><b>'+c.max+'%</b><small>max</small></div></div></div>'+
+      '<div class="chart"><svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="xMidYMid meet" role="img" '+
+      'aria-label="'+c.name+': '+c.km+' km, '+c.elev+' metres of climbing, '+c.avg+'% average gradient">'+
+      '<defs><linearGradient id="'+uid+'" x1="0" y1="0" x2="0" y2="1">'+
+      '<stop offset="0%" stop-color="#BE9D52" stop-opacity=".34"/>'+
+      '<stop offset="100%" stop-color="#BE9D52" stop-opacity="0"/></linearGradient></defs>'+grid+
+      '<path class="cl-area" fill="url(#'+uid+')" d="'+g.d+'L'+g.X(g.maxD).toFixed(1)+' '+(h-16)+' L16 '+(h-16)+' Z"/>'+
+      '<path class="cl-line" style="--len:'+len+'" d="'+g.d+'"/>'+
+      '<circle class="cl-peak" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="3.4"/>'+
+      '<text class="cl-peak-lbl" x="'+px.toFixed(1)+'" y="'+(py-9).toFixed(1)+'" text-anchor="'+
+      (px>w*0.7?'end':(px<w*0.3?'start':'middle'))+'">'+c.mark.label+'</text>'+ticks+'</svg></div></article>';
+  }).join('');
+  var cio=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.classList.add('drawn');cio.unobserve(e.target)}})},{threshold:.25});
+  host.querySelectorAll('.climb').forEach(function(el){cio.observe(el)});
+  if(window.observeReveals)window.observeReveals(host);
+}
+drawRouteProfiles();
+drawClimbs();
 
 /* hero video autoplay nudge + tap-to-play fallback */
 (function(){
