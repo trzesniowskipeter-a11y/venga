@@ -285,6 +285,28 @@ footer small{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color
 .sheet .close:hover{background:var(--gold);color:var(--ink);border-color:var(--gold)}
 @media(max-width:820px){.sheet-grid{grid-template-columns:1fr}.sheet .ph{position:relative;min-height:240px;max-height:300px}}
 
+/* ============ DETAIL BANDS ============ */
+.band{position:relative;height:clamp(380px,58vh,640px);overflow:hidden;display:flex;align-items:center;background:var(--ink)}
+.band img{position:absolute;inset:0;width:100%;height:114%;object-fit:cover;will-change:transform}
+.band .band-wrap{position:relative;z-index:2;width:100%;max-width:1240px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+.band .cap{max-width:44ch}
+.band .eyebrow{margin-bottom:18px}
+.band h2{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:clamp(1.8rem,4vw,3.4rem);line-height:.98;color:var(--ivory)}
+.band h2 em{font-style:normal;color:var(--gold)}
+.band p{margin-top:18px;color:rgba(244,240,231,.82);font-size:clamp(.95rem,1.2vw,1.08rem);max-width:46ch}
+/* machine band: dark image, caption left, cut top */
+.band.machine{clip-path:polygon(0 var(--cut),100% 0,100% 100%,0 100%)}
+.band.machine::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(14,13,11,.9) 0%,rgba(14,13,11,.55) 42%,transparent 72%)}
+/* statement band: full overlay, centered, cut bottom */
+.band.statement{clip-path:polygon(0 0,100% 0,100% calc(100% - var(--cut)),0 100%);text-align:center}
+.band.statement::after{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(120% 100% at 50% 50%,rgba(14,13,11,.62),rgba(14,13,11,.86))}
+.band.statement .cap{max-width:none;margin:0 auto}
+.band.statement .eyebrow{justify-content:center}
+.band.statement p{margin-left:auto;margin-right:auto;max-width:52ch}
+@media(max-width:700px){
+  .band.machine::after{background:linear-gradient(180deg,rgba(14,13,11,.55),rgba(14,13,11,.85))}
+}
+
 /* ============ PREMIUM LAYER ============ */
 
 /* scroll progress bar */
@@ -434,7 +456,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold-soft);outline-
       </div>
     </div>
     <div class="intro-media rv d1">
-      <div class="ph shine rv"><img class="plx" data-speed="0.08" src="assets/img/scenery-cliffs.webp" alt="Cap de Formentor cliffs, Mallorca" loading="lazy"></div>
+      <div class="ph shine rv"><img class="plx" data-speed="0.08" src="assets/img/detail-hands.webp" alt="Cyclist's hands on the hoods, Mallorca coast at golden hour" loading="lazy"></div>
       <div class="intro-tag"><b>Carrer de Formentor 59</b><small>Port de Pollença · Illes Balears</small></div>
     </div>
   </div>
@@ -450,6 +472,17 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold-soft);outline-
   </div>
   <div class="rail-outer" id="rail">
     <div class="rail" id="railInner"><!-- bikes injected --></div>
+  </div>
+</section>
+
+<section class="band machine spot">
+  <img class="plx" data-speed="0.06" src="assets/img/detail-drivetrain.webp" alt="Carbon crankset and drivetrain detail at golden hour">
+  <div class="band-wrap">
+    <div class="cap">
+      <div class="eyebrow rv">The machine</div>
+      <h2 class="split"><span>Every component, <em>dialled.</em></span></h2>
+      <p class="rv d1">Dura-Ace Di2, SRAM RED AXS and CADEX carbon wheels — each bike prepared, checked and tuned before it ever leaves the workshop.</p>
+    </div>
   </div>
 </section>
 
@@ -546,6 +579,17 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold-soft);outline-
         <div class="date" style="margin-top:18px">International Masters Cycling Week — 13–18 Oct 2026</div>
         <p>The European Masters Cup finale — with one stage finishing right here in Port de Pollença.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="band statement spot">
+  <img class="plx" data-speed="0.05" src="assets/img/detail-road.webp" alt="Painted rider names on a Mallorca climb at golden hour">
+  <div class="band-wrap">
+    <div class="cap">
+      <div class="eyebrow rv">The legendary climbs</div>
+      <h2 class="split d1"><span>Sa Calobra. Puig Major. <em>Formentor.</em></span></h2>
+      <p class="rv d2">The roads that made Mallorca the island every cyclist dreams of — names painted into the tarmac, waiting for you to ride them.</p>
     </div>
   </div>
 </section>
