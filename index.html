@@ -105,10 +105,10 @@ section{position:relative}
 
 /* ---------- preloader: the bike assembles itself ---------- */
 #loader{position:fixed;inset:0;background:var(--ink);z-index:200;display:flex;align-items:center;
-  justify-content:center;transition:opacity .7s ease,visibility .7s}
+  justify-content:center;overflow:hidden;transition:opacity .7s ease,visibility .7s}
 #loader.done{opacity:0;visibility:hidden}
 #loader.off{display:none}
-.ld-wrap{position:relative;width:min(1240px,96vw)}
+.ld-wrap{position:relative;flex:none;width:min(1240px,96vw)}
 .ld-ridge,.ld-dust{position:absolute;left:50%;top:50%;width:120%;pointer-events:none;
   opacity:0;transform:translate3d(-50%,-50%,0)}
 .ld-ridge{transition:opacity 1.3s ease}
@@ -198,6 +198,13 @@ section{position:relative}
   font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;
   padding:6px 0 6px 20px;transition:color .3s}
 .ld-txt button:hover{color:var(--gold)}
+
+/* small screens: crop the sides so the bike fills the width */
+@media(max-width:860px){
+  .ld-wrap{width:150vw}
+  .ld-foot{position:fixed;left:clamp(14px,4vw,28px);right:clamp(14px,4vw,28px);bottom:26px;margin:0}
+}
+@media(max-width:520px){ .ld-wrap{width:180vw} }
 @media(prefers-reduced-motion:reduce){#loader{display:none}}
 
 /* ---------- nav ---------- */
