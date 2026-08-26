@@ -239,7 +239,7 @@ footer{border-top:1px solid var(--line);padding:24px clamp(18px,4vw,44px);text-a
         <div class="cal-key">
           <span><i style="background:var(--gold)"></i>Selected</span>
           <span><i style="background:rgba(190,157,82,.2)"></i>Your rental</span>
-          <span><i style="border:1px solid var(--stone)"></i>Fully booked</span>
+          <span><i style="border:1px solid var(--stone)"></i>Fully booked or unavailable</span>
         </div>
         <div class="season-note" id="seasonNote"></div>
       </div>
@@ -339,7 +339,7 @@ const S = {
   step: 1, bikes: [], addons: [], settings: null,
   bike: null, size: null, start: null, end: null,
   pickup: null, insurance: 'none', extras: new Set(),
-  delivery: false, booked: {}, calMonth: null
+  delivery: false, booked: {}, blocked: {}, calMonth: null
 };
 const STEPS = [
   {n:'01', t:'Bike'}, {n:'02', t:'Dates & size'}, {n:'03', t:'Pickup'},
@@ -453,7 +453,7 @@ function renderBikes(){
   $('bikes').querySelectorAll('.bk').forEach(el => {
     el.onclick = () => {
       const b = S.bikes.find(x => x.id === el.dataset.id);
-      if(S.bike?.id !== b.id){ S.size = null; S.start = S.end = null; S.booked = {}; }
+      if(S.bike?.id !== b.id){ S.size = null; S.start = S.end = null; S.booked = {}; S.blocked = {}; }
       S.bike = b;
       renderBikes(); renderSizes(); paintSummary(); gate();
     };
@@ -488,11 +488,11 @@ async function loadBooked(){
     p_bike: S.bike.id, p_size: S.size, p_from: iso(from), p_to: iso(to)
   });
   if(error){ console.error(error); return; }
-  (data ?? []).forEach(r => { S.booked[r.day] = r.booked; });
+  (data ?? []).forEach(r => { S.booked[r.day] = r.booked; S.blocked[r.day] = !!r.blocked; });
 }
 function qtyFor(size){ return S.bike?.sizes.find(s => s.size === size)?.qty ?? 0; }
-function dayFull(ds){ return (S.booked[ds] ?? 0) >= qtyFor(S.size); }
-function leftOn(ds){ return Math.max(0, qtyFor(S.size) - (S.booked[ds] ?? 0)); }
+function dayFull(ds){ return S.blocked[ds] || (S.booked[ds] ?? 0) >= qtyFor(S.size); }
+function leftOn(ds){ return S.blocked[ds] ? 0 : Math.max(0, qtyFor(S.size) - (S.booked[ds] ?? 0)); }
 
 /* ============ CALENDAR ============ */
 function renderCal(){
@@ -530,7 +530,9 @@ function pickDay(ds){
     // block a range that contains a fully booked day
     let cur = parse(S.start), stop = parse(ds), bad = null;
     while(cur <= stop){ const c = iso(cur); if(dayFull(c)){ bad = c; break; } cur.setDate(cur.getDate()+1); }
-    if(bad){ alertMsg(`This bike is fully booked on ${fmtDate(bad)} in size ${S.size}. Pick a range that skips that day, or try another size.`); return; }
+    if(bad){ alertMsg(S.blocked[bad]
+      ? `We can't rent this bike on ${fmtDate(bad)} — that date is unavailable. Please choose a range that skips it.`
+      : `This bike is fully booked on ${fmtDate(bad)} in size ${S.size}. Pick a range that skips that day, or try another size.`); return; }
     S.end = ds;
   }
   alertMsg('');
@@ -692,7 +694,8 @@ const ERRORS = {
   START_IN_PAST: "The first day can't be in the past. Please pick new dates.",
   INVALID_DATES: "Please check your dates — the last day must come after the first.",
   BAD_EMAIL: "Please enter a valid email address.",
-  TOO_LONG: "For rentals longer than 60 days, please contact us directly."
+  TOO_LONG: "For rentals longer than 60 days, please contact us directly.",
+  DATE_BLOCKED: "One of those dates is unavailable for this bike. Please pick a different range."
 };
 async function submit(){
   if(!validForm()){ alertMsg('Please check the highlighted fields.'); return; }
