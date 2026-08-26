@@ -412,7 +412,7 @@ async function boot(){
     S.bikes = (bikesRes.data ?? []).map(b => ({
       ...b,
       sizes: (sizesRes.data ?? []).filter(s => s.bike_id === b.id && s.qty > 0)
-               .sort((a,c) => ['XXS','XS','S','M','ML','L','XL','XXL'].indexOf(a.size) - ['XXS','XS','S','M','ML','L','XL','XXL'].indexOf(c.size)),
+               .sort((a,c) => ['XS','S','M','ML','L','XL'].indexOf(a.size) - ['XS','S','M','ML','L','XL'].indexOf(c.size)),
       prices: Object.fromEntries((pricesRes.data ?? []).filter(p => p.bike_id === b.id).map(p => [p.season, p]))
     }));
     $('delPrice').textContent = money(deliveryFee());
@@ -463,7 +463,7 @@ function renderBikes(){
 /* ============ SIZES ============ */
 function renderSizes(){
   if(!S.bike){ $('sizes').innerHTML = ''; return; }
-  const all = ['XXS','XS','S','M','ML','L','XL','XXL'];
+  const all = ['XS','S','M','ML','L','XL'];
   const have = new Map(S.bike.sizes.map(s => [s.size, s.qty]));
   $('sizes').innerHTML = all.filter(sz => have.has(sz)).map(sz =>
     `<button class="sz" type="button" data-sz="${sz}" aria-pressed="${S.size===sz}">${sz}<small>${have.get(sz)} in stock</small></button>`
