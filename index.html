@@ -103,47 +103,63 @@ section{position:relative}
   html{scroll-behavior:auto}
 }
 
-/* ---------- preloader: bike assembles & climbs Sa Calobra ---------- */
-#loader{position:fixed;inset:0;background:var(--ink);z-index:200;display:flex;align-items:center;justify-content:center;transition:opacity .55s ease,visibility .55s}
+/* ---------- preloader: the bike assembles itself ---------- */
+#loader{position:fixed;inset:0;background:var(--ink);z-index:200;display:flex;align-items:center;
+  justify-content:center;transition:opacity .6s ease,visibility .6s}
 #loader.done{opacity:0;visibility:hidden}
 #loader.off{display:none}
-.ld-stage{width:min(880px,94vw)}
-#ldSvg{display:block;width:100%;height:auto;overflow:visible}
-.ld-road{fill:none;stroke:var(--gold);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.ld-road-fill{fill:url(#ldGrad);opacity:0;transition:opacity 1s ease}
-#loader.riding .ld-road-fill{opacity:.14}
-.ld-bike .p{fill:none;stroke:var(--ivory);stroke-width:2.6;stroke-linecap:round}
-.ld-frame{opacity:0;clip-path:inset(0 100% 0 0)}
-#loader.build .ld-frame{animation:ldWipe .75s cubic-bezier(.4,.1,.25,1) .05s forwards}
-@keyframes ldWipe{from{opacity:1;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
-.ld-wheel{opacity:0;transform:translateY(-26px)}
-.ld-wheel circle{fill:none;stroke:var(--gold);stroke-width:2.4}
-.ld-wheel path{fill:none;stroke:rgba(190,157,82,.55);stroke-width:1.3}
-#loader.build .ld-wheel{animation:ldDrop .45s cubic-bezier(.2,.9,.3,1.15) forwards}
-#loader.build .ld-wr{animation-delay:.68s}
-#loader.build .ld-wf{animation-delay:.78s}
-@keyframes ldDrop{to{opacity:1;transform:translateY(0)}}
-.ld-wheel{transform-box:fill-box;transform-origin:center}
-#loader.riding .ld-wheel{animation:ldSpin .55s linear infinite;opacity:1}
-.ld-crank{opacity:0}
-.ld-crank circle{fill:none;stroke:var(--gold);stroke-width:2.2}
-.ld-crank path{stroke:var(--gold);stroke-width:2.6;stroke-linecap:round}
-#loader.build .ld-crank{animation:ldIn .3s ease .92s forwards}
-@keyframes ldIn{to{opacity:1}}
-#loader.riding .ld-crank{animation:ldSpin .55s linear infinite;opacity:1;transform-box:fill-box;transform-origin:center}
-@keyframes ldSpin{to{transform:rotate(360deg)}}
-.ld-bike{transform-box:fill-box;transform-origin:50% 100%}
-.ld-summit{opacity:0}
-.ld-summit circle{fill:var(--gold)}
-.ld-summit text{fill:var(--ivory);font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:30px;letter-spacing:.14em}
-#loader.peak .ld-summit{animation:ldPop .5s cubic-bezier(.2,.9,.3,1.2) forwards}
-@keyframes ldPop{from{opacity:0;transform:translateY(8px) scale(.85)}to{opacity:1;transform:none}}
-.ld-foot{margin-top:26px}
-.ld-bar{height:2px;background:rgba(190,157,82,.18);overflow:hidden}
-.ld-bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .3s ease}
+.ld-wrap{position:relative;width:min(1180px,94vw);background:var(--ink)}
+.ld-ridge,.ld-dust{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:118%;pointer-events:none;mix-blend-mode:lighten}
+.ld-ridge{opacity:0;transition:opacity 1.1s ease}
+.ld-dust{opacity:0;transition:opacity 1.6s ease}
+#loader.riding .ld-dust{opacity:.45}
+#loader.peak .ld-ridge{opacity:.4}
+.ld-stage{position:relative;width:100%;aspect-ratio:2752/1536;background:var(--ink)}
+.ld-p{position:absolute;display:block;mix-blend-mode:lighten;will-change:transform,opacity}
+.ld-frame {left:22.67%;top:20.51%;width:52.03%}
+.ld-wr    {left:10.22%;top:34.50%;width:32.59%}
+.ld-wf    {left:58.17%;top:36.74%;width:30.70%}
+.ld-crank {left:39.93%;top:58.59%;width:11.05%}
+.ld-bar   {left:59.50%;top:14.00%;width:26.00%}
+.ld-saddle{left:39.00%;top:17.20%;width:14.50%}
+.ld-frame{opacity:0;transform:translateX(-6%) scale(.97)}
+#loader.build .ld-frame{animation:ldFrameIn 1.05s cubic-bezier(.22,.9,.25,1) .05s forwards}
+@keyframes ldFrameIn{60%{opacity:1}to{opacity:1;transform:none}}
+.ld-wr,.ld-wf{opacity:0;transform:translateY(-34%)}
+#loader.build .ld-wr{animation:ldDropIn .62s cubic-bezier(.2,.85,.3,1.08) .58s forwards}
+#loader.build .ld-wf{animation:ldDropIn .62s cubic-bezier(.2,.85,.3,1.08) .72s forwards}
+@keyframes ldDropIn{to{opacity:1;transform:none}}
+.ld-crank{opacity:0;transform:scale(.82)}
+#loader.build .ld-crank{animation:ldPopIn .42s cubic-bezier(.2,.9,.3,1.2) .96s forwards}
+.ld-bar{opacity:0;transform:translate(8%,-14%)}
+#loader.build .ld-bar{animation:ldSlideIn .5s cubic-bezier(.2,.85,.3,1) 1.06s forwards}
+.ld-saddle{opacity:0;transform:translateY(-18%)}
+#loader.build .ld-saddle{animation:ldSlideIn .5s cubic-bezier(.2,.85,.3,1) 1.16s forwards}
+@keyframes ldPopIn{to{opacity:1;transform:none}}
+@keyframes ldSlideIn{to{opacity:1;transform:none}}
+#loader.riding .ld-wr,#loader.riding .ld-wf{animation:ldSpinW .9s linear infinite;opacity:1;transform:none}
+#loader.riding .ld-crank{animation:ldSpinW 1.5s linear infinite;opacity:1}
+@keyframes ldSpinW{to{transform:rotate(360deg)}}
+#loader.riding .ld-stage{animation:ldRollFwd 2.1s cubic-bezier(.4,.02,.4,1) forwards}
+@keyframes ldRollFwd{to{transform:translateX(3%) scale(1.035)}}
+.ld-flash{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.92);
+  font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;
+  font-size:clamp(2.4rem,6.6vw,5rem);letter-spacing:.18em;color:var(--ivory);opacity:0;
+  text-shadow:0 0 60px rgba(190,157,82,.5);pointer-events:none}
+.ld-flash b{color:var(--gold)}
+#loader.peak .ld-flash{animation:ldFlashIn .85s cubic-bezier(.2,.9,.25,1) forwards}
+@keyframes ldFlashIn{40%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1.02)}}
+#loader.peak .ld-p{filter:brightness(.5) saturate(.85);transition:filter .7s ease}
+.ld-foot{margin-top:clamp(14px,2.4vw,26px)}
+.ld-bar-p{height:2px;background:rgba(190,157,82,.18);overflow:hidden}
+.ld-bar-p i{display:block;height:100%;width:0;background:var(--gold);transition:width .3s ease}
 .ld-txt{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
 .ld-txt span{font-size:.68rem;letter-spacing:.26em;text-transform:uppercase;color:var(--stone)}
-.ld-txt button{background:none;border:0;color:rgba(142,134,119,.7);font-family:var(--body);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;padding:6px 0 6px 20px;transition:color .3s}
+.ld-txt button{background:none;border:0;color:rgba(142,134,119,.7);font-family:var(--body);
+  font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;
+  padding:6px 0 6px 20px;transition:color .3s}
 .ld-txt button:hover{color:var(--gold)}
 @media(prefers-reduced-motion:reduce){#loader{display:none}}
 
@@ -613,39 +629,20 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold-soft);outline-
 
 <div id="progress" aria-hidden="true"></div>
 <div id="loader" aria-hidden="true">
-  <div class="ld-stage">
-    <svg id="ldSvg" viewBox="0 0 900 460" preserveAspectRatio="xMidYMid meet">
-      <!-- road / elevation profile of Sa Calobra -->
-      <path id="ldRoad" class="ld-road" d=""/>
-      <path id="ldRoadFill" class="ld-road-fill" d=""/>
-      <!-- summit flash -->
-      <g id="ldSummit" class="ld-summit">
-        <circle r="4"/>
-        <text y="-16" text-anchor="middle">VENGA</text>
-      </g>
-      <!-- the bike -->
-      <g id="ldBike" class="ld-bike">
-        <g class="ld-frame">
-          <path class="p f1" d="M56 48 L44 18"/>            <!-- seat tube -->
-          <path class="p f2" d="M44 18 L80 20"/>            <!-- top tube -->
-          <path class="p f3" d="M56 48 L80 20"/>            <!-- down tube -->
-          <path class="p f4" d="M26 48 L56 48"/>            <!-- chainstay -->
-          <path class="p f5" d="M26 48 L44 18"/>            <!-- seatstay -->
-          <path class="p f6" d="M80 20 L94 48"/>            <!-- fork -->
-          <path class="p f7" d="M72 15 L88 15"/>            <!-- handlebar -->
-          <path class="p f8" d="M80 20 L80 15"/>            <!-- stem -->
-          <path class="p f9" d="M37 15 L51 15"/>            <!-- saddle -->
-          <path class="p f10" d="M44 18 L44 15"/>           <!-- seatpost -->
-        </g>
-        <g class="ld-wheel ld-wr"><circle cx="26" cy="48" r="20"/>
-          <path d="M26 28 L26 68 M6 48 L46 48 M12 34 L40 62 M40 34 L12 62"/></g>
-        <g class="ld-wheel ld-wf"><circle cx="94" cy="48" r="20"/>
-          <path d="M94 28 L94 68 M74 48 L114 48 M80 34 L108 62 M108 34 L80 62"/></g>
-        <g class="ld-crank"><circle cx="56" cy="48" r="6.5"/><path d="M56 48 L56 58"/></g>
-      </g>
-    </svg>
+  <div class="ld-wrap">
+    <img class="ld-ridge" src="assets/img/ld-ridge.webp" alt="" aria-hidden="true">
+    <img class="ld-dust" src="assets/img/ld-dust.webp" alt="" aria-hidden="true">
+    <div class="ld-stage" id="ldStage">
+      <img class="ld-p ld-frame"  src="assets/img/ld-frame.webp"   alt="" fetchpriority="high">
+      <img class="ld-p ld-wr"     src="assets/img/ld-wheel-r.webp" alt="" fetchpriority="high">
+      <img class="ld-p ld-wf"     src="assets/img/ld-wheel-f.webp" alt="" fetchpriority="high">
+      <img class="ld-p ld-crank"  src="assets/img/ld-crank.webp"   alt="">
+      <img class="ld-p ld-bar"    src="assets/img/ld-bar.webp"     alt="">
+      <img class="ld-p ld-saddle" src="assets/img/ld-saddle.webp"  alt="">
+      <div class="ld-flash" id="ldFlash">VENG<b>A</b></div>
+    </div>
     <div class="ld-foot">
-      <div class="ld-bar"><i id="ldBar"></i></div>
+      <div class="ld-bar-p"><i id="ldBar"></i></div>
       <div class="ld-txt"><span id="ldMsg">Preparing your bike</span><button id="ldSkip" type="button">Skip</button></div>
     </div>
   </div>
@@ -1201,247 +1198,51 @@ if(!RM){
   frame();
 })();
 
-/* loader: bike assembles, climbs Sa Calobra, VENGA at the summit */
+/* loader: the bike assembles itself, then rolls out */
 (function(){
-  const L=document.getElementById('loader');if(!L)return;
-  const skipAll=()=>{L.classList.add('off')};
+  var L=document.getElementById('loader');if(!L)return;
+  var off=function(){L.classList.add('off')};
   try{
-    if(matchMedia('(prefers-reduced-motion: reduce)').matches||sessionStorage.getItem('venga_boot')){skipAll();return}
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches||sessionStorage.getItem('venga_boot')){off();return}
     sessionStorage.setItem('venga_boot','1');
   }catch(e){}
-  /* Sa Calobra ramp segments [km, %] — same data as The Climbs */
-  const SEGS=[[1.2,6.5],[1.6,7.5],[1.4,6.8],[1.3,8.2],[1.5,7.0],[1.2,6.2],[1.3,7.8]];
-  const pts=[];let d=0,a=0;pts.push({d:0,a:0});
-  SEGS.forEach(([len,g],si)=>{const n=Math.round(len*6);for(let i=1;i<=n;i++){const st=len/n;d+=st;
-    a+=st*10*((g+Math.sin(i/n*Math.PI*2+si)*0.9)/1);pts.push({d,a});}});
-  const lo=Math.min(...pts.map(p=>p.a)),hi=Math.max(...pts.map(p=>p.a));
-  const X0=90,X1=810,Y0=372,Y1=170;
-  const X=v=>X0+(v/d)*(X1-X0), Y=v=>Y0-((v-lo)/(hi-lo))*(Y0-Y1);
-  let path='';pts.forEach((p,i)=>{path+=(i?'L':'M')+X(p.d).toFixed(1)+' '+Y(p.a).toFixed(1)});
-  const road=document.getElementById('ldRoad');road.setAttribute('d',path);
-  const fill=document.getElementById('ldRoadFill');
-  fill.setAttribute('d',path+`L${X1} 420 L${X0} 420 Z`);
-  /* gradient for the fill */
-  const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
-  defs.innerHTML='<linearGradient id="ldGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#BE9D52" stop-opacity=".8"/><stop offset="100%" stop-color="#BE9D52" stop-opacity="0"/></linearGradient>';
-  document.getElementById('ldSvg').prepend(defs);
-  /* road draws in sync with the ride */
-  const rl=road.getTotalLength();
-  road.style.strokeDasharray=rl;road.style.strokeDashoffset=rl;
-  /* ride keyframes: bike follows the profile, tilts with the slope */
-  const N=26,fr=[];
-  for(let i=0;i<=N;i++){
-    const t=i/N,idx=Math.min(pts.length-1,Math.round(t*(pts.length-1)));
-    const p=pts[idx],pn=pts[Math.min(pts.length-1,idx+2)];
-    const ang=-Math.atan2(Y(p.a)-Y(pn.a),X(pn.d)-X(p.d))*57.3;
-    fr.push(`${(t*100).toFixed(1)}%{transform:translate(${(X(p.d)-60).toFixed(1)}px,${(Y(p.a)-70).toFixed(1)}px) rotate(${(-ang).toFixed(1)}deg) scale(1.32)}`);
-  }
-  const st=document.createElement('style');
-  st.textContent=`@keyframes ldRide{${fr.join('')}}
-    #loader.riding .ld-bike{animation:ldRide 1.5s cubic-bezier(.45,.05,.4,1) forwards}
-    #loader.riding .ld-road{transition:stroke-dashoffset 1.5s cubic-bezier(.45,.05,.4,1);stroke-dashoffset:0!important}`;
-  document.head.appendChild(st);
-  /* bike starts at the bottom of the climb */
-  const bike=document.getElementById('ldBike');
-  bike.style.transform=`translate(${X0-60}px,${Y0-70}px) scale(1.32)`;
-  /* summit marker at the top — position via coordinates (CSS pop animation owns transform) */
-  const sm=document.getElementById('ldSummit');
-  sm.querySelector('circle').setAttribute('cx',X1); sm.querySelector('circle').setAttribute('cy',Y1);
-  const smT=sm.querySelector('text'); smT.setAttribute('x',X1); smT.setAttribute('y',Y1-20);
-  /* sequence — start only once the main thread breathes (two settled frames),
-     otherwise stroke-draw animations sit frozen while the page initialises */
-  const bar=document.getElementById('ldBar'),msg=document.getElementById('ldMsg');
-  const msgs=['Preparing your bike','Checking the wind at Formentor','Rolling out'];
-  let mi=0,mTimer,pTimer,prog=0,finished=false,t0=performance.now();
-  const finish=()=>{
-    if(finished)return;finished=true;
-    clearInterval(mTimer);clearInterval(pTimer);
+
+  var bar=document.getElementById('ldBar'),msg=document.getElementById('ldMsg');
+  var msgs=['Preparing your bike','Checking the wind at Formentor','Rolling out'];
+  var mi=0,mT,pT,prog=0,done=false,t0=performance.now();
+
+  function finish(){
+    if(done)return;done=true;
+    clearInterval(mT);clearInterval(pT);
     bar.style.width='100%';
-    setTimeout(()=>L.classList.add('done'),240);
-    setTimeout(()=>L.classList.add('off'),900);
-  };
-  const start=()=>{
-    t0=performance.now();
-    mTimer=setInterval(()=>{mi=(mi+1)%msgs.length;msg.textContent=msgs[mi]},900);
-    pTimer=setInterval(()=>{prog=Math.min(86,prog+Math.random()*9);bar.style.width=prog+'%'},180);
+    setTimeout(function(){L.classList.add('done')},260);
+    setTimeout(off,950);
+  }
+
+  /* wait for the parts, but never longer than 900 ms */
+  var parts=[].slice.call(L.querySelectorAll('.ld-p'));
+  var waits=parts.map(function(im){
+    return im.complete?Promise.resolve():new Promise(function(r){im.onload=im.onerror=r});
+  });
+  var ready=Promise.race([
+    Promise.all(waits),
+    new Promise(function(r){setTimeout(r,900)})
+  ]);
+
+  ready.then(function(){
+    mT=setInterval(function(){mi=(mi+1)%msgs.length;msg.textContent=msgs[mi]},900);
+    pT=setInterval(function(){prog=Math.min(88,prog+Math.random()*9);bar.style.width=prog+'%'},170);
     L.classList.add('build');
-    setTimeout(()=>L.classList.add('riding'),1050);
-    setTimeout(()=>L.classList.add('peak'),2380);
-    const ready=()=>{
-      const wait=Math.max(0,2850-(performance.now()-t0));
-      setTimeout(finish,wait);
-    };
-    if(document.readyState==='complete')ready();
-    else addEventListener('load',ready);
-    setTimeout(finish,5200); /* hard cap — never trap the visitor */
-  };
-  start();
+    setTimeout(function(){L.classList.add('riding')},1700);
+    setTimeout(function(){L.classList.add('peak')},3150);
+    var close=function(){setTimeout(finish,Math.max(0,3800-(performance.now()-t0)))};
+    if(document.readyState==='complete')close();
+    else addEventListener('load',close);
+    setTimeout(finish,6200);
+  });
+
   document.getElementById('ldSkip').onclick=finish;
 })();
-
-/* why bg video: play when in view, pause when out (saves battery/CPU) */
-(function(){
-  const v=document.getElementById('whyVid');if(!v)return;
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches){v.remove();return;}
-  v.muted=true;v.setAttribute('muted','');
-  const io=new IntersectionObserver(es=>es.forEach(e=>{
-    if(e.isIntersecting){v.play().catch(()=>{});}else{v.pause();}
-  }),{threshold:.1});
-  io.observe(v.closest('#why'));
-})();
-
-/* ============ ELEVATION PROFILES ============ */
-/* Climb data — distances in km, elevation in m, gradients in %.
-   segs = [[km, gradient%], ...] describing how the road ramps up. */
-const CLIMBS=[
-  {
-    name:'Sa Calobra', sub:'Coll dels Reis',
-    blurb:'The road that climbs back out of the sea. Twenty-six hairpins, no flat metre to recover on, and the Nus de sa Corbata tying itself in a knot beneath you.',
-    km:9.5, elev:670, avg:7.0, max:12,
-    segs:[[1.2,6.5],[1.6,7.5],[1.4,6.8],[1.3,8.2],[1.5,7.0],[1.2,6.2],[1.3,7.8]],
-    mark:{at:.88,label:'Nus de sa Corbata'}
-  },
-  {
-    name:'Puig Major', sub:'from Sóller',
-    blurb:'The island\'s highest road. A long, relentless drag through the Tramuntana to the tunnel — the climb that tells you exactly what shape you are in.',
-    km:13.7, elev:830, avg:6.1, max:9,
-    segs:[[2.0,5.2],[2.4,6.4],[2.2,6.8],[2.6,5.8],[2.3,6.6],[2.2,5.9]],
-    mark:{at:1,label:'Tunnel · summit'}
-  },
-  {
-    name:'Cap de Formentor', sub:'from Port de Pollença',
-    blurb:'Not one climb but a dozen. Short brutal ramps, a cliff road above turquoise water, and the lighthouse waiting at the end of the island.',
-    km:19.0, elev:600, avg:3.2, max:12,
-    segs:[[2.2,6.0],[1.4,-3.5],[1.8,5.5],[2.0,-2.5],[2.4,7.2],[1.6,-4.0],[2.2,4.8],[1.8,-3.0],[2.0,6.4],[1.6,-2.0]],
-    mark:{at:.34,label:'Mirador des Colomer'}
-  }
-];
-
-/* build an elevation polyline from ramp segments */
-function profilePoints(segs, samplesPerKm=8, targetGain=null){
-  const pts=[]; let dist=0, alt=0;
-  pts.push({d:0,a:0});
-  segs.forEach(([len,grad],si)=>{
-    const n=Math.max(2,Math.round(len*samplesPerKm));
-    for(let i=1;i<=n;i++){
-      const step=len/n;
-      dist+=step;
-      /* undulate inside each ramp so the line reads like a real road, not a wedge */
-      const t=i/n;
-      const wob=Math.sin(t*Math.PI*2 + si)*0.9 + Math.sin(t*Math.PI*5 + si*2)*0.45;
-      alt+=step*1000*((grad+wob)/100);
-      pts.push({d:dist,a:alt});
-    }
-  });
-  /* scale so the drawn gain matches the published figure */
-  if(targetGain){
-    const lo=Math.min(...pts.map(p=>p.a)), hi=Math.max(...pts.map(p=>p.a));
-    const span=hi-lo;
-    if(span>0){ const k=targetGain/span; pts.forEach(p=>{p.a=(p.a-lo)*k}); }
-  }
-  return pts;
-}
-function pathFor(pts,w,h,pad=0){
-  const maxD=pts[pts.length-1].d;
-  const lo=Math.min(...pts.map(p=>p.a)), hi=Math.max(...pts.map(p=>p.a));
-  const span=(hi-lo)||1;
-  const X=d=>pad+(d/maxD)*(w-pad*2);
-  const Y=a=>h-pad-((a-lo)/span)*(h-pad*2);
-  let dStr='';
-  pts.forEach((p,i)=>{ dStr+=(i?'L':'M')+X(p.d).toFixed(1)+' '+Y(p.a).toFixed(1); });
-  return {d:dStr,X,Y,maxD,lo,hi};
-}
-
-/* mini profiles on route cards */
-function drawRouteProfiles(){
-  const mini={
-    'Cala, Views': [[6,1.5],[5,2.6],[6,1.2],[5,2.8],[8,1.4]],
-    'The Road': [[5,3.2],[4,5.5],[4,-3.0],[6,4.8],[6,-2.4],[8,3.6],[6,-2.0]],
-    'The Sa Calobra': [[14,2.2],[9,6.8],[10,-5.5],[12,3.4],[9,7.2],[10,-4.8],[16,2.6],[12,-3.2],[14,3.0]]
-  };
-  document.querySelectorAll('.route').forEach(card=>{
-    const h3=card.querySelector('h3'); if(!h3) return;
-    const key=Object.keys(mini).find(k=>h3.textContent.replace(/\s+/g,' ').includes(k));
-    if(!key) return;
-    const pts=profilePoints(mini[key],3);
-    const w=260,h=44;
-    const {d,X,Y,maxD}=pathFor(pts,w,h,3);
-    const uid='rg'+Math.random().toString(36).slice(2,7);
-    const svg=`<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
-      <defs><linearGradient id="${uid}" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#BE9D52" stop-opacity=".62"/>
-        <stop offset="100%" stop-color="#BE9D52" stop-opacity=".04"/>
-      </linearGradient></defs>
-      <path class="prof-area" fill="url(#${uid})" d="${d}L${X(maxD).toFixed(1)} ${h} L3 ${h} Z"/>
-      <path class="prof-line" d="${d}"/></svg>`;
-    const box=document.createElement('div');
-    box.className='prof'; box.innerHTML=svg;
-    card.querySelector('.rs').insertAdjacentElement('beforebegin',box);
-  });
-}
-
-/* big animated climb profiles */
-function drawClimbs(){
-  const host=document.getElementById('climbList'); if(!host) return;
-  host.innerHTML=CLIMBS.map((c,i)=>{
-    const pts=profilePoints(c.segs,10,c.elev);
-    const w=680,h=168;
-    const {d,X,Y,maxD,lo,hi}=pathFor(pts,w,h,16);
-    const uid='cg'+i;
-    /* landmark marker at its real place along the climb */
-    const targetD=maxD*c.mark.at;
-    let mi=0,bestDiff=1e9;
-    pts.forEach((p,k)=>{const diff=Math.abs(p.d-targetD);if(diff<bestDiff){bestDiff=diff;mi=k}});
-    const px=X(pts[mi].d),py=Y(pts[mi].a);
-    /* horizontal grid + km ticks */
-    let grid='';
-    for(let g=0;g<=3;g++){const y=16+((h-32)/3)*g;grid+=`<line class="cl-grid" x1="16" y1="${y.toFixed(1)}" x2="${w-16}" y2="${y.toFixed(1)}"/>`}
-    let ticks='';
-    const step=maxD>15?5:maxD>8?2:2;
-    for(let km=0;km<=Math.floor(maxD);km+=step){
-      ticks+=`<text class="cl-tick" x="${X(km).toFixed(1)}" y="${h-3}" text-anchor="middle">${km}</text>`;
-    }
-    ticks+=`<text class="cl-tick" x="${(w-16).toFixed(1)}" y="14" text-anchor="end">${c.elev} m climbed</text>`;
-    const len=Math.round(maxD*130);
-    return `<article class="climb rv" data-i="${i}">
-      <div class="meta">
-        <span class="num">${String(i+1).padStart(2,'0')} · ${c.sub}</span>
-        <h3>${c.name}</h3>
-        <p>${c.blurb}</p>
-        <div class="figs">
-          <div><b>${c.km}</b><small>km</small></div>
-          <div><b>${c.elev}</b><small>m up</small></div>
-          <div><b>${c.avg}%</b><small>avg</small></div>
-          <div><b>${c.max}%</b><small>max</small></div>
-        </div>
-      </div>
-      <div class="chart">
-        <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" role="img"
-             aria-label="${c.name}: ${c.km} km, ${c.elev} metres of climbing, ${c.avg}% average gradient">
-          <defs><linearGradient id="${uid}" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#BE9D52" stop-opacity=".34"/>
-            <stop offset="100%" stop-color="#BE9D52" stop-opacity="0"/>
-          </linearGradient></defs>
-          ${grid}
-          <path class="cl-area" fill="url(#${uid})" d="${d}L${X(maxD).toFixed(1)} ${h-16} L16 ${h-16} Z"/>
-          <path class="cl-line" style="--len:${len}" d="${d}"/>
-          <circle class="cl-peak" cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="3.4"/>
-          <text class="cl-peak-lbl" x="${px.toFixed(1)}" y="${(py-9).toFixed(1)}"
-                text-anchor="${px>w*0.7?'end':(px<w*0.3?'start':'middle')}">${c.mark.label}</text>
-          ${ticks}
-        </svg>
-      </div>
-    </article>`;
-  }).join('');
-  /* draw on scroll */
-  const cio=new IntersectionObserver(es=>es.forEach(e=>{
-    if(e.isIntersecting){e.target.classList.add('drawn');cio.unobserve(e.target)}
-  }),{threshold:.35});
-  host.querySelectorAll('.climb').forEach(el=>cio.observe(el));
-  if(window.observeReveals) window.observeReveals(host);
-}
-drawRouteProfiles();
-drawClimbs();
 
 /* hero video autoplay nudge + tap-to-play fallback */
 (function(){
