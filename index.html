@@ -42,11 +42,49 @@ section{position:relative}
   html{scroll-behavior:auto}
 }
 
-/* ---------- preloader ---------- */
-#loader{position:fixed;inset:0;background:var(--ink);z-index:200;display:flex;align-items:center;justify-content:center;transition:opacity .6s ease,visibility .6s}
-#loader img{width:min(300px,60vw);opacity:0;animation:loadin 1.1s ease .1s forwards}
-@keyframes loadin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+/* ---------- preloader: bike assembles & climbs Sa Calobra ---------- */
+#loader{position:fixed;inset:0;background:var(--ink);z-index:200;display:flex;align-items:center;justify-content:center;transition:opacity .55s ease,visibility .55s}
 #loader.done{opacity:0;visibility:hidden}
+#loader.off{display:none}
+.ld-stage{width:min(880px,94vw)}
+#ldSvg{display:block;width:100%;height:auto;overflow:visible}
+.ld-road{fill:none;stroke:var(--gold);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ld-road-fill{fill:url(#ldGrad);opacity:0;transition:opacity 1s ease}
+#loader.riding .ld-road-fill{opacity:.14}
+.ld-bike .p{fill:none;stroke:var(--ivory);stroke-width:2.6;stroke-linecap:round}
+.ld-frame{opacity:0;clip-path:inset(0 100% 0 0)}
+#loader.build .ld-frame{animation:ldWipe .75s cubic-bezier(.4,.1,.25,1) .05s forwards}
+@keyframes ldWipe{from{opacity:1;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
+.ld-wheel{opacity:0;transform:translateY(-26px)}
+.ld-wheel circle{fill:none;stroke:var(--gold);stroke-width:2.4}
+.ld-wheel path{fill:none;stroke:rgba(190,157,82,.55);stroke-width:1.3}
+#loader.build .ld-wheel{animation:ldDrop .45s cubic-bezier(.2,.9,.3,1.15) forwards}
+#loader.build .ld-wr{animation-delay:.68s}
+#loader.build .ld-wf{animation-delay:.78s}
+@keyframes ldDrop{to{opacity:1;transform:translateY(0)}}
+.ld-wheel{transform-box:fill-box;transform-origin:center}
+#loader.riding .ld-wheel{animation:ldSpin .55s linear infinite;opacity:1}
+.ld-crank{opacity:0}
+.ld-crank circle{fill:none;stroke:var(--gold);stroke-width:2.2}
+.ld-crank path{stroke:var(--gold);stroke-width:2.6;stroke-linecap:round}
+#loader.build .ld-crank{animation:ldIn .3s ease .92s forwards}
+@keyframes ldIn{to{opacity:1}}
+#loader.riding .ld-crank{animation:ldSpin .55s linear infinite;opacity:1;transform-box:fill-box;transform-origin:center}
+@keyframes ldSpin{to{transform:rotate(360deg)}}
+.ld-bike{transform-box:fill-box;transform-origin:50% 100%}
+.ld-summit{opacity:0}
+.ld-summit circle{fill:var(--gold)}
+.ld-summit text{fill:var(--ivory);font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:30px;letter-spacing:.14em}
+#loader.peak .ld-summit{animation:ldPop .5s cubic-bezier(.2,.9,.3,1.2) forwards}
+@keyframes ldPop{from{opacity:0;transform:translateY(8px) scale(.85)}to{opacity:1;transform:none}}
+.ld-foot{margin-top:26px}
+.ld-bar{height:2px;background:rgba(190,157,82,.18);overflow:hidden}
+.ld-bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .3s ease}
+.ld-txt{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.ld-txt span{font-size:.68rem;letter-spacing:.26em;text-transform:uppercase;color:var(--stone)}
+.ld-txt button{background:none;border:0;color:rgba(142,134,119,.7);font-family:var(--body);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;padding:6px 0 6px 20px;transition:color .3s}
+.ld-txt button:hover{color:var(--gold)}
+@media(prefers-reduced-motion:reduce){#loader{display:none}}
 
 /* ---------- nav ---------- */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:background .4s,box-shadow .4s,padding .4s;padding:22px 0}
@@ -431,7 +469,44 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold-soft);outline-
 <body>
 
 <div id="progress" aria-hidden="true"></div>
-<div id="loader" aria-hidden="true"><img src="assets/img/logo-light.svg" alt=""></div>
+<div id="loader" aria-hidden="true">
+  <div class="ld-stage">
+    <svg id="ldSvg" viewBox="0 0 900 460" preserveAspectRatio="xMidYMid meet">
+      <!-- road / elevation profile of Sa Calobra -->
+      <path id="ldRoad" class="ld-road" d=""/>
+      <path id="ldRoadFill" class="ld-road-fill" d=""/>
+      <!-- summit flash -->
+      <g id="ldSummit" class="ld-summit">
+        <circle r="4"/>
+        <text y="-16" text-anchor="middle">VENGA</text>
+      </g>
+      <!-- the bike -->
+      <g id="ldBike" class="ld-bike">
+        <g class="ld-frame">
+          <path class="p f1" d="M56 48 L44 18"/>            <!-- seat tube -->
+          <path class="p f2" d="M44 18 L80 20"/>            <!-- top tube -->
+          <path class="p f3" d="M56 48 L80 20"/>            <!-- down tube -->
+          <path class="p f4" d="M26 48 L56 48"/>            <!-- chainstay -->
+          <path class="p f5" d="M26 48 L44 18"/>            <!-- seatstay -->
+          <path class="p f6" d="M80 20 L94 48"/>            <!-- fork -->
+          <path class="p f7" d="M72 15 L88 15"/>            <!-- handlebar -->
+          <path class="p f8" d="M80 20 L80 15"/>            <!-- stem -->
+          <path class="p f9" d="M37 15 L51 15"/>            <!-- saddle -->
+          <path class="p f10" d="M44 18 L44 15"/>           <!-- seatpost -->
+        </g>
+        <g class="ld-wheel ld-wr"><circle cx="26" cy="48" r="20"/>
+          <path d="M26 28 L26 68 M6 48 L46 48 M12 34 L40 62 M40 34 L12 62"/></g>
+        <g class="ld-wheel ld-wf"><circle cx="94" cy="48" r="20"/>
+          <path d="M94 28 L94 68 M74 48 L114 48 M80 34 L108 62 M108 34 L80 62"/></g>
+        <g class="ld-crank"><circle cx="56" cy="48" r="6.5"/><path d="M56 48 L56 58"/></g>
+      </g>
+    </svg>
+    <div class="ld-foot">
+      <div class="ld-bar"><i id="ldBar"></i></div>
+      <div class="ld-txt"><span id="ldMsg">Preparing your bike</span><button id="ldSkip" type="button">Skip</button></div>
+    </div>
+  </div>
+</div>
 
 <nav id="nav">
   <div class="wrap">
@@ -900,9 +975,83 @@ if(!RM){
   window._attachTilt=attachTilt;
 }
 
-/* loader */
-addEventListener('load',()=>setTimeout(()=>document.getElementById('loader').classList.add('done'),900));
-setTimeout(()=>document.getElementById('loader').classList.add('done'),3200);
+/* loader: bike assembles, climbs Sa Calobra, VENGA at the summit */
+(function(){
+  const L=document.getElementById('loader');if(!L)return;
+  const skipAll=()=>{L.classList.add('off')};
+  try{
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches||sessionStorage.getItem('venga_boot')){skipAll();return}
+    sessionStorage.setItem('venga_boot','1');
+  }catch(e){}
+  /* Sa Calobra ramp segments [km, %] — same data as The Climbs */
+  const SEGS=[[1.2,6.5],[1.6,7.5],[1.4,6.8],[1.3,8.2],[1.5,7.0],[1.2,6.2],[1.3,7.8]];
+  const pts=[];let d=0,a=0;pts.push({d:0,a:0});
+  SEGS.forEach(([len,g],si)=>{const n=Math.round(len*6);for(let i=1;i<=n;i++){const st=len/n;d+=st;
+    a+=st*10*((g+Math.sin(i/n*Math.PI*2+si)*0.9)/1);pts.push({d,a});}});
+  const lo=Math.min(...pts.map(p=>p.a)),hi=Math.max(...pts.map(p=>p.a));
+  const X0=90,X1=810,Y0=372,Y1=170;
+  const X=v=>X0+(v/d)*(X1-X0), Y=v=>Y0-((v-lo)/(hi-lo))*(Y0-Y1);
+  let path='';pts.forEach((p,i)=>{path+=(i?'L':'M')+X(p.d).toFixed(1)+' '+Y(p.a).toFixed(1)});
+  const road=document.getElementById('ldRoad');road.setAttribute('d',path);
+  const fill=document.getElementById('ldRoadFill');
+  fill.setAttribute('d',path+`L${X1} 420 L${X0} 420 Z`);
+  /* gradient for the fill */
+  const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+  defs.innerHTML='<linearGradient id="ldGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#BE9D52" stop-opacity=".8"/><stop offset="100%" stop-color="#BE9D52" stop-opacity="0"/></linearGradient>';
+  document.getElementById('ldSvg').prepend(defs);
+  /* road draws in sync with the ride */
+  const rl=road.getTotalLength();
+  road.style.strokeDasharray=rl;road.style.strokeDashoffset=rl;
+  /* ride keyframes: bike follows the profile, tilts with the slope */
+  const N=26,fr=[];
+  for(let i=0;i<=N;i++){
+    const t=i/N,idx=Math.min(pts.length-1,Math.round(t*(pts.length-1)));
+    const p=pts[idx],pn=pts[Math.min(pts.length-1,idx+2)];
+    const ang=-Math.atan2(Y(p.a)-Y(pn.a),X(pn.d)-X(p.d))*57.3;
+    fr.push(`${(t*100).toFixed(1)}%{transform:translate(${(X(p.d)-60).toFixed(1)}px,${(Y(p.a)-70).toFixed(1)}px) rotate(${(-ang).toFixed(1)}deg) scale(1.32)}`);
+  }
+  const st=document.createElement('style');
+  st.textContent=`@keyframes ldRide{${fr.join('')}}
+    #loader.riding .ld-bike{animation:ldRide 1.5s cubic-bezier(.45,.05,.4,1) forwards}
+    #loader.riding .ld-road{transition:stroke-dashoffset 1.5s cubic-bezier(.45,.05,.4,1);stroke-dashoffset:0!important}`;
+  document.head.appendChild(st);
+  /* bike starts at the bottom of the climb */
+  const bike=document.getElementById('ldBike');
+  bike.style.transform=`translate(${X0-60}px,${Y0-70}px) scale(1.32)`;
+  /* summit marker at the top — position via coordinates (CSS pop animation owns transform) */
+  const sm=document.getElementById('ldSummit');
+  sm.querySelector('circle').setAttribute('cx',X1); sm.querySelector('circle').setAttribute('cy',Y1);
+  const smT=sm.querySelector('text'); smT.setAttribute('x',X1); smT.setAttribute('y',Y1-20);
+  /* sequence — start only once the main thread breathes (two settled frames),
+     otherwise stroke-draw animations sit frozen while the page initialises */
+  const bar=document.getElementById('ldBar'),msg=document.getElementById('ldMsg');
+  const msgs=['Preparing your bike','Checking the wind at Formentor','Rolling out'];
+  let mi=0,mTimer,pTimer,prog=0,finished=false,t0=performance.now();
+  const finish=()=>{
+    if(finished)return;finished=true;
+    clearInterval(mTimer);clearInterval(pTimer);
+    bar.style.width='100%';
+    setTimeout(()=>L.classList.add('done'),240);
+    setTimeout(()=>L.classList.add('off'),900);
+  };
+  const start=()=>{
+    t0=performance.now();
+    mTimer=setInterval(()=>{mi=(mi+1)%msgs.length;msg.textContent=msgs[mi]},900);
+    pTimer=setInterval(()=>{prog=Math.min(86,prog+Math.random()*9);bar.style.width=prog+'%'},180);
+    L.classList.add('build');
+    setTimeout(()=>L.classList.add('riding'),1050);
+    setTimeout(()=>L.classList.add('peak'),2380);
+    const ready=()=>{
+      const wait=Math.max(0,2850-(performance.now()-t0));
+      setTimeout(finish,wait);
+    };
+    if(document.readyState==='complete')ready();
+    else addEventListener('load',ready);
+    setTimeout(finish,5200); /* hard cap — never trap the visitor */
+  };
+  start();
+  document.getElementById('ldSkip').onclick=finish;
+})();
 
 /* why bg video: play when in view, pause when out (saves battery/CPU) */
 (function(){
