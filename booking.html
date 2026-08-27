@@ -10,7 +10,15 @@
 /* runs before paint: decide whether the site is locked, so nothing flashes */
 (function(){try{
   var q=location.search;
-  if(/[?&]preview=911(&|$)/.test(q)){localStorage.setItem('venga_preview','ok')}
+  if(/[?&]preview=911(&|$)/.test(q)){
+    localStorage.setItem('venga_preview','ok');
+    /* strip the code from the address bar: a guest who copies the link
+       would otherwise be handing the preview code to someone else */
+    try{
+      var clean=location.pathname+location.search.replace(/([?&])preview=911(&|$)/,'$1').replace(/[?&]$/,'')+location.hash;
+      history.replaceState(null,'',clean);
+    }catch(e){}
+  }
   if(/[?&]lock(&|$)/.test(q)){localStorage.removeItem('venga_preview')}
   if(localStorage.getItem('venga_preview')!=='ok'){document.documentElement.className+=' maint'}
 }catch(e){document.documentElement.className+=' maint'}})();
