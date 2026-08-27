@@ -2113,25 +2113,36 @@ document.addEventListener('keydown',function(e){
         +'&daily=sunrise,sunset&timezone=Europe%2FMadrid&forecast_days=1';
   var COMPASS=['N','NE','E','SE','S','SW','W','NW'];
   function paint(d){
-    var c=d.current||{}, dy=d.daily||{};
-    if(c.temperature_2m==null)throw new Error('no data');
+    var c=(d&&d.current)||{}, dy=(d&&d.daily)||{};
+    if(c.temperature_2m==null&&c.wind_speed_10m==null)throw new Error('response had no current values');
     var dir=COMPASS[Math.round(((c.wind_direction_10m||0)%360)/45)%8];
-    var hhmm=function(v){return String(v||'').slice(11,16)};
-    vals.innerHTML=
-      /* written in English so the page-wide translator picks the labels up */
-      '<span><b>'+Math.round(c.temperature_2m)+'\u00B0C</b><i>air</i></span>'+
-      '<span><b>'+Math.round(c.wind_speed_10m)+' km/h '+dir+'</b><i>wind</i></span>'+
-      '<span><b>'+hhmm(dy.sunrise&&dy.sunrise[0])+'</b><i>sunrise</i></span>'+
-      '<span><b>'+hhmm(dy.sunset&&dy.sunset[0])+'</b><i>sunset</i></span>';
+    var hhmm=function(v){var m=String(v||'').match(/(\d{2}:\d{2})/);return m?m[1]:''};
+    var up=hhmm(dy.sunrise&&dy.sunrise[0]), down=hhmm(dy.sunset&&dy.sunset[0]);
+    var parts=[];
+    /* each value is optional on its own: a missing field must not blank the bar */
+    if(c.temperature_2m!=null)
+      parts.push('<span><b>'+Math.round(c.temperature_2m)+'\u00B0C</b><i>air</i></span>');
+    if(c.wind_speed_10m!=null)
+      parts.push('<span><b>'+Math.round(c.wind_speed_10m)+' km/h '+dir+'</b><i>wind</i></span>');
+    if(up)   parts.push('<span><b>'+up+'</b><i>sunrise</i></span>');
+    if(down) parts.push('<span><b>'+down+'</b><i>sunset</i></span>');
+    if(!parts.length)throw new Error('nothing usable in response');
+    vals.innerHTML=parts.join('');
     box.hidden=false;
-    /* reveal once it is actually in view, like the rest of the section */
     var io=new IntersectionObserver(function(es){es.forEach(function(e){
       if(e.isIntersecting){box.classList.add('in');io.unobserve(e.target)}})},{threshold:.4});
     io.observe(box);
     if(window.vengaRescanLang)window.vengaRescanLang(box);
   }
+
   /* 15 minutes of cache: the weather does not change faster and neither should the request */
   var KEY='venga_meteo';
+  /* type vengaWeatherTest() in the browser console to see the raw response */
+  window.vengaWeatherTest=function(){
+    return fetch(URL,{cache:'no-store'}).then(function(r){return r.json()})
+      .then(function(d){console.log('[venga] weather response:',d);return d})
+      .catch(function(e){console.error('[venga] weather request failed:',e);throw e});
+  };
   try{
     var hit=JSON.parse(sessionStorage.getItem(KEY)||'null');
     if(hit&&Date.now()-hit.at<9e5){paint(hit.d);return}
@@ -2142,7 +2153,11 @@ document.addEventListener('keydown',function(e){
       try{sessionStorage.setItem(KEY,JSON.stringify({at:Date.now(),d:d}))}catch(e){}
       paint(d);
     })
-    .catch(function(){ /* no data, no bar — never show a broken row */ });
+    .catch(function(err){
+      /* the bar stays hidden, but say why in the console — a silent failure
+         is impossible to diagnose from the outside */
+      console.warn('[venga] live conditions unavailable:', err && err.message ? err.message : err);
+    });
 })();
 
 /* hero video autoplay nudge + tap-to-play fallback */
