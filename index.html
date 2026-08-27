@@ -909,6 +909,10 @@ section[id]{scroll-margin-top:76px}
   .climb .meta h3{font-size:clamp(1.5rem,7.4vw,2rem)}
 }
 
+/* overflow-x:hidden makes an ancestor a scroll container, which silently kills
+   position:sticky further down (it broke the pinned island section). clip does
+   the same job — no sideways scrolling — without creating that container. */
+@supports (overflow:clip){html,body{overflow-x:clip}}
 </style>
 </head>
 <body>
