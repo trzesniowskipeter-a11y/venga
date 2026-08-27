@@ -164,6 +164,24 @@ input.cell.wide{width:100%;text-align:left}
 .spin{width:24px;height:24px;border:2px solid rgba(190,157,82,.25);border-top-color:var(--gold);border-radius:50%;animation:sp .8s linear infinite;margin:30px auto}
 @keyframes sp{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+}
+
+/* ===== add-bike modal ===== */
+.bkh{margin:20px 0 10px;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+  font-weight:700;border-top:1px solid var(--line);padding-top:15px}
+.bkszs{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.bkszs label{display:block;text-align:center;font-size:.7rem;letter-spacing:.1em;color:var(--muted);font-weight:700}
+.bkszs input{width:100%;margin-top:5px;text-align:center}
+.bkpt{width:100%;border-collapse:collapse}
+.bkpt th{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);font-weight:600;
+  padding:0 4px 6px;text-align:center}
+.bkpt td{padding:3px 4px;font-size:.74rem;color:var(--muted)}
+.bkpt td:first-child{white-space:nowrap;padding-right:10px}
+.bkpt input{width:100%;text-align:center}
+.bkchk{display:flex;align-items:center;gap:9px;margin-top:16px;font-size:.82rem;color:var(--ink2)}
+.bkchk input{width:auto}
+@media(max-width:640px){.bkszs{grid-template-columns:repeat(3,1fr)}.bkpt td:first-child{font-size:.66rem}}
 </style>
 </head>
 <body>
@@ -270,6 +288,7 @@ input.cell.wide{width:100%;text-align:left}
         </tr></thead><tbody></tbody></table>
       </div>
       <div class="savebar"><span id="fleetHint">Change any value, then save.</span>
+        <button class="btn btn-o btn-sm" id="bikeNew">+ Add bike</button>
         <button class="btn btn-o btn-sm" id="fleetReload">Discard</button>
         <button class="btn btn-g btn-sm" id="fleetSave">Save changes</button></div>
     </section>
@@ -340,6 +359,67 @@ input.cell.wide{width:100%;text-align:left}
     <div class="mact">
       <button class="btn btn-o btn-sm" id="mCancel">Cancel</button>
       <button class="btn btn-g btn-sm" id="mSave">Create reservation</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD BIKE ===== -->
+<div class="ovl" id="bkModal">
+  <div class="mod">
+    <h3>Add a bike</h3>
+    <p class="mh">It appears on the booking page as soon as you save, unless you switch it off below.</p>
+    <div class="msg err" id="bkErr"></div>
+
+    <div class="two">
+      <div class="f"><label for="bkName">Name</label>
+        <input id="bkName" placeholder="Giant TCR Advanced Pro 0 Disc"></div>
+      <div class="f"><label for="bkSlug">Web address (slug)</label>
+        <input id="bkSlug" placeholder="tcr" list="bkSlugs"></div>
+    </div>
+    <div class="two">
+      <div class="f"><label for="bkCat">Category</label>
+        <input id="bkCat" placeholder="Road · Racing" list="bkCats"><datalist id="bkCats"></datalist></div>
+      <div class="f"><label for="bkGear">Groupset</label>
+        <input id="bkGear" placeholder="Shimano Dura-Ace Di2"></div>
+    </div>
+    <div class="two">
+      <div class="f"><label for="bkTag">Badge on the card</label>
+        <input id="bkTag" placeholder="Top Pro"></div>
+      <div class="f"><label for="bkImg">Photo address</label>
+        <input id="bkImg" placeholder="assets/img/bike-tcr.webp"></div>
+    </div>
+    <div class="f"><label for="bkDesc">Description</label>
+      <textarea id="bkDesc" rows="2" placeholder="One or two sentences shown in the bike's details."></textarea></div>
+
+    <h4 class="bkh">Stock per size</h4>
+    <div class="bkszs" id="bkSizes"></div>
+    <p class="mh">Leave 0 for sizes you don't stock — customers never see them.</p>
+
+    <h4 class="bkh">Price (€)</h4>
+    <table class="bkpt">
+      <thead><tr><th></th><th>1 day</th><th>3 days</th><th>5 days</th><th>7 days</th><th>+ day</th></tr></thead>
+      <tbody>
+        <tr><td>Low season</td>
+          <td><input type="number" min="0" id="bkLo1"></td><td><input type="number" min="0" id="bkLo3"></td>
+          <td><input type="number" min="0" id="bkLo5"></td><td><input type="number" min="0" id="bkLo7"></td>
+          <td><input type="number" min="0" id="bkLoX"></td></tr>
+        <tr><td>High season</td>
+          <td><input type="number" min="0" id="bkHi1"></td><td><input type="number" min="0" id="bkHi3"></td>
+          <td><input type="number" min="0" id="bkHi5"></td><td><input type="number" min="0" id="bkHi7"></td>
+          <td><input type="number" min="0" id="bkHiX"></td></tr>
+      </tbody>
+    </table>
+    <p class="mh">The 3, 5 and 7-day figures are totals for the whole rental. High season is March–May, September and October.</p>
+
+    <div class="two">
+      <div class="f"><label for="bkInsB">Insurance · Basic</label><input type="number" min="0" id="bkInsB" value="20"></div>
+      <div class="f"><label for="bkInsF">Insurance · FULL &amp; SOS</label><input type="number" min="0" id="bkInsF" value="80"></div>
+    </div>
+    <label class="bkchk"><input type="checkbox" id="bkActive" checked> Show on the site right away</label>
+
+    <div class="mact">
+      <button class="btn btn-o" id="bkCancel">Cancel</button>
+      <button class="btn btn-g" id="bkSave">Add bike</button>
     </div>
   </div>
 </div>
@@ -636,6 +716,93 @@ $('fleetSave').onclick=async()=>{
   btn.disabled=false;btn.textContent='Save changes';
 };
 
+
+/* ===== ADD BIKE ===== */
+function bkOpen(){
+  $('bkSizes').innerHTML=SIZES_ALL.map(sz=>
+    `<label>${sz}<input type="number" min="0" step="1" value="0" data-nsz="${sz}"></label>`).join('');
+  $('bkCats').innerHTML=[...new Set(D.bikes.map(b=>b.category))]
+    .map(c=>`<option value="${esc(c)}">`).join('');
+  ['bkName','bkSlug','bkCat','bkGear','bkTag','bkImg','bkDesc'].forEach(id=>$(id).value='');
+  ['bkLo1','bkLo3','bkLo5','bkLo7','bkLoX','bkHi1','bkHi3','bkHi5','bkHi7','bkHiX'].forEach(id=>$(id).value='');
+  $('bkInsB').value=20; $('bkInsF').value=80; $('bkActive').checked=true; $('bkErr').textContent='';
+  $('bkModal').classList.add('on');
+  $('bkName').focus();
+}
+function bkClose(){$('bkModal').classList.remove('on')}
+$('bikeNew').onclick=bkOpen;
+$('bkCancel').onclick=bkClose;
+$('bkModal').addEventListener('click',e=>{if(e.target===$('bkModal'))bkClose()});
+
+/* name → slug suggestion, only while the slug is untouched */
+$('bkName').addEventListener('input',()=>{
+  if($('bkSlug').dataset.touched)return;
+  $('bkSlug').value=$('bkName').value.toLowerCase()
+    .replace(/[àáâä]/g,'a').replace(/[èéêë]/g,'e').replace(/[ìíîï]/g,'i')
+    .replace(/[òóôö]/g,'o').replace(/[ùúûü]/g,'u').replace(/ç/g,'c').replace(/ñ/g,'n')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
+});
+$('bkSlug').addEventListener('input',()=>{$('bkSlug').dataset.touched='1'});
+
+$('bkSave').onclick=async()=>{
+  const err=m=>{$('bkErr').textContent=m};
+  const name=$('bkName').value.trim(), cat=$('bkCat').value.trim();
+  const slug=$('bkSlug').value.trim().toLowerCase();
+  if(!name)return err('Give the bike a name.');
+  if(!slug)return err('The web address (slug) cannot be empty.');
+  if(!/^[a-z0-9-]+$/.test(slug))return err('The slug may use lowercase letters, numbers and dashes only.');
+  if(D.bikes.some(b=>b.slug===slug))return err(`Another bike already uses the slug "${slug}".`);
+  if(!cat)return err('Give the bike a category, for example "Road · Racing".');
+  const lo=[+$('bkLo1').value||0,+$('bkLo3').value||0,+$('bkLo5').value||0,+$('bkLo7').value||0,+$('bkLoX').value||0];
+  const hi=[+$('bkHi1').value||0,+$('bkHi3').value||0,+$('bkHi5').value||0,+$('bkHi7').value||0,+$('bkHiX').value||0];
+  if(lo[0]<=0||hi[0]<=0)return err('The one-day price is needed for both seasons — the booking page prices every rental from it.');
+  const sizes=[...$('bkSizes').querySelectorAll('[data-nsz]')]
+    .map(i=>({size:i.dataset.nsz,qty:+i.value||0}));
+  if(!sizes.some(x=>x.qty>0))return err('Set the stock for at least one size, otherwise nobody can book this bike.');
+
+  const btn=$('bkSave'); btn.disabled=true; btn.textContent='Adding…'; err('');
+  let newId=null;
+  try{
+    const maxSort=D.bikes.reduce((m,b)=>Math.max(m,b.sort||0),0);
+    const {data:bike,error:e1}=await sb.from('bikes').insert({
+      slug, name, category:cat,
+      gearset:$('bkGear').value.trim()||null,
+      tag:$('bkTag').value.trim()||null,
+      description:$('bkDesc').value.trim()||null,
+      image_url:$('bkImg').value.trim()||null,
+      ins_basic:+$('bkInsB').value||0,
+      ins_full:+$('bkInsF').value||0,
+      active:$('bkActive').checked,
+      sort:maxSort+1
+    }).select().single();
+    if(e1)throw e1;
+    newId=bike.id;
+    const {error:e2}=await sb.from('bike_sizes')
+      .insert(sizes.map(x=>({bike_id:newId,size:x.size,qty:x.qty})));
+    if(e2)throw e2;
+    const {error:e3}=await sb.from('bike_prices').insert([
+      {bike_id:newId,season:'low', d1:lo[0],d3:lo[1],d5:lo[2],d7:lo[3],extra:lo[4]},
+      {bike_id:newId,season:'high',d1:hi[0],d3:hi[1],d5:hi[2],d7:hi[3],extra:hi[4]}
+    ]);
+    if(e3)throw e3;
+    bkClose();
+    await loadAll();
+    ok(`${name} added. It is ${$('bkActive').checked?'live on the booking page now':'hidden until you switch it on'}.`);
+  }catch(e){
+    /* never leave a half-built bike behind */
+    if(newId){
+      await sb.from('bike_prices').delete().eq('bike_id',newId);
+      await sb.from('bike_sizes').delete().eq('bike_id',newId);
+      await sb.from('bikes').delete().eq('id',newId);
+    }
+    err(e.message&&e.message.includes('duplicate')
+      ? 'That slug is already taken. Pick another one.'
+      : 'Could not add the bike. Nothing was saved — check the values and try again.');
+    console.error(e);
+  }
+  btn.disabled=false; btn.textContent='Add bike';
+};
+
 /* ===== EXTRAS ===== */
 function renderExt(){
   $('tExt').querySelector('tbody').innerHTML=D.addons.map(a=>`
@@ -799,5 +966,7 @@ $('mSave').onclick=async()=>{
   btn.disabled=false;btn.textContent=editing?'Save changes':'Create reservation';
 };
 </script>
+
+
 </body>
 </html>
