@@ -735,6 +735,15 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold-soft);outline-
 
 
 
+
+/* eight price tiers: keep the table readable on a phone */
+.ptable th,.ptable td{padding:9px 4px;font-size:.82rem}
+.ptable th{font-size:.56rem;letter-spacing:.08em}
+@media(max-width:560px){
+  .ptable{font-size:.74rem}
+  .ptable th{font-size:.5rem;letter-spacing:.02em;padding:7px 2px}
+  .ptable td{padding:8px 2px;font-size:.76rem}
+}
 /* ================= LIVE CONDITIONS ================= */
 .live{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin:0 0 26px;
   padding:13px 0;border-top:1px solid rgba(14,13,11,.12);border-bottom:1px solid rgba(14,13,11,.12);
@@ -1371,7 +1380,7 @@ section[id]{scroll-margin-top:76px}
           <button data-season="high">High season</button>
         </div>
         <table class="ptable">
-          <thead><tr><th>1 day</th><th>3 days</th><th>5 days</th><th>7 days</th><th>+ day</th></tr></thead>
+          <thead><tr><th>1 d</th><th>2 d</th><th>3 d</th><th>4 d</th><th>5 d</th><th>6 d</th><th>7 d</th><th>+ day</th></tr></thead>
           <tbody><tr id="mPrices"></tr></tbody>
         </table>
         <div class="ins" id="mIns"></div>
@@ -1414,37 +1423,37 @@ const BIKES=[
   desc:"The essence of modern aerodynamics and engineering excellence. Built to win — low weight, exceptional stiffness and outstanding efficiency, with every second on the road counting.",
   spec:[["Groupset","Dura-Ace Di2 12s"],["Wheels","CADEX Carbon Ultra"],["Gearing","52/36T · 11–34T"],["Weight","≈ 7.0 kg"],["Tyres","28 mm"],["Rider limit","110 kg"]],
   chips:["Dura-Ace Di2","CADEX Ultra","Power meter","7.0 kg"],
-  price:{low:[95,285,447,570,80],high:[100,300,471,600,85]},from:95},
+  price:{low:[95,190,285,366,447,529,570,80],high:[100,200,300,385,471,557,600,85]},from:95},
  {id:"enviliv",cat:"Aero road · Women's racing",name:"Liv EnviLiv Advanced Disc TOP Pro",gset:"Shimano Dura-Ace Di2 · CADEX wheels · Power meter",img:"assets/img/bike-enviliv.webp",gallery:["assets/img/enviliv-1.webp", "assets/img/enviliv-2.webp", "assets/img/enviliv-3.webp", "assets/img/enviliv-4.webp", "assets/img/enviliv-5.webp", "assets/img/enviliv-6.webp", "assets/img/enviliv-7.webp"],tag:"Top Pro",
   desc:"Elegance, power and precision. Designed for women who love speed and expect race-level performance — feminine finesse with race-winning power on every Mallorca climb.",
   spec:[["Groupset","Dura-Ace Di2 12s"],["Wheels","CADEX Carbon Ultra"],["Gearing","52/36T · 11–34T"],["Weight","≈ 7.0 kg"],["Tyres","28 mm"],["Rider limit","110 kg"]],
   chips:["Dura-Ace Di2","CADEX Ultra","Power meter","Liv women's fit"],
-  price:{low:[95,285,447,570,80],high:[100,300,471,600,85]},from:95},
+  price:{low:[95,190,285,366,447,529,570,80],high:[100,200,300,385,471,557,600,85]},from:95},
  {id:"tcr",cat:"All-round road",name:"Giant TCR Advanced Pro 0 Disc",gset:"Shimano Dura-Ace Di2 · Carbon wheels",img:"assets/img/bike-tcr.webp",gallery:["assets/img/tcr-1.webp", "assets/img/tcr-2.webp", "assets/img/tcr-3.webp", "assets/img/tcr-4.webp", "assets/img/tcr-5.webp", "assets/img/tcr-6.webp"],tag:"Classic",
   desc:"A modern interpretation of a true classic — low weight, exceptional stiffness and precise handling. At home everywhere in Mallorca, from Coll de Sóller to fast coastal descents.",
   spec:[["Groupset","Shimano Di2 12s"],["Wheels","Giant Carbon Disc"],["Frame","Advanced Pro Carbon"],["Brakes","Hydraulic disc"],["Tyres","28 mm"],["Character","Speed + control"]],
   chips:["Di2 electronic","Carbon wheels","Climb-ready"],
-  price:{low:[47,140,200,237,33],high:[50,150,210,250,35]},from:47},
+  price:{low:[47,94,140,170,200,220,237,33],high:[50,100,150,180,210,230,250,35]},from:47},
  {id:"langma",cat:"All-round road · Women's",name:"Liv Langma Advanced Pro 0 Disc",gset:"Shimano Di2 · Carbon wheels",img:"assets/img/bike-langma.webp",gallery:["assets/img/langma-1.webp", "assets/img/langma-2.webp", "assets/img/langma-3.webp", "assets/img/langma-4.webp", "assets/img/langma-5.webp", "assets/img/langma-6.webp"],tag:"Classic",
   desc:"Lightness, precision and elegance. Created for women who combine high-performance riding with exceptional comfort — the Langma inspires you to climb and responds to every movement.",
   spec:[["Groupset","Shimano Di2 12s"],["Wheels","Giant Carbon Disc"],["Frame","Advanced Pro Carbon"],["Brakes","Hydraulic disc"],["Damping","Vibration-tuned"],["Fit","Liv women's geometry"]],
   chips:["Di2 electronic","Carbon frame","Liv women's fit"],
-  price:{low:[47,140,200,237,33],high:[50,150,210,250,35]},from:47},
+  price:{low:[47,94,140,170,200,220,237,33],high:[50,100,150,180,210,230,250,35]},from:47},
  {id:"trinity",cat:"Time trial · Triathlon",name:"Giant Trinity Advanced SL 0 TOP Pro",gset:"SRAM RED AXS · Power meter · CADEX 65 wheels",img:"assets/img/bike-trinity.webp",gallery:["assets/img/trinity-1.webp", "assets/img/trinity-2.webp", "assets/img/trinity-3.webp", "assets/img/trinity-4.webp"],tag:"TT machine",
   desc:"An uncompromising time trial and triathlon machine for riders who measure performance in seconds. AeroSystem shaping, integrated cockpit and every watt turned into forward momentum.",
   spec:[["Groupset","SRAM RED AXS"],["Wheels","CADEX 65 Carbon"],["Frame","Advanced SL Carbon"],["Power meter","SRAM integrated"],["Cockpit","Fully integrated"],["Position","TT / Tri adjustable"]],
   chips:["SRAM RED AXS","CADEX 65","Power meter","Aero"],
-  price:{low:[110,330,520,665,95],high:[115,345,545,700,100]},from:110},
+  price:{low:[110,220,330,425,520,615,665,95],high:[115,230,345,445,545,645,700,100]},from:110},
  {id:"revolt",cat:"Gravel · Adventure",name:"Giant Revolt Advanced 3 Carbon Disc",gset:"Shimano GRX · Carbon frame",img:"assets/img/bike-revolt.webp",gallery:["assets/img/revolt-1.webp", "assets/img/revolt-2.webp", "assets/img/revolt-3.webp", "assets/img/revolt-4.webp", "assets/img/revolt-5.webp", "assets/img/revolt-6.webp"],tag:"Gravel",
   desc:"Built for exploring Mallorca beyond the main roads — road-bike speed with gravel comfort and stability. From smooth tarmac to gravel tracks leading towards hidden coves.",
   spec:[["Groupset","Shimano GRX"],["Frame","Advanced Composite"],["Geometry","Endurance"],["Terrain","Tarmac + gravel"],["Brakes","Hydraulic disc"],["Character","Total freedom"]],
   chips:["Shimano GRX","Carbon frame","Any terrain"],
-  price:{low:[38,114,162,198,27],high:[40,120,170,200,28]},from:38},
+  price:{low:[38,76,114,138,162,176,198,27],high:[40,80,120,145,170,185,200,28]},from:38},
  {id:"ebike",cat:"E-bike · Trekking",name:"Giant Explore E+ 3",gset:"Yamaha SyncDrive · EnergyPak 500 Wh",img:"assets/img/bike-ebike.webp",gallery:["assets/img/ebike-1.webp", "assets/img/ebike-2.webp", "assets/img/ebike-3.webp"],tag:"E-bike",
   desc:"An electric bike that opens up entirely new ways to discover Mallorca — explore the island at your own pace, with power exactly when you want it.",
   spec:[["Motor","Yamaha SyncDrive"],["Battery","EnergyPak 500 Wh"],["Type","Trekking e-bike"],["Comfort","Upright geometry"],["Terrain","Roads + trails"],["For","Relaxed exploring"]],
   chips:["Yamaha motor","500 Wh","Comfort"],
-  price:{low:[42,126,185,210,30],high:[45,135,195,220,32]},from:42}
+  price:{low:[42,84,126,156,185,200,210,30],high:[45,90,135,165,195,210,220,32]},from:42}
 ];
 
 /* fleet cards */
@@ -1484,7 +1493,7 @@ document.addEventListener('click',e=>{
     document.getElementById('mDesc').textContent=curBike.desc;
     document.getElementById('mSpec').innerHTML=curBike.spec.map(s=>`<div><small>${s[0]}</small><b>${s[1]}</b></div>`).join('');
     document.getElementById('mIns').textContent="Insurance: Basic — €20–35 per rental (damage cover up to €1,000) · FULL & SOS — €80–130 (comprehensive cover, incl. incidents on the ride).";
-    document.getElementById('mBook').href=`booking.html?bike=${encodeURIComponent(curBike.id)}`;
+    document.getElementById('mBook').href=`booking/?bike=${encodeURIComponent(curBike.id)}`;
     document.querySelectorAll('.season-toggle button').forEach(b=>b.classList.toggle('on',b.dataset.season==='low'));
     renderPrices();
     if(window.vengaRescanLang)window.vengaRescanLang(document.getElementById('modal'));
