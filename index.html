@@ -122,47 +122,41 @@ section{position:relative}
 #loader.riding .ld-dust{opacity:.4}
 #loader.peak .ld-ridge{opacity:.45}
 
-.ld-stage{position:relative;width:100%;aspect-ratio:660/372}
+.ld-stage{position:relative;width:100%;aspect-ratio:1200/676}
 .ld-bike{position:absolute;inset:0}
 
-/* the bike assembles itself: one sprite sheet, 24 frames, 4x6 grid.
-   Generated from a single continuous render, so every part shares the same
-   perspective and lighting — the old six-layer collage could never match. */
-.ld-seq{position:absolute;inset:0;display:block;
+/* the bike assembles itself: 16 frames from one continuous render, laid out 4x4.
+   The mask sits on the static container and only the inner layer is moved with
+   transform, so each step is a GPU composite instead of a full repaint. */
+.ld-seq{position:absolute;inset:0;overflow:hidden;opacity:0;
+  -webkit-mask-image:radial-gradient(ellipse 76% 80% at 50% 50%,#000 60%,transparent 100%);
+  mask-image:radial-gradient(ellipse 76% 80% at 50% 50%,#000 60%,transparent 100%)}
+.ld-strip{position:absolute;left:0;top:0;width:400%;height:400%;
   background-image:url('assets/img/ld-assembly.webp');
-  background-repeat:no-repeat;background-size:400% 600%;
-  background-position:0% 0%;opacity:0;
-  /* the render carries its own vignette, so feather the tile edges into the page */
-  -webkit-mask-image:radial-gradient(ellipse 74% 78% at 50% 50%,#000 58%,transparent 100%);
-  mask-image:radial-gradient(ellipse 74% 78% at 50% 50%,#000 58%,transparent 100%)}
-#loader.build .ld-seq{animation:ldSeqIn .5s ease both,ldSeqPlay 1.55s steps(1,end) .12s both}
-/* 24 stops: left to right, row by row */
+  background-size:100% 100%;background-repeat:no-repeat;
+  transform:translate3d(0,0,0);will-change:transform;backface-visibility:hidden}
+#loader.build .ld-seq{animation:ldSeqIn .45s ease both}
+#loader.build .ld-strip{animation:ldSeqPlay 1.6s steps(1,end) .1s both}
 @keyframes ldSeqIn{from{opacity:0}to{opacity:1}}
+/* each stop shifts by one tile: 25% of the inner layer */
 @keyframes ldSeqPlay{
-  0%     {background-position:0%   0%}
-  4.16%  {background-position:33.333%   0%}
-  8.33%  {background-position:66.666%   0%}
-  12.5%  {background-position:100%  0%}
-  16.66% {background-position:0%   20%}
-  20.83% {background-position:33.333%  20%}
-  25%    {background-position:66.666%  20%}
-  29.16% {background-position:100%  20%}
-  33.33% {background-position:0%   40%}
-  37.5%  {background-position:33.333%  40%}
-  41.66% {background-position:66.666%  40%}
-  45.83% {background-position:100%  40%}
-  50%    {background-position:0%   60%}
-  54.16% {background-position:33.333%  60%}
-  58.33% {background-position:66.666%  60%}
-  62.5%  {background-position:100%  60%}
-  66.66% {background-position:0%   80%}
-  70.83% {background-position:33.333%  80%}
-  75%    {background-position:66.666%  80%}
-  79.16% {background-position:100%  80%}
-  83.33% {background-position:0%   100%}
-  87.5%  {background-position:33.333% 100%}
-  91.66% {background-position:66.666% 100%}
-  100%   {background-position:100% 100%}
+  0%    {transform:translate3d(0,0,0)}
+  6.25% {transform:translate3d(-25%,0,0)}
+  12.5% {transform:translate3d(-50%,0,0)}
+  18.75%{transform:translate3d(-75%,0,0)}
+  25%   {transform:translate3d(0,-25%,0)}
+  31.25%{transform:translate3d(-25%,-25%,0)}
+  37.5% {transform:translate3d(-50%,-25%,0)}
+  43.75%{transform:translate3d(-75%,-25%,0)}
+  50%   {transform:translate3d(0,-50%,0)}
+  56.25%{transform:translate3d(-25%,-50%,0)}
+  62.5% {transform:translate3d(-50%,-50%,0)}
+  68.75%{transform:translate3d(-75%,-50%,0)}
+  75%   {transform:translate3d(0,-75%,0)}
+  81.25%{transform:translate3d(-25%,-75%,0)}
+  87.5% {transform:translate3d(-50%,-75%,0)}
+  100%  {transform:translate3d(-75%,-75%,0)}
+}
 }
 
 #loader.riding .ld-bike{animation:ldBob 1.15s ease-in-out .3s infinite}
@@ -270,6 +264,7 @@ section{position:relative}
 }
 @keyframes ldSubIn{from{opacity:0;letter-spacing:.72em}to{opacity:.9;letter-spacing:.5em}}
 #loader.peak .ld-seq{filter:brightness(.34) saturate(.72);transition:filter .9s ease}
+#loader.peak .ld-strip{will-change:auto}
 #loader.peak .ld-shadow{opacity:.25;transition:opacity .9s ease}
 
 .ld-foot{margin-top:clamp(14px,2.4vw,26px)}
@@ -287,6 +282,10 @@ section{position:relative}
 .ld-txt button:hover{color:var(--gold)}
 
 /* small screens: crop the sides so the bike fills the width */
+@media(max-width:900px){
+  /* a phone GPU should not carry a 13 Mpx texture for a 4-second animation */
+  .ld-strip{background-image:url('assets/img/ld-assembly-sm.webp')}
+}
 @media(max-width:860px){
   .ld-wrap{width:114vw}
   .ld-foot{position:fixed;left:clamp(14px,4vw,28px);right:clamp(14px,4vw,28px);bottom:26px;margin:0}
@@ -973,7 +972,7 @@ section[id]{scroll-margin-top:76px}
       <div class="ld-bike">
         <i class="ld-shadow r" aria-hidden="true"></i>
         <i class="ld-shadow f" aria-hidden="true"></i>
-        <i class="ld-seq" id="ldSeq" aria-hidden="true"></i>
+        <i class="ld-seq" id="ldSeq" aria-hidden="true"><i class="ld-strip"></i></i>
         <i class="ld-sweep" aria-hidden="true"></i>
       </div>
       <div class="ld-flash" id="ldFlash">VENG<b>A</b><small>Cycling Mallorca</small></div>
@@ -1666,7 +1665,7 @@ if(!RM){
     L.classList.add('build');
     setTimeout(function(){L.classList.add('riding')},1600);
     setTimeout(function(){                     /* release GPU layers we no longer move */
-      var sq=document.getElementById('ldSeq'); if(sq)sq.style.willChange='auto';
+      var sq=document.querySelector('.ld-strip'); if(sq)sq.style.willChange='auto';
     },2600);
     setTimeout(function(){L.classList.add('peak')},2950);
     var close=function(){setTimeout(finish,Math.max(0,4150-(performance.now()-t0)))};
