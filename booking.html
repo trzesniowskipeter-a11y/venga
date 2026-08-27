@@ -10,7 +10,7 @@
 /* runs before paint: decide whether the site is locked, so nothing flashes */
 (function(){try{
   var q=location.search;
-  if(/[?&]preview=123450(&|$)/.test(q)){localStorage.setItem('venga_preview','ok')}
+  if(/[?&]preview=911(&|$)/.test(q)){localStorage.setItem('venga_preview','ok')}
   if(/[?&]lock(&|$)/.test(q)){localStorage.removeItem('venga_preview')}
   if(localStorage.getItem('venga_preview')!=='ok'){document.documentElement.className+=' maint'}
 }catch(e){document.documentElement.className+=' maint'}})();
@@ -478,6 +478,33 @@ footer{border-top:1px solid var(--line);padding:24px clamp(18px,4vw,44px);text-a
 
 <footer>Venga Cycling Mallorca · Carrer de Formentor 59, Port de Pollença · hola@vengacyclingmallorca.com</footer>
 
+<script>
+/* Kept in its own script: if anything later fails to load (for example the
+   Supabase library from its CDN), the preview gate must still let you in. */
+/* ---------- maintenance gate: unlock ---------- */
+(function(){
+  var f=document.getElementById('mtForm');if(!f)return;
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var v=document.getElementById('mtPass').value.trim();
+    var err=document.getElementById('mtErr');
+    if(v==='911'){
+      try{localStorage.setItem('venga_preview','ok')}catch(_){}
+      document.documentElement.className=document.documentElement.className.replace(/\bmaint\b/,'');
+      document.getElementById('maint').remove();
+      try{sessionStorage.removeItem('venga_boot')}catch(_){}
+      location.reload();
+    }else{
+      err.classList.add('on');
+      document.getElementById('mtPass').value='';
+      document.getElementById('mtPass').focus();
+    }
+  });
+  document.getElementById('mtPass').addEventListener('input',function(){
+    document.getElementById('mtErr').classList.remove('on');
+  });
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 /* ============ CONFIG ============ */
@@ -1010,29 +1037,7 @@ function preselect(){
 }
 boot().then(() => { renderSlots(); preselect(); gate(); });
 
-/* ---------- maintenance gate: unlock ---------- */
-(function(){
-  var f=document.getElementById('mtForm');if(!f)return;
-  f.addEventListener('submit',function(e){
-    e.preventDefault();
-    var v=document.getElementById('mtPass').value.trim();
-    var err=document.getElementById('mtErr');
-    if(v==='123450'){
-      try{localStorage.setItem('venga_preview','ok')}catch(_){}
-      document.documentElement.className=document.documentElement.className.replace(/\bmaint\b/,'');
-      document.getElementById('maint').remove();
-      try{sessionStorage.removeItem('venga_boot')}catch(_){}
-      location.reload();
-    }else{
-      err.classList.add('on');
-      document.getElementById('mtPass').value='';
-      document.getElementById('mtPass').focus();
-    }
-  });
-  document.getElementById('mtPass').addEventListener('input',function(){
-    document.getElementById('mtErr').classList.remove('on');
-  });
-})();
+
 </script>
 </body>
 </html>
