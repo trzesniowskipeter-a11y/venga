@@ -184,6 +184,8 @@ input.cell.wide{width:100%;text-align:left}
 @media(max-width:640px){.bkszs{grid-template-columns:repeat(3,1fr)}.bkpt td:first-child{font-size:.66rem}}
 .tagpill.mailok{background:rgba(120,160,110,.16);color:#8FB280;border-color:rgba(120,160,110,.4)}
 .tagpill.mailbad{background:rgba(201,112,74,.16);color:#E08E68;border-color:rgba(201,112,74,.45);cursor:help}
+.opt{font-size:.62rem;letter-spacing:.06em;text-transform:none;color:var(--muted2);margin-left:6px}
+#ovl input.bad,#ovl select.bad{border-color:var(--warn);background:rgba(201,112,74,.08)}
 </style>
 </head>
 <body>
@@ -337,7 +339,7 @@ input.cell.wide{width:100%;text-align:left}
     <div class="f"><label>Extras</label><div class="chips" id="mAdd"></div></div>
     <div class="two">
       <div class="f"><label for="mName">Customer name</label><input id="mName" type="text"></div>
-      <div class="f"><label for="mMail">Email</label><input id="mMail" type="email"></div>
+      <div class="f"><label for="mMail">Email <span class="opt">optional for phone bookings</span></label><input id="mMail" type="email" placeholder="name@gmail.com"></div>
     </div>
     <div class="two">
       <div class="f"><label for="mPhone">Phone</label><input id="mPhone" type="tel"></div>
@@ -925,11 +927,28 @@ function estimate(){
   if($('mDel').value==='1')sum+=+(D.settings.delivery_fee??100);
   $('mTotal').textContent=money(sum);
 }
-const RPC_ERR={NO_AVAILABILITY:'No stock left for that bike, size and date range.',SIZE_NOT_AVAILABLE:'That size has no units.',PICKUP_OUTSIDE_HOURS:'Pickup must be 09:00–12:30 or 16:00–18:30.',DELIVERY_ADDRESS_REQUIRED:'Add the delivery address.',START_IN_PAST:'The first day is in the past.',INVALID_DATES:'The last day must be on or after the first day.',BAD_EMAIL:'That email address looks wrong.',MISSING_CONTACT:'Name and email are required.',TOO_LONG:'Rentals over 60 days must be handled manually.',DATE_BLOCKED:'Those dates are blocked for service or holiday. Tick "Allow blocked dates" to override.',RESERVATION_NOT_FOUND:'That reservation no longer exists — refresh the page.'};
+const RPC_ERR={MISSING_NAME:'Enter the guest name.',NO_AVAILABILITY:'No stock left for that bike, size and date range.',SIZE_NOT_AVAILABLE:'That size has no units.',PICKUP_OUTSIDE_HOURS:'Pickup must be 09:00–12:30 or 16:00–18:30.',DELIVERY_ADDRESS_REQUIRED:'Add the delivery address.',START_IN_PAST:'The first day is in the past.',INVALID_DATES:'The last day must be on or after the first day.',BAD_EMAIL:'That email address is not valid — it needs an @ and a domain, like name@gmail.com.',MISSING_CONTACT:'Give either an email or a phone number.',TOO_LONG:'Rentals over 60 days must be handled manually.',DATE_BLOCKED:'Those dates are blocked for service or holiday. Tick "Allow blocked dates" to override.',RESERVATION_NOT_FOUND:'That reservation no longer exists — refresh the page.'};
 
+/* the error banner sits at the top of a long form, so bring it into view
+   and mark the offending field — otherwise a failed save looks like nothing
+   happened at all */
+function mFail(msg,fieldId){
+  flash($('mErr'),msg,7000);
+  $('mErr').scrollIntoView({behavior:'smooth',block:'center'});
+  document.querySelectorAll('#ovl .bad').forEach(e=>e.classList.remove('bad'));
+  if(fieldId){const f=$(fieldId);if(f){f.classList.add('bad');setTimeout(()=>f.focus(),350)}}
+}
 $('mSave').onclick=async()=>{
   const btn=$('mSave');const editing=!!EDIT_ID;
+  /* catch the common mistakes here, with a message next to the field */
+  const nm=$('mName').value.trim(), em=$('mMail').value.trim(), ph=$('mPhone').value.trim();
+  if(!nm)return mFail('Enter the guest name.','mName');
+  if(!em&&!ph)return mFail('Give either an email or a phone number — we need one way to reach the guest.','mMail');
+  if(em&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))
+    return mFail('That email address is not valid. Write it in full, like name@gmail.com — or leave it empty and keep just the phone number.','mMail');
+  if(!$('mFrom').value||!$('mTo').value)return mFail('Pick the first and last day.','mFrom');
   btn.disabled=true;btn.textContent='Saving…';$('mErr').classList.remove('on');
+  document.querySelectorAll('#ovl .bad').forEach(e=>e.classList.remove('bad'));
   const addons=[...$('mAdd').querySelectorAll('.chip.on')].map(c=>c.dataset.s);
   const common={
     p_bike:$('mBike').value,p_size:$('mSize').value,p_start:$('mFrom').value,p_end:$('mTo').value,
@@ -965,7 +984,8 @@ $('mSave').onclick=async()=>{
     }
   }catch(e){
     const k=Object.keys(RPC_ERR).find(k=>(e.message||'').includes(k));
-    flash($('mErr'),k?RPC_ERR[k]:'Could not save. Check the fields and try again.',6000);
+    mFail(k?RPC_ERR[k]:'Could not save. Check the fields and try again.',
+          k==='BAD_EMAIL'||k==='MISSING_CONTACT'?'mMail':(k==='MISSING_NAME'?'mName':null));
     console.error(e);
   }
   btn.disabled=false;btn.textContent=editing?'Save changes':'Create reservation';
