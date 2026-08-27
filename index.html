@@ -125,38 +125,16 @@ section{position:relative}
 .ld-stage{position:relative;width:100%;aspect-ratio:1200/676}
 .ld-bike{position:absolute;inset:0}
 
-/* the bike assembles itself: 16 frames from one continuous render, laid out 4x4.
-   The mask sits on the static container and only the inner layer is moved with
-   transform, so each step is a GPU composite instead of a full repaint. */
-.ld-seq{position:absolute;inset:0;overflow:hidden;opacity:0;
-  -webkit-mask-image:radial-gradient(ellipse 76% 80% at 50% 50%,#000 60%,transparent 100%);
-  mask-image:radial-gradient(ellipse 76% 80% at 50% 50%,#000 60%,transparent 100%)}
-.ld-strip{position:absolute;left:0;top:0;width:400%;height:400%;
-  background-image:url('assets/img/ld-assembly.webp');
-  background-size:100% 100%;background-repeat:no-repeat;
-  transform:translate3d(0,0,0);will-change:transform;backface-visibility:hidden}
-#loader.build .ld-seq{animation:ldSeqIn .45s ease both}
-#loader.build .ld-strip{animation:ldSeqPlay 1.6s steps(1,end) .1s both}
-@keyframes ldSeqIn{from{opacity:0}to{opacity:1}}
-/* each stop shifts by one tile: 25% of the inner layer */
-@keyframes ldSeqPlay{
-  0%    {transform:translate3d(0,0,0)}
-  6.25% {transform:translate3d(-25%,0,0)}
-  12.5% {transform:translate3d(-50%,0,0)}
-  18.75%{transform:translate3d(-75%,0,0)}
-  25%   {transform:translate3d(0,-25%,0)}
-  31.25%{transform:translate3d(-25%,-25%,0)}
-  37.5% {transform:translate3d(-50%,-25%,0)}
-  43.75%{transform:translate3d(-75%,-25%,0)}
-  50%   {transform:translate3d(0,-50%,0)}
-  56.25%{transform:translate3d(-25%,-50%,0)}
-  62.5% {transform:translate3d(-50%,-50%,0)}
-  68.75%{transform:translate3d(-75%,-50%,0)}
-  75%   {transform:translate3d(0,-75%,0)}
-  81.25%{transform:translate3d(-25%,-75%,0)}
-  87.5% {transform:translate3d(-50%,-75%,0)}
-  100%  {transform:translate3d(-75%,-75%,0)}
-}
+/* the bike assembles itself: 16 native-resolution frames swapped on one <img>.
+   A sprite sheet would have to be 7500 px wide at this quality, past the 4096 px
+   texture limit on most phone GPUs — separate frames keep every step a small,
+   cheap upload and stay pin sharp. */
+/* the fade and the mask live on this static wrapper: swapping the <img> src
+   restarts any animation on the image itself, which left it stuck at opacity 0 */
+.ld-seqw{position:absolute;inset:0;display:block;opacity:0;transition:opacity .45s ease;
+  -webkit-mask-image:radial-gradient(ellipse 78% 82% at 50% 50%,#000 62%,transparent 100%);
+  mask-image:radial-gradient(ellipse 78% 82% at 50% 50%,#000 62%,transparent 100%)}
+.ld-seq{display:block;width:100%;height:100%;object-fit:contain}
 }
 
 #loader.riding .ld-bike{animation:ldBob 1.15s ease-in-out .3s infinite}
@@ -263,8 +241,7 @@ section{position:relative}
   100%{opacity:1;letter-spacing:.16em;transform:translate3d(-50%,-50%,0)}
 }
 @keyframes ldSubIn{from{opacity:0;letter-spacing:.72em}to{opacity:.9;letter-spacing:.5em}}
-#loader.peak .ld-seq{filter:brightness(.34) saturate(.72);transition:filter .9s ease}
-#loader.peak .ld-strip{will-change:auto}
+#loader.peak .ld-seqw{filter:brightness(.34) saturate(.72);transition:filter .9s ease}
 #loader.peak .ld-shadow{opacity:.25;transition:opacity .9s ease}
 
 .ld-foot{margin-top:clamp(14px,2.4vw,26px)}
@@ -282,10 +259,6 @@ section{position:relative}
 .ld-txt button:hover{color:var(--gold)}
 
 /* small screens: crop the sides so the bike fills the width */
-@media(max-width:900px){
-  /* a phone GPU should not carry a 13 Mpx texture for a 4-second animation */
-  .ld-strip{background-image:url('assets/img/ld-assembly-sm.webp')}
-}
 @media(max-width:860px){
   .ld-wrap{width:114vw}
   .ld-foot{position:fixed;left:clamp(14px,4vw,28px);right:clamp(14px,4vw,28px);bottom:26px;margin:0}
@@ -972,7 +945,7 @@ section[id]{scroll-margin-top:76px}
       <div class="ld-bike">
         <i class="ld-shadow r" aria-hidden="true"></i>
         <i class="ld-shadow f" aria-hidden="true"></i>
-        <i class="ld-seq" id="ldSeq" aria-hidden="true"><i class="ld-strip"></i></i>
+        <i class="ld-seqw" aria-hidden="true"><img class="ld-seq" id="ldSeq" alt="" fetchpriority="high" decoding="async"></i>
         <i class="ld-sweep" aria-hidden="true"></i>
       </div>
       <div class="ld-flash" id="ldFlash">VENG<b>A</b><small>Cycling Mallorca</small></div>
@@ -1656,6 +1629,51 @@ if(!RM){
   var raf2=function(){return new Promise(function(r){
     requestAnimationFrame(function(){requestAnimationFrame(r)})})};
 
+
+  /* ---- assembly frames: 16 stills, phone gets the lighter set ---- */
+  var SEQ_N=16, seqEl=document.getElementById('ldSeq');
+  var small=matchMedia('(max-width:900px)').matches;
+  var seqSrc=[];
+  for(var i=0;i<SEQ_N;i++){
+    seqSrc.push('assets/img/asm/a'+String(i).padStart(2,'0')+(small?'-sm':'')+'.webp');
+  }
+  var seqImgs=[],seqReady=0;
+  seqSrc.forEach(function(u,k){
+    var im=new Image();
+    im.onload=function(){
+      /* decode up front: decoding a 1.3 Mpx frame mid-animation stalls the
+         compositor, which is what made the sequence stutter */
+      if(im.decode){im.decode().then(function(){seqReady++},function(){seqReady++})}
+      else seqReady++;
+    };
+    im.onerror=function(){seqReady++};
+    im.src=u; seqImgs[k]=im;
+  });
+  seqEl.src=seqSrc[0];
+  function runFrames(){
+    var wrap=document.querySelector('.ld-seqw');
+    seqEl.src=seqSrc[0];
+    if(wrap)wrap.style.opacity='1';
+    var k=0,step=1600/SEQ_N;
+    var t=setInterval(function(){
+      k++;
+      if(k>=SEQ_N){clearInterval(t);return}
+      seqEl.src=seqSrc[k];
+    },step);
+  }
+  function playAssembly(){
+    /* swapping a src that is not cached yet stalls the animation, so wait for
+       the frames — but never longer than 1.2 s, the loader must not hang on this */
+    /* a head start of a few decoded frames is enough — the rest arrive faster
+       than the 100 ms per frame the sequence consumes them */
+    var HEAD=Math.min(5,SEQ_N);
+    if(seqReady>=HEAD){runFrames();return}
+    var waited=0;
+    var w=setInterval(function(){
+      waited+=50;
+      if(seqReady>=HEAD||waited>=1200){clearInterval(w);runFrames()}
+    },50);
+  }
   ready.then(raf2).then(function(){
     mT=setInterval(function(){
       msg.classList.add('swap');
@@ -1663,9 +1681,10 @@ if(!RM){
     },1150);
     pT=setInterval(function(){prog=Math.min(88,prog+Math.random()*9);bar.style.width=prog+'%'},170);
     L.classList.add('build');
+    playAssembly();
     setTimeout(function(){L.classList.add('riding')},1600);
     setTimeout(function(){                     /* release GPU layers we no longer move */
-      var sq=document.querySelector('.ld-strip'); if(sq)sq.style.willChange='auto';
+      /* frames are plain images now — nothing to release */
     },2600);
     setTimeout(function(){L.classList.add('peak')},2950);
     var close=function(){setTimeout(finish,Math.max(0,4150-(performance.now()-t0)))};
