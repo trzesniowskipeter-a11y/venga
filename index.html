@@ -122,7 +122,7 @@ section{position:relative}
 #loader.riding .ld-dust{opacity:.4}
 #loader.peak .ld-ridge{opacity:.45}
 
-.ld-stage{position:relative;width:100%;aspect-ratio:1200/676}
+.ld-stage{position:relative;width:100%;aspect-ratio:16/9}
 .ld-bike{position:absolute;inset:0}
 
 /* the bike assembles itself: 16 native-resolution frames swapped on one <img>.
@@ -134,7 +134,7 @@ section{position:relative}
 .ld-seqw{position:absolute;inset:0;display:block;opacity:0;transition:opacity .45s ease;
   -webkit-mask-image:radial-gradient(ellipse 78% 82% at 50% 50%,#000 62%,transparent 100%);
   mask-image:radial-gradient(ellipse 78% 82% at 50% 50%,#000 62%,transparent 100%)}
-.ld-seq{display:block;width:100%;height:100%;object-fit:contain}
+.ld-seq{display:block;width:100%;height:100%;object-fit:contain;background:transparent}
 }
 
 #loader.riding .ld-bike{animation:ldBob 1.15s ease-in-out .3s infinite}
@@ -945,7 +945,8 @@ section[id]{scroll-margin-top:76px}
       <div class="ld-bike">
         <i class="ld-shadow r" aria-hidden="true"></i>
         <i class="ld-shadow f" aria-hidden="true"></i>
-        <i class="ld-seqw" aria-hidden="true"><img class="ld-seq" id="ldSeq" alt="" fetchpriority="high" decoding="async"></i>
+        <i class="ld-seqw" aria-hidden="true"><video class="ld-seq" id="ldSeq" muted playsinline autoplay preload="auto"
+        poster="assets/img/asm-poster.webp"></video></i>
         <i class="ld-sweep" aria-hidden="true"></i>
       </div>
       <div class="ld-flash" id="ldFlash">VENG<b>A</b><small>Cycling Mallorca</small></div>
@@ -1630,50 +1631,32 @@ if(!RM){
     requestAnimationFrame(function(){requestAnimationFrame(r)})})};
 
 
-  /* ---- assembly frames: 16 stills, phone gets the lighter set ---- */
-  var SEQ_N=16, seqEl=document.getElementById('ldSeq');
+  /* ---- assembly clip: one short H.264 file, decoded by the phone's own
+     video hardware. Swapping 16 stills in JavaScript competed with the rest of
+     the page loading and stuttered on real devices; a video does not. ---- */
+  var seqEl=document.getElementById('ldSeq');
   var small=matchMedia('(max-width:900px)').matches;
-  var seqSrc=[];
-  for(var i=0;i<SEQ_N;i++){
-    seqSrc.push('assets/img/asm/a'+String(i).padStart(2,'0')+(small?'-sm':'')+'.webp');
-  }
-  var seqImgs=[],seqReady=0;
-  seqSrc.forEach(function(u,k){
-    var im=new Image();
-    im.onload=function(){
-      /* decode up front: decoding a 1.3 Mpx frame mid-animation stalls the
-         compositor, which is what made the sequence stutter */
-      if(im.decode){im.decode().then(function(){seqReady++},function(){seqReady++})}
-      else seqReady++;
-    };
-    im.onerror=function(){seqReady++};
-    im.src=u; seqImgs[k]=im;
-  });
-  seqEl.src=seqSrc[0];
-  function runFrames(){
-    var wrap=document.querySelector('.ld-seqw');
-    seqEl.src=seqSrc[0];
-    if(wrap)wrap.style.opacity='1';
-    var k=0,step=1600/SEQ_N;
-    var t=setInterval(function(){
-      k++;
-      if(k>=SEQ_N){clearInterval(t);return}
-      seqEl.src=seqSrc[k];
-    },step);
-  }
+  (function(){
+    /* mp4 first: iOS and Android decode H.264 in hardware.
+       webm is the fallback for browsers built without H.264. */
+    var suf=small?'-sm':'';
+    [['assets/img/asm'+suf+'.mp4','video/mp4'],
+     ['assets/img/asm'+suf+'.webm','video/webm']].forEach(function(p){
+      var so=document.createElement('source'); so.src=p[0]; so.type=p[1]; seqEl.appendChild(so);
+    });
+    seqEl.load();
+  })();
   function playAssembly(){
-    /* swapping a src that is not cached yet stalls the animation, so wait for
-       the frames — but never longer than 1.2 s, the loader must not hang on this */
-    /* a head start of a few decoded frames is enough — the rest arrive faster
-       than the 100 ms per frame the sequence consumes them */
-    var HEAD=Math.min(5,SEQ_N);
-    if(seqReady>=HEAD){runFrames();return}
-    var waited=0;
-    var w=setInterval(function(){
-      waited+=50;
-      if(seqReady>=HEAD||waited>=1200){clearInterval(w);runFrames()}
-    },50);
+    var wrap=document.querySelector('.ld-seqw');
+    if(wrap)wrap.style.opacity='1';
+    try{
+      seqEl.currentTime=0;
+      var pr=seqEl.play();
+      /* if autoplay is refused the poster stays: the finished bike, still correct */
+      if(pr&&pr.catch)pr.catch(function(){});
+    }catch(e){}
   }
+
   ready.then(raf2).then(function(){
     mT=setInterval(function(){
       msg.classList.add('swap');
