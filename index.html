@@ -690,6 +690,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold-soft);outline-
 .bike[data-bike]{cursor:pointer}
 .bike[data-bike]:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
 /* ================= COMPONENT DETAILS (hotspots) ================= */
+#details[hidden]{display:none}
 #details{background:var(--ink);padding:clamp(60px,9vw,120px) 0}
 #details .head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;
   gap:24px;margin-bottom:clamp(30px,4.4vw,54px)}
@@ -1093,7 +1094,7 @@ section[id]{scroll-margin-top:76px}
 </section>
 
 
-<section id="details">
+<section id="details" hidden data-off="ai-render">
   <div class="wrap">
     <div class="head">
       <div>
@@ -1717,6 +1718,15 @@ if(!RM){
     }catch(e){}
   }
 
+  /* ---- loader switched off: the assembly clip is AI-generated and reads as
+     such. Set VENGA_LOADER to true to bring it back. ---- */
+  var VENGA_LOADER=false;
+  if(!VENGA_LOADER){
+    L.classList.add('done','off');
+    try{sessionStorage.setItem('venga_boot','1')}catch(e){}
+    document.documentElement.style.overflow='';
+    return;
+  }
   ready.then(raf2).then(function(){
     mT=setInterval(function(){
       msg.classList.add('swap');
