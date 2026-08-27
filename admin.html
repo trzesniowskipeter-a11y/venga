@@ -182,6 +182,8 @@ input.cell.wide{width:100%;text-align:left}
 .bkchk{display:flex;align-items:center;gap:9px;margin-top:16px;font-size:.82rem;color:var(--ink2)}
 .bkchk input{width:auto}
 @media(max-width:640px){.bkszs{grid-template-columns:repeat(3,1fr)}.bkpt td:first-child{font-size:.66rem}}
+.tagpill.mailok{background:rgba(120,160,110,.16);color:#8FB280;border-color:rgba(120,160,110,.4)}
+.tagpill.mailbad{background:rgba(201,112,74,.16);color:#E08E68;border-color:rgba(201,112,74,.45);cursor:help}
 </style>
 </head>
 <body>
@@ -527,6 +529,9 @@ function renderRes(){
         <span class="dt">${fmt(r.start_date)} → ${fmt(r.end_date)}<span>${r.days} days · pickup ${String(r.pickup_time).slice(0,5)}</span></span>
         <span class="tagpill ${r.status}">${r.status}</span>
         ${r.source==='manual'?'<span class="tagpill manual">manual</span>':''}
+        ${r.notify_error
+            ? `<span class="tagpill mailbad" title="${esc(r.notify_error)}">email failed</span>`
+            : (r.notified_at ? '<span class="tagpill mailok" title="Guest has been emailed">emailed</span>' : '')}
         <span class="pz">${money(r.total_price)}</span>
       </div>
       <div class="res-b">
