@@ -105,18 +105,58 @@ section{position:relative}
 
 /* ---------- preloader: the bike assembles itself ---------- */
 #loader{position:fixed;inset:0;background:var(--ink);z-index:200;display:flex;align-items:center;
-  justify-content:center;overflow:hidden;transition:opacity .7s ease,visibility .7s}
-#loader.done{opacity:0;visibility:hidden}
+  justify-content:center;overflow:hidden}
+#loader.done{animation:ldExit .8s cubic-bezier(.76,0,.24,1) both;pointer-events:none}
+@keyframes ldExit{
+  0%  {clip-path:inset(0 0 0 0)}
+  100%{clip-path:inset(0 0 100% 0);visibility:hidden}
+}
 #loader.off{display:none}
 .ld-wrap{position:relative;flex:none;width:min(1240px,96vw)}
 .ld-ridge,.ld-dust{position:absolute;left:50%;top:50%;width:120%;pointer-events:none;
   opacity:0;transform:translate3d(-50%,-50%,0)}
-.ld-ridge{transition:opacity 1.3s ease}
+.ld-ridge{transition:opacity 1.3s ease,transform 1.6s cubic-bezier(.2,.7,.2,1);
+  transform:translate3d(-50%,-47%,0)}
+#loader.peak .ld-ridge{transform:translate3d(-50%,-50%,0)}
 .ld-dust{transition:opacity 1.5s ease}
 #loader.riding .ld-dust{opacity:.4}
 #loader.peak .ld-ridge{opacity:.45}
 
 .ld-stage{position:relative;width:100%;aspect-ratio:2752/1536}
+.ld-bike{position:absolute;inset:0}
+#loader.riding .ld-bike{animation:ldBob 1.15s ease-in-out .3s infinite}
+@keyframes ldBob{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-.55%,0)}}
+
+/* ground shadows fade in as each wheel lands, and breathe with the bob */
+.ld-shadow{position:absolute;top:89.6%;height:3.4%;border-radius:50%;opacity:0;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,.6),rgba(0,0,0,0) 68%)}
+.ld-shadow.r{left:13.4%;width:26%}
+.ld-shadow.f{left:61%;width:24.5%}
+#loader.build .ld-shadow.r{animation:ldShadowIn .6s ease 1.15s both}
+#loader.build .ld-shadow.f{animation:ldShadowIn .6s ease 1.35s both}
+#loader.riding .ld-shadow{opacity:.8;animation:ldShadowBreath 1.15s ease-in-out .3s infinite}
+@keyframes ldShadowIn{from{opacity:0;transform:scaleX(.55)}to{opacity:.8;transform:scaleX(1)}}
+@keyframes ldShadowBreath{0%,100%{transform:scaleX(1);opacity:.8}50%{transform:scaleX(1.05);opacity:.6}}
+
+/* one pass of warm light across the assembled bike */
+.ld-sweep{position:absolute;top:8%;bottom:4%;left:0;width:26%;opacity:0;pointer-events:none;
+  background:linear-gradient(100deg,transparent 0%,rgba(255,238,205,.16) 45%,rgba(255,238,205,.05) 55%,transparent 100%);
+  transform:translate3d(-120%,0,0) skewX(-12deg);mix-blend-mode:screen}
+#loader.build .ld-sweep{animation:ldSweep 1s cubic-bezier(.4,.1,.3,1) 1.75s both}
+@keyframes ldSweep{
+  0%  {opacity:0;transform:translate3d(-120%,0,0) skewX(-12deg)}
+  18% {opacity:1}
+  82% {opacity:1}
+  100%{opacity:0;transform:translate3d(420%,0,0) skewX(-12deg)}
+}
+
+/* the road draws itself under the wheels as the bike rolls out */
+.ld-road{position:absolute;left:-6%;right:-6%;top:91.35%;height:1.5px;opacity:0;transform:scaleX(0);
+  transform-origin:18% 50%;
+  background:linear-gradient(90deg,transparent,rgba(190,157,82,.55) 12%,rgba(190,157,82,.55) 82%,transparent)}
+#loader.riding .ld-road{animation:ldRoad 1.5s cubic-bezier(.25,.6,.3,1) .15s both}
+@keyframes ldRoad{from{opacity:0;transform:scaleX(0)}30%{opacity:1}to{opacity:.85;transform:scaleX(1)}}
+#loader.peak .ld-road{opacity:.2;transition:opacity .9s ease}
 /* transparent PNG-style parts: no blend mode, so every move stays on the GPU */
 .ld-p{position:absolute;display:block;opacity:0;
   transform:translate3d(0,0,0);          /* create the GPU layer up front */
@@ -175,25 +215,34 @@ section{position:relative}
   to{transform:translate3d(4%,0,0) scale(1.05)}}
 
 /* ===== summit ===== */
-.ld-flash{position:absolute;left:50%;top:50%;opacity:0;pointer-events:none;
-  transform:translate3d(-50%,-50%,0) scale(.9);
+.ld-flash{position:absolute;left:50%;top:50%;opacity:0;pointer-events:none;text-align:center;
+  transform:translate3d(-50%,-50%,0);
   font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;
-  font-size:clamp(2.4rem,6.6vw,5rem);letter-spacing:.18em;color:var(--ivory);
+  font-size:clamp(2.4rem,6.6vw,5rem);letter-spacing:.42em;color:var(--ivory);
   text-shadow:0 0 70px rgba(190,157,82,.55)}
 .ld-flash b{color:var(--gold)}
-#loader.peak .ld-flash{animation:ldFlashIn 1s cubic-bezier(.16,.86,.24,1) both}
+.ld-flash small{display:block;margin-top:14px;font-family:var(--body);font-weight:600;
+  font-size:clamp(.58rem,1vw,.72rem);letter-spacing:.58em;color:var(--stone);opacity:0}
+#loader.peak .ld-flash{animation:ldFlashIn 1.15s cubic-bezier(.16,.86,.24,1) both}
+#loader.peak .ld-flash small{animation:ldSubIn .8s ease .45s both}
 @keyframes ldFlashIn{
-  0%  {opacity:0;transform:translate3d(-50%,-50%,0) scale(.9)}
-  45% {opacity:1;transform:translate3d(-50%,-50%,0) scale(1)}
-  100%{opacity:1;transform:translate3d(-50%,-50%,0) scale(1.03)}
+  0%  {opacity:0;letter-spacing:.42em;transform:translate3d(-50%,-46%,0)}
+  55% {opacity:1}
+  100%{opacity:1;letter-spacing:.16em;transform:translate3d(-50%,-50%,0)}
 }
-#loader.peak .ld-p{filter:brightness(.45) saturate(.8);transition:filter .8s ease}
+@keyframes ldSubIn{from{opacity:0;letter-spacing:.72em}to{opacity:.9;letter-spacing:.5em}}
+#loader.peak .ld-p{filter:brightness(.38) saturate(.75);transition:filter .9s ease}
+#loader.peak .ld-shadow{opacity:.25;transition:opacity .9s ease}
 
 .ld-foot{margin-top:clamp(14px,2.4vw,26px)}
-.ld-bar-p{height:2px;background:rgba(190,157,82,.18);overflow:hidden}
-.ld-bar-p i{display:block;height:100%;width:0;background:var(--gold);transition:width .35s ease}
+.ld-bar-p{height:2px;background:rgba(190,157,82,.14);overflow:hidden}
+.ld-bar-p i{display:block;height:100%;width:0;transition:width .45s cubic-bezier(.3,.6,.3,1);
+  background:linear-gradient(90deg,rgba(190,157,82,.55),var(--gold));
+  box-shadow:0 0 12px rgba(190,157,82,.7)}
 .ld-txt{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
-.ld-txt span{font-size:.68rem;letter-spacing:.26em;text-transform:uppercase;color:var(--stone)}
+.ld-txt span{font-size:.68rem;letter-spacing:.26em;text-transform:uppercase;color:var(--stone);
+  transition:opacity .24s ease}
+.ld-txt span.swap{opacity:0}
 .ld-txt button{background:none;border:0;color:rgba(142,134,119,.7);font-family:var(--body);
   font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;
   padding:6px 0 6px 20px;transition:color .3s}
@@ -882,13 +931,19 @@ section[id]{scroll-margin-top:76px}
     <img class="ld-ridge" src="assets/img/ld-ridge.webp" alt="" aria-hidden="true">
     <img class="ld-dust" src="assets/img/ld-dust.webp" alt="" aria-hidden="true">
     <div class="ld-stage" id="ldStage">
-      <img class="ld-p ld-frame"  src="assets/img/ld-frame.webp"   alt="" fetchpriority="high">
-      <img class="ld-p ld-wr"     src="assets/img/ld-wheel-r.webp" alt="" fetchpriority="high">
-      <img class="ld-p ld-wf"     src="assets/img/ld-wheel-f.webp" alt="" fetchpriority="high">
-      <img class="ld-p ld-crank"  src="assets/img/ld-crank.webp"   alt="">
-      <img class="ld-p ld-bar"    src="assets/img/ld-bar.webp"     alt="">
-      <img class="ld-p ld-saddle" src="assets/img/ld-saddle.webp"  alt="">
-      <div class="ld-flash" id="ldFlash">VENG<b>A</b></div>
+      <i class="ld-road" aria-hidden="true"></i>
+      <div class="ld-bike">
+        <i class="ld-shadow r" aria-hidden="true"></i>
+        <i class="ld-shadow f" aria-hidden="true"></i>
+        <img class="ld-p ld-frame"  src="assets/img/ld-frame.webp"   alt="" fetchpriority="high">
+        <img class="ld-p ld-wr"     src="assets/img/ld-wheel-r.webp" alt="" fetchpriority="high">
+        <img class="ld-p ld-wf"     src="assets/img/ld-wheel-f.webp" alt="" fetchpriority="high">
+        <img class="ld-p ld-crank"  src="assets/img/ld-crank.webp"   alt="">
+        <img class="ld-p ld-bar"    src="assets/img/ld-bar.webp"     alt="">
+        <img class="ld-p ld-saddle" src="assets/img/ld-saddle.webp"  alt="">
+        <i class="ld-sweep" aria-hidden="true"></i>
+      </div>
+      <div class="ld-flash" id="ldFlash">VENG<b>A</b><small>Cycling Mallorca</small></div>
     </div>
     <div class="ld-foot">
       <div class="ld-bar-p"><i id="ldBar"></i></div>
@@ -1535,6 +1590,7 @@ if(!RM){
   var mi=0,mT,pT,prog=0,done=false,t0=performance.now();
 
   function finish(){
+    bar.style.width='100%';
     if(done)return;done=true;
     clearInterval(mT);clearInterval(pT);
     bar.style.width='100%';
@@ -1569,7 +1625,10 @@ if(!RM){
     requestAnimationFrame(function(){requestAnimationFrame(r)})})};
 
   ready.then(raf2).then(function(){
-    mT=setInterval(function(){mi=(mi+1)%msgs.length;msg.textContent=msgs[mi]},900);
+    mT=setInterval(function(){
+      msg.classList.add('swap');
+      setTimeout(function(){mi=(mi+1)%msgs.length;msg.textContent=msgs[mi];msg.classList.remove('swap')},240);
+    },1150);
     pT=setInterval(function(){prog=Math.min(88,prog+Math.random()*9);bar.style.width=prog+'%'},170);
     L.classList.add('build');
     setTimeout(function(){L.classList.add('riding')},1600);
@@ -1577,7 +1636,7 @@ if(!RM){
       [].forEach.call(L.querySelectorAll('.ld-bar,.ld-saddle,.ld-frame'),function(e){e.style.willChange='auto'});
     },2600);
     setTimeout(function(){L.classList.add('peak')},2950);
-    var close=function(){setTimeout(finish,Math.max(0,3650-(performance.now()-t0)))};
+    var close=function(){setTimeout(finish,Math.max(0,4150-(performance.now()-t0)))};
     if(document.readyState==='complete')close();
     else addEventListener('load',close);
     setTimeout(finish,6200);
