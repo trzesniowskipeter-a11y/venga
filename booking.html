@@ -626,6 +626,17 @@ function renderBikes(){
       const chip = ev.target.closest('[data-pick]');
       if(chip && S.avail){ await pickFromSearch(el.dataset.id, chip.dataset.pick); return; }
       const b = S.bikes.find(x => x.id === el.dataset.id);
+      if(S.bike?.id === b.id){
+        /* tapping the selected bike again clears the choice */
+        S.bike = null; S.size = null;
+        if(!S.avail){ S.start = S.end = null; }
+        S.booked = {}; S.blocked = {};
+        $('calWrap').style.display = 'none';
+        $('sizes').innerHTML = '';
+        alertMsg('');
+        renderBikes(); paintSummary(); gate();
+        return;
+      }
       if(S.bike?.id !== b.id){ S.size = null; if(!S.avail){ S.start = S.end = null; } S.booked = {}; S.blocked = {}; }
       S.bike = b;
       renderBikes(); renderSizes(); paintSummary(); gate();
@@ -643,6 +654,14 @@ function renderSizes(){
   ).join('');
   $('sizes').querySelectorAll('.sz').forEach(el => {
     el.onclick = async () => {
+      if(S.size === el.dataset.sz){
+        /* tapping the selected size again clears it */
+        S.size = null; S.start = S.end = null; S.booked = {}; S.blocked = {};
+        $('calWrap').style.display = 'none';
+        alertMsg('');
+        renderSizes(); paintSummary(); gate();
+        return;
+      }
       S.size = el.dataset.sz; S.start = S.end = null;
       renderSizes(); paintSummary(); gate();
       $('calWrap').style.display = 'block';
