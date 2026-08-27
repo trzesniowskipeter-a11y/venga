@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Venga — Admin</title>
+<link rel="stylesheet" href="../assets/fonts.css">
+<style>
+:root{
+  --ink:#0E0D0B; --coal:#161410; --coal-2:#1E1B15;
+  --gold:#BE9D52; --gold-soft:#D9C08B;
+  --ivory:#F4F0E7; --stone:#8E8677;
+  --line:rgba(190,157,82,.28);
+  --new:#C9A227; --ok:#7FA86B; --dead:#8B5E52; --warn:#C9704A;
+  --disp:'Archivo Var','Archivo Ext',Impact,sans-serif;
+  --body:'Instrument Sans','Instrument Ext',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--body);background:var(--ink);color:var(--ivory);line-height:1.55;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit}
+a{color:inherit}
+.dsp{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;letter-spacing:-.01em}
+
+/* ---------- LOGIN ---------- */
+#login{min-height:100vh;display:grid;place-items:center;padding:24px}
+.lbox{width:100%;max-width:390px;background:var(--coal);border:1px solid var(--line);padding:38px 34px;clip-path:polygon(0 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%)}
+.lbox .lg{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:1.3rem;margin-bottom:4px}
+.lbox .lg b{color:var(--gold)}
+.lbox p{color:var(--stone);font-size:.84rem;margin-bottom:26px}
+.f{margin-bottom:15px}
+.f label{display:block;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:6px}
+.f input,.f select,.f textarea{width:100%;background:var(--ink);border:1px solid rgba(190,157,82,.24);color:var(--ivory);font-size:.94rem;padding:12px 14px;transition:border-color .25s}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--gold)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:.76rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;padding:13px 24px;border:0;cursor:pointer;transition:.25s}
+.btn-g{background:var(--gold);color:var(--ink)}
+.btn-g:hover:not(:disabled){background:var(--gold-soft)}
+.btn-o{background:transparent;color:var(--ivory);border:1px solid rgba(244,240,231,.3)}
+.btn-o:hover{border-color:var(--gold);color:var(--gold)}
+.btn-sm{padding:8px 14px;font-size:.68rem;letter-spacing:.12em}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.msg{font-size:.82rem;padding:11px 14px;margin-bottom:14px;display:none}
+.msg.on{display:block}
+.msg.err{border-left:2px solid var(--warn);background:rgba(201,112,74,.12);color:#F0D8CD}
+.msg.good{border-left:2px solid var(--ok);background:rgba(127,168,107,.12);color:#DCEBD4}
+
+/* ---------- SHELL ---------- */
+#app{display:none;min-height:100vh}
+.top{position:sticky;top:0;z-index:50;background:rgba(14,13,11,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:0 clamp(14px,3vw,28px)}
+.top-in{display:flex;align-items:center;gap:20px;height:60px;max-width:1500px;margin:0 auto}
+.brand{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:1.06rem}
+.brand b{color:var(--gold)}
+.brand span{font-family:var(--body);font-stretch:normal;font-weight:500;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--stone);margin-left:10px}
+.tabs{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap}
+.tab{background:none;border:0;border-bottom:2px solid transparent;color:var(--stone);font-size:.76rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:8px 14px;cursor:pointer;transition:.25s;position:relative}
+.tab:hover{color:var(--ivory)}
+.tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.tab .bdg{display:inline-block;min-width:18px;padding:1px 5px;margin-left:6px;background:var(--new);color:var(--ink);font-size:.62rem;font-weight:700;border-radius:9px;letter-spacing:0}
+.wrap{max-width:1500px;margin:0 auto;padding:clamp(18px,3vw,30px) clamp(14px,3vw,28px) 70px}
+.pane{display:none}
+.pane.on{display:block}
+h1.pt{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:clamp(1.3rem,2.4vw,1.8rem);margin-bottom:4px}
+.sub{color:var(--stone);font-size:.86rem;margin-bottom:22px}
+
+/* ---------- STATS ---------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;margin-bottom:26px}
+.kpi{background:var(--coal);border:1px solid rgba(190,157,82,.16);padding:16px 18px}
+.kpi b{display:block;font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:1.9rem;line-height:1;color:var(--gold)}
+.kpi span{display:block;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--stone);margin-top:6px}
+
+/* ---------- TOOLBAR ---------- */
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.bar .grow{flex:1;min-width:180px}
+.bar input,.bar select{background:var(--coal);border:1px solid rgba(190,157,82,.22);color:var(--ivory);font-size:.88rem;padding:10px 13px}
+.bar input:focus,.bar select:focus{outline:none;border-color:var(--gold)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:var(--coal);border:1px solid rgba(190,157,82,.2);color:var(--stone);font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:9px 14px;cursor:pointer;transition:.25s}
+.chip:hover{border-color:var(--gold);color:var(--ivory)}
+.chip.on{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+
+/* ---------- RESERVATION CARDS ---------- */
+.rlist{display:grid;gap:10px}
+.res{background:var(--coal);border:1px solid rgba(190,157,82,.16);border-left:3px solid var(--stone);transition:border-color .25s}
+.res[data-s="new"]{border-left-color:var(--new)}
+.res[data-s="confirmed"]{border-left-color:var(--ok)}
+.res[data-s="cancelled"]{border-left-color:var(--dead);opacity:.62}
+.res-h{display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer;flex-wrap:wrap}
+.res-h .cd{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:.94rem;letter-spacing:.1em;color:var(--gold);min-width:66px}
+.res-h .who{flex:1;min-width:150px}
+.res-h .who b{display:block;font-size:.94rem;font-weight:600}
+.res-h .who span{font-size:.76rem;color:var(--stone)}
+.res-h .bk{font-size:.82rem;color:rgba(244,240,231,.8);min-width:150px}
+.res-h .bk span{display:block;font-size:.72rem;color:var(--stone)}
+.res-h .dt{font-size:.82rem;min-width:140px}
+.res-h .dt span{display:block;font-size:.72rem;color:var(--stone)}
+.res-h .pz{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:1.16rem;color:var(--gold);min-width:78px;text-align:right}
+.tagpill{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:4px 9px;white-space:nowrap}
+.tagpill.new{background:rgba(201,162,39,.18);color:var(--new)}
+.tagpill.confirmed{background:rgba(127,168,107,.18);color:var(--ok)}
+.tagpill.cancelled{background:rgba(139,94,82,.2);color:var(--dead)}
+.tagpill.manual{background:rgba(190,157,82,.14);color:var(--stone)}
+.res-b{display:none;padding:0 18px 18px;border-top:1px solid rgba(190,157,82,.12);margin-top:0}
+.res.open .res-b{display:block}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;padding-top:16px}
+.dgrid div small{display:block;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+.dgrid div p{font-size:.88rem;word-break:break-word}
+.acts2{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid rgba(190,157,82,.12)}
+.empty{padding:44px 20px;text-align:center;color:var(--stone);font-size:.9rem;background:var(--coal);border:1px dashed rgba(190,157,82,.2)}
+
+/* ---------- TIMELINE ---------- */
+.tl-scroll{overflow-x:auto;background:var(--coal);border:1px solid rgba(190,157,82,.16);padding:0}
+.tl{min-width:900px}
+.tl-row{display:grid;grid-template-columns:190px 1fr;border-bottom:1px solid rgba(190,157,82,.1)}
+.tl-row:last-child{border-bottom:0}
+.tl-row.hd{position:sticky;top:0;background:var(--coal-2);z-index:2}
+.tl-lbl{padding:10px 14px;font-size:.8rem;border-right:1px solid rgba(190,157,82,.14);display:flex;flex-direction:column;justify-content:center}
+.tl-lbl b{font-weight:600;font-size:.84rem;line-height:1.2}
+.tl-lbl span{font-size:.68rem;color:var(--stone)}
+.tl-days{display:grid}
+.tl-d{border-right:1px solid rgba(190,157,82,.07);font-size:.6rem;text-align:center;padding:8px 0;color:var(--stone)}
+.tl-d.we{background:rgba(190,157,82,.05)}
+.tl-d b{display:block;font-size:.72rem;color:var(--ivory);font-weight:600}
+.tl-cell{border-right:1px solid rgba(190,157,82,.07);min-height:38px;display:grid;place-items:center;font-size:.68rem;font-weight:700}
+.tl-cell.we{background:rgba(190,157,82,.04)}
+.tl-cell.p{background:rgba(190,157,82,.22);color:var(--gold-soft)}
+.tl-cell.f{background:rgba(201,112,74,.3);color:#F3D9CE}
+.tl-cell.b{background:repeating-linear-gradient(45deg,rgba(142,134,119,.28),rgba(142,134,119,.28) 4px,transparent 4px,transparent 8px);color:var(--stone)}
+
+/* ---------- TABLE (bikes / addons) ---------- */
+.tblwrap{overflow-x:auto;background:var(--coal);border:1px solid rgba(190,157,82,.16)}
+table{width:100%;border-collapse:collapse;min-width:760px}
+#tFleet{min-width:1320px}
+#tFleet td.nm{min-width:186px}
+th{background:var(--coal-2);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600;text-align:left;padding:12px 14px;white-space:nowrap}
+td{padding:11px 14px;border-top:1px solid rgba(190,157,82,.1);font-size:.88rem;vertical-align:middle}
+td.nm b{display:block;font-weight:600;line-height:1.25}
+td.nm span{font-size:.72rem;color:var(--stone)}
+input.cell{width:76px;background:var(--ink);border:1px solid rgba(190,157,82,.22);color:var(--ivory);font-size:.86rem;padding:7px 9px;text-align:right}
+input.cell:focus{outline:none;border-color:var(--gold)}
+input.cell.wide{width:100%;text-align:left}
+.szrow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;min-width:230px}
+.szitem{display:flex;align-items:center;gap:5px;background:var(--ink);border:1px solid rgba(190,157,82,.2);padding:4px 8px}
+.szitem b{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:.8rem;min-width:26px}
+.szitem input{width:44px;background:transparent;border:0;border-bottom:1px solid rgba(190,157,82,.3);color:var(--ivory);font-size:.84rem;text-align:center;padding:2px}
+.szitem input:focus{outline:none;border-bottom-color:var(--gold)}
+.tog{position:relative;width:42px;height:22px;background:rgba(142,134,119,.3);border:0;cursor:pointer;transition:.25s}
+.tog::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;background:var(--stone);transition:.25s}
+.tog.on{background:rgba(190,157,82,.32)}
+.tog.on::after{left:23px;background:var(--gold)}
+.savebar{position:sticky;bottom:0;background:rgba(22,20,16,.97);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:14px clamp(14px,3vw,28px);display:flex;gap:12px;align-items:center;justify-content:flex-end;margin:0 calc(-1 * clamp(14px,3vw,28px)) -70px}
+.savebar span{margin-right:auto;font-size:.82rem;color:var(--stone)}
+
+/* ---------- MODAL ---------- */
+.ovl{position:fixed;inset:0;background:rgba(6,5,4,.82);backdrop-filter:blur(5px);z-index:90;display:none;align-items:flex-start;justify-content:center;padding:24px;overflow-y:auto}
+.ovl.on{display:flex}
+.mod{background:var(--coal);border:1px solid var(--line);width:100%;max-width:620px;margin:auto;padding:28px}
+.mod h3{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:1.2rem;margin-bottom:4px}
+.mod .mh{color:var(--stone);font-size:.84rem;margin-bottom:20px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+@media(max-width:560px){.two{grid-template-columns:1fr}}
+.mact{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap}
+.calcline{background:var(--ink);border-left:2px solid var(--gold);padding:12px 15px;font-size:.86rem;margin-top:4px}
+.calcline b{color:var(--gold);font-family:var(--disp);font-stretch:125%;font-size:1.1rem}
+.spin{width:24px;height:24px;border:2px solid rgba(190,157,82,.25);border-top-color:var(--gold);border-radius:50%;animation:sp .8s linear infinite;margin:30px auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+}
+
+/* ===== add-bike modal ===== */
+.bkh{margin:20px 0 10px;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+  font-weight:700;border-top:1px solid var(--line);padding-top:15px}
+.bkszs{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.bkszs label{display:block;text-align:center;font-size:.7rem;letter-spacing:.1em;color:var(--muted);font-weight:700}
+.bkszs input{width:100%;margin-top:5px;text-align:center}
+.bkpt{width:100%;border-collapse:collapse}
+.bkpt th{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);font-weight:600;
+  padding:0 4px 6px;text-align:center}
+.bkpt td{padding:3px 4px;font-size:.74rem;color:var(--muted)}
+.bkpt td:first-child{white-space:nowrap;padding-right:10px}
+.bkpt input{width:100%;text-align:center}
+.bkchk{display:flex;align-items:center;gap:9px;margin-top:16px;font-size:.82rem;color:var(--ink2)}
+.bkchk input{width:auto}
+@media(max-width:640px){.bkszs{grid-template-columns:repeat(3,1fr)}.bkpt td:first-child{font-size:.66rem}}
+.tagpill.mailok{background:rgba(120,160,110,.16);color:#8FB280;border-color:rgba(120,160,110,.4)}
+.tagpill.mailbad{background:rgba(201,112,74,.16);color:#E08E68;border-color:rgba(201,112,74,.45);cursor:help}
+.opt{font-size:.62rem;letter-spacing:.06em;text-transform:none;color:var(--muted2);margin-left:6px}
+#ovl input.bad,#ovl select.bad{border-color:var(--warn);background:rgba(201,112,74,.08)}
+
+/* ===== calendar in the manual reservation form ===== */
+.mcal{margin:-2px 0 16px;border:1px solid var(--line);padding:12px 12px 10px;background:rgba(255,255,255,.014)}
+.mcal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.mcal-h b{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:.86rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink2)}
+.mcal-h button{background:none;border:1px solid var(--line);color:var(--muted);width:26px;height:26px;
+  cursor:pointer;font-size:.95rem;line-height:1;transition:border-color .25s,color .25s}
+.mcal-h button:hover{border-color:var(--gold);color:var(--gold)}
+.mcal-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
+.mcal-dow span{text-align:center;font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2)}
+.mcal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.mcal-grid button{aspect-ratio:1;border:1px solid transparent;background:rgba(255,255,255,.03);
+  color:var(--ink2);font-family:var(--body);font-size:.76rem;font-weight:600;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  transition:background .2s,color .2s,border-color .2s;padding:0}
+.mcal-grid button i{font-style:normal;font-size:.5rem;font-weight:500;color:var(--muted2);letter-spacing:0}
+.mcal-grid button:hover:not(:disabled){border-color:var(--gold);color:var(--gold)}
+.mcal-grid button:disabled{opacity:.3;cursor:not-allowed;background:none}
+.mcal-grid button.full{background:rgba(201,112,74,.1);color:#C9704A;border-color:rgba(201,112,74,.22)}
+.mcal-grid button.blk{background:rgba(201,112,74,.16);color:#E08E68;text-decoration:line-through}
+.mcal-grid button.sel{background:var(--gold);color:#0E0D0B;border-color:var(--gold)}
+.mcal-grid button.sel i{color:rgba(14,13,11,.6)}
+.mcal-grid button.mid{background:rgba(190,157,82,.2);color:var(--gold)}
+.mcal-grid span.pad{aspect-ratio:1}
+.mcal-foot{display:flex;justify-content:space-between;align-items:center;margin-top:9px;
+  font-size:.66rem;color:var(--muted2)}
+.mcal-foot button{background:none;border:0;color:var(--muted);font-family:var(--body);font-size:.64rem;
+  letter-spacing:.14em;text-transform:uppercase;cursor:pointer;padding:2px 0}
+.mcal-foot button:hover{color:var(--gold)}
+.mcal.off{opacity:.4;pointer-events:none}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="lbox">
+    <div class="lg">VENG<b>A</b></div>
+    <p>Reservation management</p>
+    <div class="msg err" id="lErr"></div>
+    <div class="f"><label for="le">Email</label><input id="le" type="email" autocomplete="username"></div>
+    <div class="f"><label for="lp">Password</label><input id="lp" type="password" autocomplete="current-password"></div>
+    <button class="btn btn-g" id="lBtn" style="width:100%;margin-top:8px">Sign in</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="top">
+    <div class="top-in">
+      <div class="brand">VENG<b>A</b><span>Admin</span></div>
+      <div class="tabs">
+        <button class="tab on" data-p="res">Reservations<span class="bdg" id="bNew" style="display:none">0</span></button>
+        <button class="tab" data-p="cal">Occupancy</button>
+        <button class="tab" data-p="blk">Blocked dates</button>
+        <button class="tab" data-p="fleet">Fleet &amp; prices</button>
+        <button class="tab" data-p="ext">Extras</button>
+        <button class="tab" data-p="out" style="color:var(--stone)">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="msg good" id="okMsg"></div>
+    <div class="msg err" id="erMsg"></div>
+
+    <!-- RESERVATIONS -->
+    <section class="pane on" id="p-res">
+      <h1 class="pt">Reservations</h1>
+      <p class="sub">New requests appear here first. Confirm to lock the bike, cancel to release it.</p>
+      <div class="kpis" id="kpis"></div>
+      <div class="bar">
+        <div class="chips" id="fchips">
+          <button class="chip on" data-f="new">New</button>
+          <button class="chip" data-f="confirmed">Confirmed</button>
+          <button class="chip" data-f="cancelled">Cancelled</button>
+          <button class="chip" data-f="all">All</button>
+        </div>
+        <div class="grow"><input id="q" type="search" placeholder="Search name, email, code…" style="width:100%"></div>
+        <button class="btn btn-g btn-sm" id="addRes">+ Manual reservation</button>
+      </div>
+      <div class="rlist" id="rlist"><div class="spin"></div></div>
+    </section>
+
+    <!-- OCCUPANCY -->
+    <section class="pane" id="p-cal">
+      <h1 class="pt">Occupancy</h1>
+      <p class="sub">Booked units per bike and size. Orange means fully booked, hatched × means blocked for service or holiday.</p>
+      <div class="bar">
+        <button class="btn btn-o btn-sm" id="tlPrev">‹ Previous</button>
+        <b id="tlLabel" class="dsp" style="font-size:1rem;min-width:170px;text-align:center"></b>
+        <button class="btn btn-o btn-sm" id="tlNext">Next ›</button>
+      </div>
+      <div class="tl-scroll"><div class="tl" id="tl"></div></div>
+    </section>
+
+    <!-- BLOCKED DATES -->
+    <section class="pane" id="p-blk">
+      <h1 class="pt">Blocked dates</h1>
+      <p class="sub">Close dates for service, holidays or repairs. Blocked days disappear from the booking calendar and can't be reserved online.</p>
+
+      <div style="background:var(--coal);border:1px solid rgba(190,157,82,.16);padding:20px;margin-bottom:22px">
+        <div class="msg err" id="blkErr"></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;align-items:end">
+          <div class="f" style="margin:0"><label for="bkBike">Bike</label>
+            <select id="bkBike"><option value="">All bikes (shop closed)</option></select></div>
+          <div class="f" style="margin:0"><label for="bkSize">Size</label>
+            <select id="bkSize"><option value="">All sizes</option></select></div>
+          <div class="f" style="margin:0"><label for="bkFrom">From</label><input id="bkFrom" type="date"></div>
+          <div class="f" style="margin:0"><label for="bkTo">To</label><input id="bkTo" type="date"></div>
+          <div class="f" style="margin:0"><label for="bkWhy">Reason</label><input id="bkWhy" type="text" placeholder="Service, holiday…"></div>
+          <button class="btn btn-g btn-sm" id="bkAdd" style="height:42px">Block dates</button>
+        </div>
+      </div>
+
+      <div class="rlist" id="blkList"></div>
+    </section>
+
+    <!-- FLEET -->
+    <section class="pane" id="p-fleet">
+      <h1 class="pt">Fleet &amp; prices</h1>
+      <p class="sub">Edit stock per size, season rates and insurance. Rates follow the day bands: 1 day, 3–4 days, 5–6 days, 7+ days, plus each extra day.</p>
+      <div class="tblwrap">
+        <table id="tFleet"><thead><tr>
+          <th>Bike</th><th>Live</th><th>Stock per size</th>
+          <th colspan="5" style="text-align:center;border-left:1px solid rgba(190,157,82,.14)">Low season €</th>
+          <th colspan="5" style="text-align:center;border-left:1px solid rgba(190,157,82,.14)">High season €</th>
+          <th colspan="2" style="text-align:center;border-left:1px solid rgba(190,157,82,.14)">Insurance €</th>
+        </tr><tr>
+          <th></th><th></th><th></th>
+          <th style="border-left:1px solid rgba(190,157,82,.14)">1d</th><th>3d</th><th>5d</th><th>7d</th><th>+day</th>
+          <th style="border-left:1px solid rgba(190,157,82,.14)">1d</th><th>3d</th><th>5d</th><th>7d</th><th>+day</th>
+          <th style="border-left:1px solid rgba(190,157,82,.14)">Basic</th><th>Full</th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+      <div class="savebar"><span id="fleetHint">Change any value, then save.</span>
+        <button class="btn btn-o btn-sm" id="bikeNew">+ Add bike</button>
+        <button class="btn btn-o btn-sm" id="fleetReload">Discard</button>
+        <button class="btn btn-g btn-sm" id="fleetSave">Save changes</button></div>
+    </section>
+
+    <!-- EXTRAS -->
+    <section class="pane" id="p-ext">
+      <h1 class="pt">Extras &amp; settings</h1>
+      <p class="sub">Add-on prices and the delivery fee. "Long stay" price applies from the day threshold onwards.</p>
+      <div class="tblwrap">
+        <table id="tExt"><thead><tr>
+          <th>Extra</th><th>Live</th><th>Price €</th><th>Long stay €</th><th>From day</th><th>On request</th>
+        </tr></thead><tbody></tbody></table>
+      </div>
+      <div style="background:var(--coal);border:1px solid rgba(190,157,82,.16);padding:18px;margin-top:16px;max-width:340px">
+        <div class="f" style="margin:0"><label for="delFee">Delivery fee € (flat, anywhere)</label><input id="delFee" type="number" min="0" step="1"></div>
+      </div>
+      <div class="savebar"><span>Extras and delivery fee</span>
+        <button class="btn btn-o btn-sm" id="extReload">Discard</button>
+        <button class="btn btn-g btn-sm" id="extSave">Save changes</button></div>
+    </section>
+  </div>
+</div>
+
+<!-- MANUAL RESERVATION MODAL -->
+<div class="ovl" id="ovl">
+  <div class="mod">
+    <h3 id="mTitle">Manual reservation</h3>
+    <p class="mh" id="mHint">For phone and walk-in bookings. Availability and price are checked the same way as online.</p>
+    <div class="msg err" id="mErr"></div>
+    <div class="two">
+      <div class="f"><label for="mBike">Bike</label><select id="mBike"></select></div>
+      <div class="f"><label for="mSize">Size</label><select id="mSize"></select></div>
+    </div>
+    <div class="two">
+      <div class="f"><label for="mFrom">First day</label><input id="mFrom" type="date"></div>
+      <div class="f"><label for="mTo">Last day</label><input id="mTo" type="date"></div>
+    </div>
+    <div class="mcal" id="mCal">
+      <div class="mcal-h">
+        <button type="button" id="mCalPrev" aria-label="Previous month">‹</button>
+        <b id="mCalTitle"></b>
+        <button type="button" id="mCalNext" aria-label="Next month">›</button>
+      </div>
+      <div class="mcal-dow"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+      <div class="mcal-grid" id="mCalGrid"></div>
+      <div class="mcal-foot">
+        <span id="mCalHint">Pick the first day, then the last day.</span>
+        <button type="button" id="mCalClear">Clear</button>
+      </div>
+    </div>
+    <div class="two">
+      <div class="f"><label for="mTime">Pickup</label><select id="mTime"></select></div>
+      <div class="f"><label for="mIns">Insurance</label><select id="mIns">
+        <option value="none">None</option><option value="basic">Basic</option><option value="full">FULL &amp; SOS</option>
+      </select></div>
+    </div>
+    <div class="f"><label>Extras</label><div class="chips" id="mAdd"></div></div>
+    <div class="two">
+      <div class="f"><label for="mName">Customer name</label><input id="mName" type="text"></div>
+      <div class="f"><label for="mMail">Email <span class="opt">optional for phone bookings</span></label><input id="mMail" type="email" placeholder="name@gmail.com"></div>
+    </div>
+    <div class="two">
+      <div class="f"><label for="mPhone">Phone</label><input id="mPhone" type="tel"></div>
+      <div class="f"><label for="mDel">Delivery</label><select id="mDel"><option value="0">Pickup in shop</option><option value="1">Delivery</option></select></div>
+    </div>
+    <div class="f" id="mAddrF" style="display:none"><label for="mAddr">Delivery address</label><input id="mAddr" type="text"></div>
+    <div class="f"><label for="mNotes">Notes</label><textarea id="mNotes" rows="2"></textarea></div>
+
+    <div class="two" id="mEditOnly" style="display:none">
+      <div class="f"><label for="mStatus">Status</label><select id="mStatus">
+        <option value="new">New</option><option value="confirmed">Confirmed</option><option value="cancelled">Cancelled</option>
+      </select></div>
+      <div class="f"><label for="mPrice">Total € <span style="color:var(--stone);letter-spacing:0;text-transform:none">(blank = auto)</span></label><input id="mPrice" type="number" min="0" step="1" placeholder="auto"></div>
+    </div>
+    <label class="opt" id="mIgnoreWrap" style="display:none;cursor:pointer;margin-bottom:4px">
+      <input type="checkbox" id="mIgnore" style="width:auto;margin-right:10px">
+      <span class="tx" style="font-size:.86rem">Allow blocked dates (override a service or holiday block)</span>
+    </label>
+
+    <div class="calcline">Estimated total: <b id="mTotal">€0</b> <span style="color:var(--stone);font-size:.78rem">— final amount is calculated on save</span></div>
+    <div class="mact">
+      <button class="btn btn-o btn-sm" id="mCancel">Cancel</button>
+      <button class="btn btn-g btn-sm" id="mSave">Create reservation</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD BIKE ===== -->
+<div class="ovl" id="bkModal">
+  <div class="mod">
+    <h3>Add a bike</h3>
+    <p class="mh">It appears on the booking page as soon as you save, unless you switch it off below.</p>
+    <div class="msg err" id="bkErr"></div>
+
+    <div class="two">
+      <div class="f"><label for="bkName">Name</label>
+        <input id="bkName" placeholder="Giant TCR Advanced Pro 0 Disc"></div>
+      <div class="f"><label for="bkSlug">Web address (slug)</label>
+        <input id="bkSlug" placeholder="tcr" list="bkSlugs"></div>
+    </div>
+    <div class="two">
+      <div class="f"><label for="bkCat">Category</label>
+        <input id="bkCat" placeholder="Road · Racing" list="bkCats"><datalist id="bkCats"></datalist></div>
+      <div class="f"><label for="bkGear">Groupset</label>
+        <input id="bkGear" placeholder="Shimano Dura-Ace Di2"></div>
+    </div>
+    <div class="two">
+      <div class="f"><label for="bkTag">Badge on the card</label>
+        <input id="bkTag" placeholder="Top Pro"></div>
+      <div class="f"><label for="bkImg">Photo address</label>
+        <input id="bkImg" placeholder="../assets/img/bike-tcr.webp"></div>
+    </div>
+    <div class="f"><label for="bkDesc">Description</label>
+      <textarea id="bkDesc" rows="2" placeholder="One or two sentences shown in the bike's details."></textarea></div>
+
+    <h4 class="bkh">Stock per size</h4>
+    <div class="bkszs" id="bkSizes"></div>
+    <p class="mh">Leave 0 for sizes you don't stock — customers never see them.</p>
+
+    <h4 class="bkh">Price (€)</h4>
+    <table class="bkpt">
+      <thead><tr><th></th><th>1 day</th><th>3 days</th><th>5 days</th><th>7 days</th><th>+ day</th></tr></thead>
+      <tbody>
+        <tr><td>Low season</td>
+          <td><input type="number" min="0" id="bkLo1"></td><td><input type="number" min="0" id="bkLo3"></td>
+          <td><input type="number" min="0" id="bkLo5"></td><td><input type="number" min="0" id="bkLo7"></td>
+          <td><input type="number" min="0" id="bkLoX"></td></tr>
+        <tr><td>High season</td>
+          <td><input type="number" min="0" id="bkHi1"></td><td><input type="number" min="0" id="bkHi3"></td>
+          <td><input type="number" min="0" id="bkHi5"></td><td><input type="number" min="0" id="bkHi7"></td>
+          <td><input type="number" min="0" id="bkHiX"></td></tr>
+      </tbody>
+    </table>
+    <p class="mh">The 3, 5 and 7-day figures are totals for the whole rental. High season is March–May, September and October.</p>
+
+    <div class="two">
+      <div class="f"><label for="bkInsB">Insurance · Basic</label><input type="number" min="0" id="bkInsB" value="20"></div>
+      <div class="f"><label for="bkInsF">Insurance · FULL &amp; SOS</label><input type="number" min="0" id="bkInsF" value="80"></div>
+    </div>
+    <label class="bkchk"><input type="checkbox" id="bkActive" checked> Show on the site right away</label>
+
+    <div class="mact">
+      <button class="btn btn-o" id="bkCancel">Cancel</button>
+      <button class="btn btn-g" id="bkSave">Add bike</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SB_URL="https://gyjurizatltplidhdyei.supabase.co";
+const SB_KEY="sb_publishable_tnL3RCcKwMTQVWPAlKV58g_iNPgbqy0";
+const sb=supabase.createClient(SB_URL,SB_KEY);
+const $=i=>document.getElementById(i);
+const SIZES_ALL=['XS','S','M','ML','L','XL'];
+const MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const money=n=>'€'+Number(n||0).toLocaleString('en-GB',{maximumFractionDigits:0});
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const parseD=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const fmt=s=>{const d=parseD(s);return `${d.getDate()} ${MO[d.getMonth()]}`};
+const fmtY=s=>{const d=parseD(s);return `${d.getDate()} ${MO[d.getMonth()]} ${d.getFullYear()}`};
+const seasonOf=s=>[3,4,5,9,10].includes(parseD(s).getMonth()+1)?'high':'low';
+
+const D={bikes:[],sizes:[],prices:[],addons:[],settings:{},res:[],blocks:[]};
+const UI={filter:'new',q:'',tlMonth:new Date(new Date().getFullYear(),new Date().getMonth(),1),dirtyFleet:false,dirtyExt:false};
+
+function flash(el,txt,ms=3200){el.textContent=txt;el.classList.add('on');setTimeout(()=>el.classList.remove('on'),ms)}
+const ok=t=>flash($('okMsg'),t); const bad=t=>flash($('erMsg'),t,5000);
+
+/* ===== AUTH ===== */
+$('lBtn').onclick=async()=>{
+  const b=$('lBtn');b.disabled=true;b.textContent='Signing in…';
+  $('lErr').classList.remove('on');
+  const {error}=await sb.auth.signInWithPassword({email:$('le').value.trim(),password:$('lp').value});
+  if(error){flash($('lErr'),'Those details don\'t match an account. Check the email and password.',5000);b.disabled=false;b.textContent='Sign in';return}
+  start();
+};
+$('lp').addEventListener('keydown',e=>{if(e.key==='Enter')$('lBtn').click()});
+sb.auth.getSession().then(({data})=>{if(data.session)start()});
+
+async function start(){$('login').style.display='none';$('app').style.display='block';await loadAll()}
+
+/* ===== TABS ===== */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick=async()=>{
+    if(t.dataset.p==='out'){await sb.auth.signOut();location.reload();return}
+    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+    document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+    $('p-'+t.dataset.p).classList.add('on');
+    if(t.dataset.p==='cal')drawTimeline();
+    if(t.dataset.p==='blk')renderBlocks();
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+});
+
+/* ===== LOAD ===== */
+async function loadAll(){
+  const [b,s,p,a,st,r,bl]=await Promise.all([
+    sb.from('bikes').select('*').order('sort'),
+    sb.from('bike_sizes').select('*'),
+    sb.from('bike_prices').select('*'),
+    sb.from('addons').select('*').order('sort'),
+    sb.from('settings').select('*').eq('key','general').maybeSingle(),
+    sb.from('reservations').select('*').order('created_at',{ascending:false}),
+    sb.from('blackouts').select('*')
+  ]);
+  if(b.error||r.error){bad('Could not load data. Check your connection and refresh.');return}
+  D.bikes=b.data||[];D.sizes=s.data||[];D.prices=p.data||[];D.addons=a.data||[];
+  D.settings=st.data?.value||{delivery_fee:100};D.res=r.data||[];D.blocks=bl.data||[];
+  renderRes();renderKpis();renderFleet();renderExt();fillModalBikes();fillBlkSelects();renderBlocks();
+}
+const bikeById=id=>D.bikes.find(b=>b.id===id);
+const sizesOf=id=>D.sizes.filter(s=>s.bike_id===id).sort((a,b)=>SIZES_ALL.indexOf(a.size)-SIZES_ALL.indexOf(b.size));
+const priceOf=(id,se)=>D.prices.find(p=>p.bike_id===id&&p.season===se);
+
+/* ===== KPIs ===== */
+function renderKpis(){
+  const t=iso(new Date());
+  const newN=D.res.filter(r=>r.status==='new').length;
+  const active=D.res.filter(r=>r.status!=='cancelled'&&r.end_date>=t).length;
+  const outNow=D.res.filter(r=>r.status==='confirmed'&&r.start_date<=t&&r.end_date>=t).length;
+  const rev=D.res.filter(r=>r.status!=='cancelled').reduce((s,r)=>s+ +r.total_price,0);
+  $('kpis').innerHTML=`
+    <div class="kpi"><b>${newN}</b><span>Awaiting confirmation</span></div>
+    <div class="kpi"><b>${active}</b><span>Upcoming &amp; current</span></div>
+    <div class="kpi"><b>${outNow}</b><span>Bikes out today</span></div>
+    <div class="kpi"><b>${money(rev)}</b><span>Booked value</span></div>`;
+  const bg=$('bNew');bg.style.display=newN?'inline-block':'none';bg.textContent=newN;
+}
+
+/* ===== RESERVATIONS ===== */
+$('fchips').querySelectorAll('.chip').forEach(c=>{
+  c.onclick=()=>{UI.filter=c.dataset.f;$('fchips').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c));renderRes()};
+});
+$('q').oninput=e=>{UI.q=e.target.value.toLowerCase();renderRes()};
+
+function renderRes(){
+  let list=D.res.filter(r=>UI.filter==='all'?true:r.status===UI.filter);
+  if(UI.q)list=list.filter(r=>[r.customer_name,r.email,r.code,r.phone||''].join(' ').toLowerCase().includes(UI.q));
+  if(!list.length){$('rlist').innerHTML=`<div class="empty">${UI.q?'Nothing matches that search.':'No reservations in this view yet.'}</div>`;return}
+  $('rlist').innerHTML=list.map(r=>{
+    const b=bikeById(r.bike_id);
+    const ex=(r.addons||[]).map(s=>D.addons.find(a=>a.slug===s)?.name).filter(Boolean);
+    return `<div class="res" data-s="${r.status}" data-id="${r.id}">
+      <div class="res-h">
+        <span class="cd">${r.code}</span>
+        <span class="who"><b>${esc(r.customer_name)}</b><span>${esc(r.email)}</span></span>
+        <span class="bk">${esc(b?.name||'—')}<span>Size ${r.size}</span></span>
+        <span class="dt">${fmt(r.start_date)} → ${fmt(r.end_date)}<span>${r.days} days · pickup ${String(r.pickup_time).slice(0,5)}</span></span>
+        <span class="tagpill ${r.status}">${r.status}</span>
+        ${r.source==='manual'?'<span class="tagpill manual">manual</span>':''}
+        ${r.notify_error
+            ? `<span class="tagpill mailbad" title="${esc(r.notify_error)}">email failed</span>`
+            : (r.notified_at ? '<span class="tagpill mailok" title="Guest has been emailed">emailed</span>' : '')}
+        <span class="pz">${money(r.total_price)}</span>
+      </div>
+      <div class="res-b">
+        <div class="dgrid">
+          <div><small>Phone</small><p>${esc(r.phone||'—')}</p></div>
+          <div><small>Insurance</small><p>${r.insurance==='none'?'None':(r.insurance==='basic'?'Basic':'FULL & SOS')}</p></div>
+          <div><small>Extras</small><p>${ex.length?esc(ex.join(', ')):'—'}</p></div>
+          <div><small>Delivery</small><p>${r.delivery?esc(r.delivery_address||'yes')+` (${money(r.delivery_fee)})`:'Pickup in shop'}</p></div>
+          <div><small>Season</small><p>${seasonOf(r.start_date)}</p></div>
+          <div><small>Booked on</small><p>${new Date(r.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})}</p></div>
+          ${r.notes?`<div style="grid-column:1/-1"><small>Notes</small><p>${esc(r.notes)}</p></div>`:''}
+        </div>
+        <div class="acts2">
+          ${r.status!=='confirmed'?`<button class="btn btn-g btn-sm" data-act="confirmed">Confirm</button>`:''}
+          <button class="btn btn-o btn-sm" data-edit="${r.id}">Edit</button>
+          ${r.status!=='cancelled'?`<button class="btn btn-o btn-sm" data-act="cancelled">Cancel</button>`:''}
+          ${r.status==='cancelled'?`<button class="btn btn-o btn-sm" data-act="new">Reopen</button>`:''}
+          <a class="btn btn-o btn-sm" href="mailto:${encodeURIComponent(r.email)}?subject=${encodeURIComponent('Venga Cycling — reservation '+r.code)}">Email customer</a>
+        </div>
+      </div></div>`;
+  }).join('');
+  $('rlist').querySelectorAll('.res').forEach(card=>{
+    card.querySelector('.res-h').onclick=()=>card.classList.toggle('open');
+    card.querySelectorAll('[data-act]').forEach(btn=>{
+      btn.onclick=async e=>{e.stopPropagation();await setStatus(card.dataset.id,btn.dataset.act)};
+    });
+    const ed=card.querySelector('[data-edit]');
+    if(ed)ed.onclick=e=>{e.stopPropagation();openEdit(ed.dataset.edit)};
+  });
+}
+function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+async function setStatus(id,status){
+  const {error}=await sb.from('reservations').update({status}).eq('id',id);
+  if(error){bad('Could not update that reservation.');return}
+  const r=D.res.find(x=>x.id===id);if(r)r.status=status;
+  renderRes();renderKpis();
+  ok(status==='confirmed'?'Reservation confirmed — the bike is locked for those dates.':(status==='cancelled'?'Reservation cancelled — the bike is available again.':'Reservation reopened.'));
+}
+
+/* ===== BLOCKED DATES ===== */
+function fillBlkSelects(){
+  $('bkBike').innerHTML='<option value="">All bikes (shop closed)</option>'+
+    D.bikes.map(b=>`<option value="${b.id}">${esc(b.name)}</option>`).join('');
+  syncBlkSizes();
+}
+function syncBlkSizes(){
+  const id=$('bkBike').value;
+  const list=id?sizesOf(id):[];
+  $('bkSize').innerHTML='<option value="">All sizes</option>'+list.map(s=>`<option value="${s.size}">${s.size}</option>`).join('');
+  $('bkSize').disabled=!id;
+}
+$('bkBike').onchange=syncBlkSizes;
+
+function renderBlocks(){
+  const t=iso(new Date());
+  const list=[...D.blocks].sort((a,b)=>a.start_date<b.start_date?-1:1);
+  if(!list.length){$('blkList').innerHTML='<div class="empty">No blocked dates. Everything in the calendar is bookable.</div>';return}
+  $('blkList').innerHTML=list.map(x=>{
+    const b=x.bike_id?bikeById(x.bike_id):null;
+    const past=x.end_date<t;
+    const scope=b?`${esc(b.name)}${x.size?` · size ${x.size}`:' · all sizes'}`:'All bikes — shop closed';
+    const days=Math.round((parseD(x.end_date)-parseD(x.start_date))/864e5)+1;
+    return `<div class="res" data-s="${past?'cancelled':'confirmed'}" data-blk="${x.id}">
+      <div class="res-h">
+        <span class="who" style="flex:1.4"><b>${scope}</b><span>${esc(x.reason||'No reason given')}</span></span>
+        <span class="dt">${fmtY(x.start_date)} → ${fmtY(x.end_date)}<span>${days} ${days===1?'day':'days'}${past?' · past':''}</span></span>
+        <span class="tagpill ${past?'cancelled':'confirmed'}">${past?'expired':'active'}</span>
+        <button class="btn btn-o btn-sm" data-del="${x.id}">Remove</button>
+      </div></div>`;
+  }).join('');
+  $('blkList').querySelectorAll('[data-del]').forEach(btn=>{
+    btn.onclick=async()=>{
+      const {error}=await sb.from('blackouts').delete().eq('id',btn.dataset.del);
+      if(error){bad('Could not remove that block.');return}
+      D.blocks=D.blocks.filter(x=>x.id!==btn.dataset.del);
+      renderBlocks();ok('Block removed — those dates are bookable again.');
+    };
+  });
+}
+$('bkAdd').onclick=async()=>{
+  $('blkErr').classList.remove('on');
+  const f=$('bkFrom').value,t=$('bkTo').value;
+  if(!f||!t){flash($('blkErr'),'Pick both a start and an end date.');return}
+  if(t<f){flash($('blkErr'),'The end date must be on or after the start date.');return}
+  const btn=$('bkAdd');btn.disabled=true;btn.textContent='Blocking…';
+  const {data,error}=await sb.from('blackouts').insert({
+    bike_id:$('bkBike').value||null,
+    size:$('bkBike').value?($('bkSize').value||null):null,
+    start_date:f,end_date:t,reason:$('bkWhy').value.trim()||null
+  }).select().single();
+  btn.disabled=false;btn.textContent='Block dates';
+  if(error){flash($('blkErr'),'Could not save that block. Check the dates and try again.');console.error(error);return}
+  D.blocks.push(data);
+  $('bkWhy').value='';$('bkFrom').value='';$('bkTo').value='';
+  renderBlocks();
+  ok('Dates blocked — they are no longer bookable online.');
+};
+
+/* ===== TIMELINE ===== */
+$('tlPrev').onclick=()=>{UI.tlMonth=new Date(UI.tlMonth.getFullYear(),UI.tlMonth.getMonth()-1,1);drawTimeline()};
+$('tlNext').onclick=()=>{UI.tlMonth=new Date(UI.tlMonth.getFullYear(),UI.tlMonth.getMonth()+1,1);drawTimeline()};
+function drawTimeline(){
+  const y=UI.tlMonth.getFullYear(),m=UI.tlMonth.getMonth();
+  const days=new Date(y,m+1,0).getDate();
+  $('tlLabel').textContent=`${['January','February','March','April','May','June','July','August','September','October','November','December'][m]} ${y}`;
+  const gt=`grid-template-columns:repeat(${days},minmax(26px,1fr))`;
+  let html=`<div class="tl-row hd"><div class="tl-lbl"><b>Bike / size</b><span>${days} days</span></div><div class="tl-days" style="${gt}">`;
+  for(let d=1;d<=days;d++){const dw=new Date(y,m,d).getDay();html+=`<div class="tl-d ${dw===0||dw===6?'we':''}"><b>${d}</b>${['Su','Mo','Tu','We','Th','Fr','Sa'][dw]}</div>`}
+  html+='</div></div>';
+  const live=D.res.filter(r=>r.status!=='cancelled');
+  D.bikes.forEach(b=>{
+    sizesOf(b.id).forEach(sz=>{
+      html+=`<div class="tl-row"><div class="tl-lbl"><b>${esc(b.name.replace(/^(Giant|Liv)\s/,''))}</b><span>Size ${sz.size} · ${sz.qty} in stock</span></div><div class="tl-days" style="${gt}">`;
+      for(let d=1;d<=days;d++){
+        const ds=iso(new Date(y,m,d)),dw=new Date(y,m,d).getDay();
+        const n=live.filter(r=>r.bike_id===b.id&&r.size===sz.size&&r.start_date<=ds&&r.end_date>=ds).length;
+        const blk=D.blocks.some(x=>x.start_date<=ds&&x.end_date>=ds&&(!x.bike_id||x.bike_id===b.id)&&(!x.size||x.size===sz.size));
+        const cls=blk?'b':(n===0?'':(n>=sz.qty?'f':'p'));
+        const tip=blk?`${ds}: blocked`:`${ds}: ${n}/${sz.qty}`;
+        html+=`<div class="tl-cell ${cls} ${dw===0||dw===6?'we':''}" title="${tip}">${blk?'×':(n||'')}</div>`;
+      }
+      html+='</div></div>';
+    });
+  });
+  $('tl').innerHTML=html;
+}
+
+/* ===== FLEET ===== */
+function renderFleet(){
+  const tb=$('tFleet').querySelector('tbody');
+  tb.innerHTML=D.bikes.map(b=>{
+    const lo=priceOf(b.id,'low')||{},hi=priceOf(b.id,'high')||{};
+    const szs=sizesOf(b.id);
+    const cell=(pid,f,v)=>`<td><input class="cell" type="number" min="0" step="1" data-p="${pid}" data-f="${f}" value="${v??0}"></td>`;
+    return `<tr data-b="${b.id}">
+      <td class="nm"><b>${esc(b.name)}</b><span>${esc(b.category)}</span></td>
+      <td><button class="tog ${b.active?'on':''}" data-act-b="${b.id}" title="Show on the site"></button></td>
+      <td><div class="szrow">
+        ${SIZES_ALL.map(s=>{const f=szs.find(x=>x.size===s);
+          return f?`<span class="szitem"><b>${s}</b><input type="number" min="0" step="1" data-sz="${f.id}" value="${f.qty}"></span>`:''}).join('')}
+        <button class="btn btn-o btn-sm" data-addsz="${b.id}" style="padding:5px 10px">+ size</button>
+      </div></td>
+      ${cell(lo.id,'d1',lo.d1)}${cell(lo.id,'d3',lo.d3)}${cell(lo.id,'d5',lo.d5)}${cell(lo.id,'d7',lo.d7)}${cell(lo.id,'extra',lo.extra)}
+      ${cell(hi.id,'d1',hi.d1)}${cell(hi.id,'d3',hi.d3)}${cell(hi.id,'d5',hi.d5)}${cell(hi.id,'d7',hi.d7)}${cell(hi.id,'extra',hi.extra)}
+      <td><input class="cell" type="number" min="0" data-ins="${b.id}" data-f="ins_basic" value="${b.ins_basic}"></td>
+      <td><input class="cell" type="number" min="0" data-ins="${b.id}" data-f="ins_full" value="${b.ins_full}"></td>
+    </tr>`;
+  }).join('');
+  tb.querySelectorAll('.tog[data-act-b]').forEach(t=>{
+    t.onclick=()=>{t.classList.toggle('on');UI.dirtyFleet=true;$('fleetHint').textContent='Unsaved changes'};
+  });
+  tb.querySelectorAll('input').forEach(i=>i.oninput=()=>{UI.dirtyFleet=true;$('fleetHint').textContent='Unsaved changes'});
+  tb.querySelectorAll('[data-addsz]').forEach(btn=>{
+    btn.onclick=async()=>{
+      const have=sizesOf(btn.dataset.addsz).map(s=>s.size);
+      const free=SIZES_ALL.filter(s=>!have.includes(s));
+      if(!free.length){bad('All eight sizes already exist for this bike.');return}
+      const pick=prompt(`Add which size? Available: ${free.join(', ')}`,free[0]);
+      if(!pick)return;
+      const size=pick.trim().toUpperCase();
+      if(!free.includes(size)){bad(`"${pick}" isn't one of the available sizes.`);return}
+      const {data,error}=await sb.from('bike_sizes').insert({bike_id:btn.dataset.addsz,size,qty:1}).select().single();
+      if(error){bad('Could not add that size.');return}
+      D.sizes.push(data);renderFleet();ok(`Size ${size} added with 1 unit — set the stock and save.`);
+    };
+  });
+}
+$('fleetReload').onclick=async()=>{await loadAll();UI.dirtyFleet=false;$('fleetHint').textContent='Changes discarded.'};
+$('fleetSave').onclick=async()=>{
+  const btn=$('fleetSave');btn.disabled=true;btn.textContent='Saving…';
+  try{
+    const tb=$('tFleet').querySelector('tbody');
+    const pr={},jobs=[];
+    tb.querySelectorAll('input[data-p]').forEach(i=>{(pr[i.dataset.p]=pr[i.dataset.p]||{})[i.dataset.f]=+i.value||0});
+    Object.entries(pr).forEach(([id,vals])=>jobs.push(sb.from('bike_prices').update(vals).eq('id',id)));
+    tb.querySelectorAll('input[data-sz]').forEach(i=>jobs.push(sb.from('bike_sizes').update({qty:+i.value||0}).eq('id',i.dataset.sz)));
+    const ins={};
+    tb.querySelectorAll('input[data-ins]').forEach(i=>{(ins[i.dataset.ins]=ins[i.dataset.ins]||{})[i.dataset.f]=+i.value||0});
+    tb.querySelectorAll('.tog[data-act-b]').forEach(t=>{(ins[t.dataset.actB]=ins[t.dataset.actB]||{}).active=t.classList.contains('on')});
+    Object.entries(ins).forEach(([id,vals])=>jobs.push(sb.from('bikes').update(vals).eq('id',id)));
+    const rs=await Promise.all(jobs);
+    const err=rs.find(r=>r.error);
+    if(err)throw err.error;
+    await loadAll();UI.dirtyFleet=false;$('fleetHint').textContent='All changes saved.';ok('Fleet and prices updated — the booking page uses the new values immediately.');
+  }catch(e){bad('Could not save everything. Nothing was lost — check the values and try again.');console.error(e)}
+  btn.disabled=false;btn.textContent='Save changes';
+};
+
+
+/* ===== ADD BIKE ===== */
+function bkOpen(){
+  $('bkSizes').innerHTML=SIZES_ALL.map(sz=>
+    `<label>${sz}<input type="number" min="0" step="1" value="0" data-nsz="${sz}"></label>`).join('');
+  $('bkCats').innerHTML=[...new Set(D.bikes.map(b=>b.category))]
+    .map(c=>`<option value="${esc(c)}">`).join('');
+  ['bkName','bkSlug','bkCat','bkGear','bkTag','bkImg','bkDesc'].forEach(id=>$(id).value='');
+  ['bkLo1','bkLo3','bkLo5','bkLo7','bkLoX','bkHi1','bkHi3','bkHi5','bkHi7','bkHiX'].forEach(id=>$(id).value='');
+  $('bkInsB').value=20; $('bkInsF').value=80; $('bkActive').checked=true; $('bkErr').textContent='';
+  $('bkModal').classList.add('on');
+  $('bkName').focus();
+}
+function bkClose(){$('bkModal').classList.remove('on')}
+$('bikeNew').onclick=bkOpen;
+$('bkCancel').onclick=bkClose;
+$('bkModal').addEventListener('click',e=>{if(e.target===$('bkModal'))bkClose()});
+
+/* name → slug suggestion, only while the slug is untouched */
+$('bkName').addEventListener('input',()=>{
+  if($('bkSlug').dataset.touched)return;
+  $('bkSlug').value=$('bkName').value.toLowerCase()
+    .replace(/[àáâä]/g,'a').replace(/[èéêë]/g,'e').replace(/[ìíîï]/g,'i')
+    .replace(/[òóôö]/g,'o').replace(/[ùúûü]/g,'u').replace(/ç/g,'c').replace(/ñ/g,'n')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
+});
+$('bkSlug').addEventListener('input',()=>{$('bkSlug').dataset.touched='1'});
+
+$('bkSave').onclick=async()=>{
+  const err=m=>{$('bkErr').textContent=m};
+  const name=$('bkName').value.trim(), cat=$('bkCat').value.trim();
+  const slug=$('bkSlug').value.trim().toLowerCase();
+  if(!name)return err('Give the bike a name.');
+  if(!slug)return err('The web address (slug) cannot be empty.');
+  if(!/^[a-z0-9-]+$/.test(slug))return err('The slug may use lowercase letters, numbers and dashes only.');
+  if(D.bikes.some(b=>b.slug===slug))return err(`Another bike already uses the slug "${slug}".`);
+  if(!cat)return err('Give the bike a category, for example "Road · Racing".');
+  const lo=[+$('bkLo1').value||0,+$('bkLo3').value||0,+$('bkLo5').value||0,+$('bkLo7').value||0,+$('bkLoX').value||0];
+  const hi=[+$('bkHi1').value||0,+$('bkHi3').value||0,+$('bkHi5').value||0,+$('bkHi7').value||0,+$('bkHiX').value||0];
+  if(lo[0]<=0||hi[0]<=0)return err('The one-day price is needed for both seasons — the booking page prices every rental from it.');
+  const sizes=[...$('bkSizes').querySelectorAll('[data-nsz]')]
+    .map(i=>({size:i.dataset.nsz,qty:+i.value||0}));
+  if(!sizes.some(x=>x.qty>0))return err('Set the stock for at least one size, otherwise nobody can book this bike.');
+
+  const btn=$('bkSave'); btn.disabled=true; btn.textContent='Adding…'; err('');
+  let newId=null;
+  try{
+    const maxSort=D.bikes.reduce((m,b)=>Math.max(m,b.sort||0),0);
+    const {data:bike,error:e1}=await sb.from('bikes').insert({
+      slug, name, category:cat,
+      gearset:$('bkGear').value.trim()||null,
+      tag:$('bkTag').value.trim()||null,
+      description:$('bkDesc').value.trim()||null,
+      image_url:$('bkImg').value.trim()||null,
+      ins_basic:+$('bkInsB').value||0,
+      ins_full:+$('bkInsF').value||0,
+      active:$('bkActive').checked,
+      sort:maxSort+1
+    }).select().single();
+    if(e1)throw e1;
+    newId=bike.id;
+    const {error:e2}=await sb.from('bike_sizes')
+      .insert(sizes.map(x=>({bike_id:newId,size:x.size,qty:x.qty})));
+    if(e2)throw e2;
+    const {error:e3}=await sb.from('bike_prices').insert([
+      {bike_id:newId,season:'low', d1:lo[0],d3:lo[1],d5:lo[2],d7:lo[3],extra:lo[4]},
+      {bike_id:newId,season:'high',d1:hi[0],d3:hi[1],d5:hi[2],d7:hi[3],extra:hi[4]}
+    ]);
+    if(e3)throw e3;
+    bkClose();
+    await loadAll();
+    ok(`${name} added. It is ${$('bkActive').checked?'live on the booking page now':'hidden until you switch it on'}.`);
+  }catch(e){
+    /* never leave a half-built bike behind */
+    if(newId){
+      await sb.from('bike_prices').delete().eq('bike_id',newId);
+      await sb.from('bike_sizes').delete().eq('bike_id',newId);
+      await sb.from('bikes').delete().eq('id',newId);
+    }
+    err(e.message&&e.message.includes('duplicate')
+      ? 'That slug is already taken. Pick another one.'
+      : 'Could not add the bike. Nothing was saved — check the values and try again.');
+    console.error(e);
+  }
+  btn.disabled=false; btn.textContent='Add bike';
+};
+
+/* ===== EXTRAS ===== */
+function renderExt(){
+  $('tExt').querySelector('tbody').innerHTML=D.addons.map(a=>`
+    <tr data-a="${a.id}">
+      <td class="nm"><b>${esc(a.name)}</b><span>${esc(a.description||'')}</span></td>
+      <td><button class="tog ${a.active?'on':''}" data-ta="${a.id}"></button></td>
+      <td><input class="cell" type="number" min="0" step="1" data-f="price" value="${a.price??''}" ${a.quote_only?'disabled':''}></td>
+      <td><input class="cell" type="number" min="0" step="1" data-f="price_long" value="${a.price_long??''}" ${a.quote_only?'disabled':''}></td>
+      <td><input class="cell" type="number" min="1" step="1" data-f="long_threshold" value="${a.long_threshold??''}" ${a.quote_only?'disabled':''}></td>
+      <td><button class="tog ${a.quote_only?'on':''}" data-tq="${a.id}" title="Price agreed individually"></button></td>
+    </tr>`).join('');
+  $('delFee').value=D.settings.delivery_fee??100;
+  $('tExt').querySelectorAll('.tog').forEach(t=>t.onclick=()=>t.classList.toggle('on'));
+}
+$('extReload').onclick=async()=>{await loadAll();ok('Changes discarded.')};
+$('extSave').onclick=async()=>{
+  const btn=$('extSave');btn.disabled=true;btn.textContent='Saving…';
+  try{
+    const jobs=[];
+    $('tExt').querySelectorAll('tbody tr').forEach(tr=>{
+      const v={};
+      tr.querySelectorAll('input[data-f]').forEach(i=>{v[i.dataset.f]=i.value===''?null:+i.value});
+      v.active=tr.querySelector('.tog[data-ta]').classList.contains('on');
+      v.quote_only=tr.querySelector('.tog[data-tq]').classList.contains('on');
+      jobs.push(sb.from('addons').update(v).eq('id',tr.dataset.a));
+    });
+    const s={...D.settings,delivery_fee:+$('delFee').value||0};
+    jobs.push(sb.from('settings').update({value:s}).eq('key','general'));
+    const rs=await Promise.all(jobs);
+    const err=rs.find(r=>r.error);if(err)throw err.error;
+    await loadAll();ok('Extras and delivery fee updated.');
+  }catch(e){bad('Could not save the extras. Check the values and try again.');console.error(e)}
+  btn.disabled=false;btn.textContent='Save changes';
+};
+
+/* ===== MANUAL RESERVATION ===== */
+function slots(){const o=[];[['09:00','12:30'],['16:00','18:30']].forEach(([a,b])=>{
+  let[h,m]=a.split(':').map(Number);const[eh,em]=b.split(':').map(Number);
+  while(h*60+m<=eh*60+em){o.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);m+=30;if(m>=60){m=0;h++}}});return o}
+function fillModalBikes(){
+  $('mBike').innerHTML=D.bikes.map(b=>`<option value="${b.id}">${esc(b.name)}</option>`).join('');
+  $('mTime').innerHTML=slots().map(t=>`<option>${t}</option>`).join('');
+  $('mAdd').innerHTML=D.addons.filter(a=>a.active&&!a.quote_only).map(a=>`<button class="chip" data-s="${a.slug}">${esc(a.name.split('(')[0].trim())}</button>`).join('');
+  $('mAdd').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{c.classList.toggle('on');estimate()});
+  syncModalSizes();
+}
+function syncModalSizes(){
+  const szs=sizesOf($('mBike').value);
+  $('mSize').innerHTML=szs.map(s=>`<option value="${s.size}">${s.size} (${s.qty} in stock)</option>`).join('')||'<option value="">No sizes</option>';
+}
+$('mBike').onchange=()=>{syncModalSizes();estimate()};
+['mFrom','mTo','mIns'].forEach(id=>$(id).onchange=estimate);
+$('mDel').onchange=()=>{$('mAddrF').style.display=$('mDel').value==='1'?'block':'none';estimate()};
+let EDIT_ID=null;
+
+function setModalMode(edit){
+  EDIT_ID=edit?EDIT_ID:null;
+  $('mTitle').textContent=edit?'Edit reservation':'Manual reservation';
+  $('mHint').textContent=edit
+    ? 'Change anything below. Availability is re-checked, but this reservation no longer competes with itself.'
+    : 'For phone and walk-in bookings. Availability and price are checked the same way as online.';
+  $('mEditOnly').style.display=edit?'grid':'none';
+  $('mIgnoreWrap').style.display=edit?'flex':'none';
+  $('mSave').textContent=edit?'Save changes':'Create reservation';
+}
+
+/* ============ CALENDAR IN THE MANUAL RESERVATION FORM ============ */
+/* Typing dd.mm.yyyy by hand is slow and gives no idea whether the bike is
+   actually free. This grid shows stock per day for the chosen bike and size,
+   and writes straight into the existing #mFrom / #mTo fields. */
+const MCAL={month:null,from:null,to:null,booked:{},blocked:{},qty:0,key:''};
+const MO_FULL=['January','February','March','April','May','June',
+               'July','August','September','October','November','December'];
+
+function mcalQty(){
+  const b=$('mBike').value, sz=$('mSize').value;
+  const row=D.sizes.find(x=>x.bike_id===b&&x.size===sz);
+  return row?row.qty:0;
+}
+async function mcalLoad(){
+  const b=$('mBike').value, sz=$('mSize').value;
+  if(!b||!sz){$('mCal').classList.add('off');return}
+  $('mCal').classList.remove('off');
+  MCAL.qty=mcalQty();
+  const from=new Date(MCAL.month.getFullYear(),MCAL.month.getMonth(),1);
+  const to=new Date(MCAL.month.getFullYear(),MCAL.month.getMonth()+2,0);
+  const key=b+sz+iso(from);
+  if(MCAL.key===key){mcalDraw();return}
+  const {data,error}=await sb.rpc('get_booked',{p_bike:b,p_size:sz,p_from:iso(from),p_to:iso(to)});
+  if(error){console.error(error);mcalDraw();return}
+  MCAL.booked={};MCAL.blocked={};
+  (data||[]).forEach(r=>{MCAL.booked[r.day]=r.booked;MCAL.blocked[r.day]=!!r.blocked});
+  MCAL.key=key;
+  mcalDraw();
+}
+function mcalDraw(){
+  const g=$('mCalGrid'); if(!g)return;
+  const y=MCAL.month.getFullYear(), m=MCAL.month.getMonth();
+  $('mCalTitle').textContent=MO_FULL[m]+' '+y;
+  const first=new Date(y,m,1);
+  let lead=(first.getDay()+6)%7;              /* week starts on Monday */
+  const days=new Date(y,m+1,0).getDate();
+  const today=iso(new Date());
+  let html='';
+  for(let i=0;i<lead;i++)html+='<span class="pad"></span>';
+  for(let d=1;d<=days;d++){
+    const ds=iso(new Date(y,m,d));
+    const blk=MCAL.blocked[ds];
+    const left=blk?0:Math.max(0,MCAL.qty-(MCAL.booked[ds]||0));
+    const past=ds<today&&!EDIT_ID;            /* editing an old booking stays allowed */
+    const cls=[];
+    if(blk)cls.push('blk'); else if(left<=0)cls.push('full');
+    if(MCAL.from===ds||MCAL.to===ds)cls.push('sel');
+    else if(MCAL.from&&MCAL.to&&ds>MCAL.from&&ds<MCAL.to)cls.push('mid');
+    html+='<button type="button" data-d="'+ds+'" class="'+cls.join(' ')+'"'+
+          (past?' disabled':'')+' title="'+(blk?'Blocked':left+' free')+'">'+
+          d+'<i>'+(blk?'—':left)+'</i></button>';
+  }
+  g.innerHTML=html;
+  g.querySelectorAll('button[data-d]').forEach(b=>{b.onclick=()=>mcalPick(b.dataset.d)});
+  mcalHint();
+}
+function mcalHint(){
+  const h=$('mCalHint'); if(!h)return;
+  if(!MCAL.from){h.textContent='Pick the first day, then the last day.';return}
+  if(!MCAL.to){h.textContent='First day '+fmt(MCAL.from)+' — now pick the last day.';return}
+  const n=Math.round((parseD(MCAL.to)-parseD(MCAL.from))/86400000)+1;
+  h.textContent=fmt(MCAL.from)+' → '+fmt(MCAL.to)+' · '+n+(n===1?' day':' days');
+}
+function mcalPick(ds){
+  if(!MCAL.from||MCAL.to){MCAL.from=ds;MCAL.to=null}
+  else if(ds<MCAL.from){MCAL.to=MCAL.from;MCAL.from=ds}
+  else MCAL.to=ds;
+  $('mFrom').value=MCAL.from||'';
+  $('mTo').value=MCAL.to||MCAL.from||'';
+  /* warn straight away instead of at save time */
+  if(MCAL.from&&MCAL.to){
+    let bad=null;
+    for(let d=parseD(MCAL.from);d<=parseD(MCAL.to);d.setDate(d.getDate()+1)){
+      const k=iso(d);
+      if(MCAL.blocked[k]||Math.max(0,MCAL.qty-(MCAL.booked[k]||0))<=0){bad=k;break}
+    }
+    if(bad)flash($('mErr'),'No unit free on '+fmt(bad)+' for this bike and size. Pick other dates, or tick "Allow blocked dates" if this is a service block you want to override.',7000);
+    else $('mErr').classList.remove('on');
+  }
+  mcalDraw();
+}
+function mcalReset(keepMonth){
+  MCAL.from=null;MCAL.to=null;MCAL.key='';
+  if(!keepMonth)MCAL.month=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+  $('mFrom').value='';$('mTo').value='';
+  mcalDraw();
+}
+$('mCalPrev').onclick=()=>{MCAL.month=new Date(MCAL.month.getFullYear(),MCAL.month.getMonth()-1,1);MCAL.key='';mcalLoad()};
+$('mCalNext').onclick=()=>{MCAL.month=new Date(MCAL.month.getFullYear(),MCAL.month.getMonth()+1,1);MCAL.key='';mcalLoad()};
+$('mCalClear').onclick=()=>{mcalReset(true);$('mErr').classList.remove('on')};
+/* typing in the date fields still works and keeps the grid in sync */
+['mFrom','mTo'].forEach(id=>$(id).addEventListener('change',()=>{
+  MCAL.from=$('mFrom').value||null; MCAL.to=$('mTo').value||null;
+  if(MCAL.from){const d=parseD(MCAL.from);MCAL.month=new Date(d.getFullYear(),d.getMonth(),1);MCAL.key=''}
+  mcalLoad();
+}));
+$('mBike').addEventListener('change',()=>{MCAL.key='';mcalLoad()});
+$('mSize').addEventListener('change',()=>{MCAL.key='';mcalLoad()});
+
+function clearModal(){
+  ['mName','mMail','mPhone','mNotes','mAddr','mFrom','mTo','mPrice'].forEach(i=>$(i).value='');
+  if(typeof MCAL!=='undefined'){mcalReset(false)}
+  $('mAdd').querySelectorAll('.chip.on').forEach(c=>c.classList.remove('on'));
+  $('mIns').value='none'; $('mDel').value='0'; $('mAddrF').style.display='none';
+  $('mIgnore').checked=false; $('mErr').classList.remove('on');
+}
+
+function openEdit(id){
+  const r=D.res.find(x=>x.id===id); if(!r){bad('Could not find that reservation.');return}
+  EDIT_ID=id;
+  clearModal(); setModalMode(true);
+  $('mBike').value=r.bike_id; syncModalSizes();
+  $('mSize').value=r.size;
+  $('mFrom').removeAttribute('min'); $('mTo').removeAttribute('min'); /* past bookings stay editable */
+  $('mFrom').value=r.start_date; $('mTo').value=r.end_date;
+  MCAL.from=r.start_date; MCAL.to=r.end_date; MCAL.key='';
+  const _d=parseD(r.start_date); MCAL.month=new Date(_d.getFullYear(),_d.getMonth(),1);
+  $('mTime').value=String(r.pickup_time).slice(0,5);
+  $('mIns').value=r.insurance;
+  (r.addons||[]).forEach(s=>{const c=$('mAdd').querySelector(`[data-s="${s}"]`);if(c)c.classList.add('on')});
+  $('mName').value=r.customer_name||''; $('mMail').value=r.email||'';
+  $('mPhone').value=r.phone||''; $('mNotes').value=r.notes||'';
+  $('mDel').value=r.delivery?'1':'0';
+  $('mAddrF').style.display=r.delivery?'block':'none';
+  $('mAddr').value=r.delivery_address||'';
+  $('mStatus').value=r.status;
+  $('mPrice').value=''; $('mPrice').placeholder=`auto (now ${Number(r.total_price)})`;
+  estimate();
+  $('ovl').classList.add('on');
+  mcalLoad();
+}
+
+$('addRes').onclick=()=>{
+  EDIT_ID=null; clearModal(); setModalMode(false);
+  const t=iso(new Date());$('mFrom').min=t;$('mTo').min=t;
+  $('ovl').classList.add('on');
+  /* the size is set programmatically, which fires no change event —
+     load the availability grid explicitly */
+  mcalLoad();
+};
+$('mCancel').onclick=()=>$('ovl').classList.remove('on');
+$('ovl').onclick=e=>{if(e.target===$('ovl'))$('ovl').classList.remove('on')};
+
+function estimate(){
+  const bid=$('mBike').value,f=$('mFrom').value,t=$('mTo').value;
+  if(!bid||!f||!t||t<f){$('mTotal').textContent=money(0);return}
+  const days=Math.round((parseD(t)-parseD(f))/864e5)+1;
+  const p=priceOf(bid,seasonOf(f));if(!p){$('mTotal').textContent=money(0);return}
+  let sum= days<=1?+p.d1 : days===2?2*+p.d1 : days<=4?+p.d3+(days-3)*+p.extra : days<=6?+p.d5+(days-5)*+p.extra : +p.d7+(days-7)*+p.extra;
+  const b=bikeById(bid),ins=$('mIns').value;
+  if(ins==='basic')sum+=+b.ins_basic; if(ins==='full')sum+=+b.ins_full;
+  $('mAdd').querySelectorAll('.chip.on').forEach(c=>{
+    const a=D.addons.find(x=>x.slug===c.dataset.s);
+    if(a)sum+= (a.long_threshold&&days>=a.long_threshold)?+(a.price_long??a.price??0):+(a.price??0);
+  });
+  if($('mDel').value==='1')sum+=+(D.settings.delivery_fee??100);
+  $('mTotal').textContent=money(sum);
+}
+const RPC_ERR={MISSING_NAME:'Enter the guest name.',NO_AVAILABILITY:'No stock left for that bike, size and date range.',SIZE_NOT_AVAILABLE:'That size has no units.',PICKUP_OUTSIDE_HOURS:'Pickup must be 09:00–12:30 or 16:00–18:30.',DELIVERY_ADDRESS_REQUIRED:'Add the delivery address.',START_IN_PAST:'The first day is in the past.',INVALID_DATES:'The last day must be on or after the first day.',BAD_EMAIL:'That email address is not valid — it needs an @ and a domain, like name@gmail.com.',MISSING_CONTACT:'Give either an email or a phone number.',TOO_LONG:'Rentals over 60 days must be handled manually.',DATE_BLOCKED:'Those dates are blocked for service or holiday. Tick "Allow blocked dates" to override.',RESERVATION_NOT_FOUND:'That reservation no longer exists — refresh the page.'};
+
+/* the error banner sits at the top of a long form, so bring it into view
+   and mark the offending field — otherwise a failed save looks like nothing
+   happened at all */
+function mFail(msg,fieldId){
+  flash($('mErr'),msg,7000);
+  $('mErr').scrollIntoView({behavior:'smooth',block:'center'});
+  document.querySelectorAll('#ovl .bad').forEach(e=>e.classList.remove('bad'));
+  if(fieldId){const f=$(fieldId);if(f){f.classList.add('bad');setTimeout(()=>f.focus(),350)}}
+}
+$('mSave').onclick=async()=>{
+  const btn=$('mSave');const editing=!!EDIT_ID;
+  /* catch the common mistakes here, with a message next to the field */
+  const nm=$('mName').value.trim(), em=$('mMail').value.trim(), ph=$('mPhone').value.trim();
+  if(!nm)return mFail('Enter the guest name.','mName');
+  if(!em&&!ph)return mFail('Give either an email or a phone number — we need one way to reach the guest.','mMail');
+  if(em&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))
+    return mFail('That email address is not valid. Write it in full, like name@gmail.com — or leave it empty and keep just the phone number.','mMail');
+  if(!$('mFrom').value||!$('mTo').value)return mFail('Pick the first and last day.','mFrom');
+  btn.disabled=true;btn.textContent='Saving…';$('mErr').classList.remove('on');
+  document.querySelectorAll('#ovl .bad').forEach(e=>e.classList.remove('bad'));
+  const addons=[...$('mAdd').querySelectorAll('.chip.on')].map(c=>c.dataset.s);
+  const common={
+    p_bike:$('mBike').value,p_size:$('mSize').value,p_start:$('mFrom').value,p_end:$('mTo').value,
+    p_pickup:$('mTime').value,p_delivery:$('mDel').value==='1',
+    p_delivery_address:$('mDel').value==='1'?$('mAddr').value.trim():null,
+    p_insurance:$('mIns').value,p_addons:addons,
+    p_name:$('mName').value.trim(),p_email:$('mMail').value.trim(),
+    p_phone:$('mPhone').value.trim()||null,p_notes:$('mNotes').value.trim()||null
+  };
+  try{
+    let data,error;
+    if(editing){
+      ({data,error}=await sb.rpc('update_reservation',{
+        ...common, p_id:EDIT_ID, p_status:$('mStatus').value,
+        p_price_override:$('mPrice').value===''?null:+$('mPrice').value,
+        p_ignore_blocks:$('mIgnore').checked
+      }));
+    }else{
+      ({data,error}=await sb.rpc('create_reservation',common));
+    }
+    if(error)throw error;
+    if(!editing){
+      await sb.from('reservations').update({source:'manual',status:'confirmed'}).eq('code',data.code);
+    }
+    $('ovl').classList.remove('on');
+    EDIT_ID=null; clearModal();
+    await loadAll();
+    if(editing){
+      const extra=(data.calculated!=null&&+data.total!==+data.calculated)?` (manual price; calculated ${money(data.calculated)})`:'';
+      ok(`Reservation ${data.code} updated — ${money(data.total)}${extra}.`);
+    }else{
+      ok(`Reservation ${data.code} created and confirmed — ${money(data.total)}.`);
+    }
+  }catch(e){
+    const k=Object.keys(RPC_ERR).find(k=>(e.message||'').includes(k));
+    mFail(k?RPC_ERR[k]:'Could not save. Check the fields and try again.',
+          k==='BAD_EMAIL'||k==='MISSING_CONTACT'?'mMail':(k==='MISSING_NAME'?'mName':null));
+    console.error(e);
+  }
+  btn.disabled=false;btn.textContent=editing?'Save changes':'Create reservation';
+};
+</script>
+
+
+</body>
+</html>
