@@ -10,7 +10,7 @@
 /* runs before paint: decide whether the site is locked, so nothing flashes */
 (function(){try{
   var q=location.search;
-  if(/[?&]preview=123450(&|$)/.test(q)){localStorage.setItem('venga_preview','ok')}
+  if(/[?&]preview=911(&|$)/.test(q)){localStorage.setItem('venga_preview','ok')}
   if(/[?&]lock(&|$)/.test(q)){localStorage.removeItem('venga_preview')}
   if(localStorage.getItem('venga_preview')!=='ok'){document.documentElement.className+=' maint'}
 }catch(e){document.documentElement.className+=' maint'}})();
@@ -1372,6 +1372,33 @@ section[id]{scroll-margin-top:76px}
 </div>
 
 <script>
+/* Kept in its own script: if anything later fails to load (for example the
+   Supabase library from its CDN), the preview gate must still let you in. */
+/* ---------- maintenance gate: unlock ---------- */
+(function(){
+  var f=document.getElementById('mtForm');if(!f)return;
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var v=document.getElementById('mtPass').value.trim();
+    var err=document.getElementById('mtErr');
+    if(v==='911'){
+      try{localStorage.setItem('venga_preview','ok')}catch(_){}
+      document.documentElement.className=document.documentElement.className.replace(/\bmaint\b/,'');
+      document.getElementById('maint').remove();
+      try{sessionStorage.removeItem('venga_boot')}catch(_){}
+      location.reload();
+    }else{
+      err.classList.add('on');
+      document.getElementById('mtPass').value='';
+      document.getElementById('mtPass').focus();
+    }
+  });
+  document.getElementById('mtPass').addEventListener('input',function(){
+    document.getElementById('mtErr').classList.remove('on');
+  });
+})();
+</script>
+<script>
 const BIKES=[
  {id:"propel",cat:"Aero road · Racing",name:"Giant Propel Advanced TOP Pro",gset:"Shimano Dura-Ace Di2 · CADEX wheels · Power meter",img:"assets/img/bike-propel.webp",gallery:["assets/img/propel-1.webp", "assets/img/propel-2.webp", "assets/img/propel-3.webp", "assets/img/propel-4.webp", "assets/img/propel-5.webp", "assets/img/propel-6.webp", "assets/img/propel-7.webp", "assets/img/propel-8.webp"],tag:"Top Pro",
   desc:"The essence of modern aerodynamics and engineering excellence. Built to win — low weight, exceptional stiffness and outstanding efficiency, with every second on the road counting.",
@@ -2131,29 +2158,7 @@ document.addEventListener('keydown',function(e){
   v.addEventListener('playing',()=>{const c=document.getElementById('tapCue');if(c)c.style.display='none';});
 })();
 
-/* ---------- maintenance gate: unlock ---------- */
-(function(){
-  var f=document.getElementById('mtForm');if(!f)return;
-  f.addEventListener('submit',function(e){
-    e.preventDefault();
-    var v=document.getElementById('mtPass').value.trim();
-    var err=document.getElementById('mtErr');
-    if(v==='123450'){
-      try{localStorage.setItem('venga_preview','ok')}catch(_){}
-      document.documentElement.className=document.documentElement.className.replace(/\bmaint\b/,'');
-      document.getElementById('maint').remove();
-      try{sessionStorage.removeItem('venga_boot')}catch(_){}
-      location.reload();
-    }else{
-      err.classList.add('on');
-      document.getElementById('mtPass').value='';
-      document.getElementById('mtPass').focus();
-    }
-  });
-  document.getElementById('mtPass').addEventListener('input',function(){
-    document.getElementById('mtErr').classList.remove('on');
-  });
-})();
+
 </script>
 </body>
 </html>
