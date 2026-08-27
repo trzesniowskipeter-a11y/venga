@@ -445,19 +445,15 @@ input.cell.wide{width:100%;text-align:left}
 
     <h4 class="bkh">Price (€)</h4>
     <table class="bkpt">
-      <thead><tr><th></th><th>1 day</th><th>3 days</th><th>5 days</th><th>7 days</th><th>+ day</th></tr></thead>
+      <thead><tr><th></th><th>1 d</th><th>2 d</th><th>3 d</th><th>4 d</th><th>5 d</th><th>6 d</th><th>7 d</th><th>+ day</th></tr></thead>
       <tbody>
         <tr><td>Low season</td>
-          <td><input type="number" min="0" id="bkLo1"></td><td><input type="number" min="0" id="bkLo3"></td>
-          <td><input type="number" min="0" id="bkLo5"></td><td><input type="number" min="0" id="bkLo7"></td>
-          <td><input type="number" min="0" id="bkLoX"></td></tr>
+          <td><input type="number" min="0" id="bkLo1"></td><td><input type="number" min="0" id="bkLo2"></td><td><input type="number" min="0" id="bkLo3"></td><td><input type="number" min="0" id="bkLo4"></td><td><input type="number" min="0" id="bkLo5"></td><td><input type="number" min="0" id="bkLo6"></td><td><input type="number" min="0" id="bkLo7"></td><td><input type="number" min="0" id="bkLoX"></td></tr>
         <tr><td>High season</td>
-          <td><input type="number" min="0" id="bkHi1"></td><td><input type="number" min="0" id="bkHi3"></td>
-          <td><input type="number" min="0" id="bkHi5"></td><td><input type="number" min="0" id="bkHi7"></td>
-          <td><input type="number" min="0" id="bkHiX"></td></tr>
+          <td><input type="number" min="0" id="bkHi1"></td><td><input type="number" min="0" id="bkHi2"></td><td><input type="number" min="0" id="bkHi3"></td><td><input type="number" min="0" id="bkHi4"></td><td><input type="number" min="0" id="bkHi5"></td><td><input type="number" min="0" id="bkHi6"></td><td><input type="number" min="0" id="bkHi7"></td><td><input type="number" min="0" id="bkHiX"></td></tr>
       </tbody>
     </table>
-    <p class="mh">The 3, 5 and 7-day figures are totals for the whole rental. High season is March–May, September and October.</p>
+    <p class="mh">Each figure is the total for the whole rental, not a daily rate. Past 7 days the “+ day” rate is added. High season: 1 Mar – 31 May and 1 Sep – 31 Oct.</p>
 
     <div class="two">
       <div class="f"><label for="bkInsB">Insurance · Basic</label><input type="number" min="0" id="bkInsB" value="20"></div>
@@ -721,8 +717,8 @@ function renderFleet(){
           return f?`<span class="szitem"><b>${s}</b><input type="number" min="0" step="1" data-sz="${f.id}" value="${f.qty}"></span>`:''}).join('')}
         <button class="btn btn-o btn-sm" data-addsz="${b.id}" style="padding:5px 10px">+ size</button>
       </div></td>
-      ${cell(lo.id,'d1',lo.d1)}${cell(lo.id,'d3',lo.d3)}${cell(lo.id,'d5',lo.d5)}${cell(lo.id,'d7',lo.d7)}${cell(lo.id,'extra',lo.extra)}
-      ${cell(hi.id,'d1',hi.d1)}${cell(hi.id,'d3',hi.d3)}${cell(hi.id,'d5',hi.d5)}${cell(hi.id,'d7',hi.d7)}${cell(hi.id,'extra',hi.extra)}
+      ${cell(lo.id,'d1',lo.d1)}${cell(lo.id,'d2',lo.d2)}${cell(lo.id,'d3',lo.d3)}${cell(lo.id,'d4',lo.d4)}${cell(lo.id,'d5',lo.d5)}${cell(lo.id,'d6',lo.d6)}${cell(lo.id,'d7',lo.d7)}${cell(lo.id,'extra',lo.extra)}
+      ${cell(hi.id,'d1',hi.d1)}${cell(hi.id,'d2',hi.d2)}${cell(hi.id,'d3',hi.d3)}${cell(hi.id,'d4',hi.d4)}${cell(hi.id,'d5',hi.d5)}${cell(hi.id,'d6',hi.d6)}${cell(hi.id,'d7',hi.d7)}${cell(hi.id,'extra',hi.extra)}
       <td><input class="cell" type="number" min="0" data-ins="${b.id}" data-f="ins_basic" value="${b.ins_basic}"></td>
       <td><input class="cell" type="number" min="0" data-ins="${b.id}" data-f="ins_full" value="${b.ins_full}"></td>
     </tr>`;
@@ -775,7 +771,8 @@ function bkOpen(){
   $('bkCats').innerHTML=[...new Set(D.bikes.map(b=>b.category))]
     .map(c=>`<option value="${esc(c)}">`).join('');
   ['bkName','bkSlug','bkCat','bkGear','bkTag','bkImg','bkDesc'].forEach(id=>$(id).value='');
-  ['bkLo1','bkLo3','bkLo5','bkLo7','bkLoX','bkHi1','bkHi3','bkHi5','bkHi7','bkHiX'].forEach(id=>$(id).value='');
+  ['bkLo1','bkLo2','bkLo3','bkLo4','bkLo5','bkLo6','bkLo7','bkLoX',
+   'bkHi1','bkHi2','bkHi3','bkHi4','bkHi5','bkHi6','bkHi7','bkHiX'].forEach(id=>$(id).value='');
   $('bkInsB').value=20; $('bkInsF').value=80; $('bkActive').checked=true; $('bkErr').textContent='';
   $('bkModal').classList.add('on');
   $('bkName').focus();
@@ -804,8 +801,8 @@ $('bkSave').onclick=async()=>{
   if(!/^[a-z0-9-]+$/.test(slug))return err('The slug may use lowercase letters, numbers and dashes only.');
   if(D.bikes.some(b=>b.slug===slug))return err(`Another bike already uses the slug "${slug}".`);
   if(!cat)return err('Give the bike a category, for example "Road · Racing".');
-  const lo=[+$('bkLo1').value||0,+$('bkLo3').value||0,+$('bkLo5').value||0,+$('bkLo7').value||0,+$('bkLoX').value||0];
-  const hi=[+$('bkHi1').value||0,+$('bkHi3').value||0,+$('bkHi5').value||0,+$('bkHi7').value||0,+$('bkHiX').value||0];
+  const lo=[1,2,3,4,5,6,7].map(k=>+$('bkLo'+k).value||0).concat([+$('bkLoX').value||0]);
+  const hi=[1,2,3,4,5,6,7].map(k=>+$('bkHi'+k).value||0).concat([+$('bkHiX').value||0]);
   if(lo[0]<=0||hi[0]<=0)return err('The one-day price is needed for both seasons — the booking page prices every rental from it.');
   const sizes=[...$('bkSizes').querySelectorAll('[data-nsz]')]
     .map(i=>({size:i.dataset.nsz,qty:+i.value||0}));
@@ -832,8 +829,8 @@ $('bkSave').onclick=async()=>{
       .insert(sizes.map(x=>({bike_id:newId,size:x.size,qty:x.qty})));
     if(e2)throw e2;
     const {error:e3}=await sb.from('bike_prices').insert([
-      {bike_id:newId,season:'low', d1:lo[0],d3:lo[1],d5:lo[2],d7:lo[3],extra:lo[4]},
-      {bike_id:newId,season:'high',d1:hi[0],d3:hi[1],d5:hi[2],d7:hi[3],extra:hi[4]}
+      {bike_id:newId,season:'low', d1:lo[0],d2:lo[1],d3:lo[2],d4:lo[3],d5:lo[4],d6:lo[5],d7:lo[6],extra:lo[7]},
+      {bike_id:newId,season:'high',d1:hi[0],d2:hi[1],d3:hi[2],d4:hi[3],d5:hi[4],d6:hi[5],d7:hi[6],extra:hi[7]}
     ]);
     if(e3)throw e3;
     bkClose();
@@ -1068,7 +1065,8 @@ function estimate(){
   if(!bid||!f||!t||t<f){$('mTotal').textContent=money(0);return}
   const days=Math.round((parseD(t)-parseD(f))/864e5)+1;
   const p=priceOf(bid,seasonOf(f));if(!p){$('mTotal').textContent=money(0);return}
-  let sum= days<=1?+p.d1 : days===2?2*+p.d1 : days<=4?+p.d3+(days-3)*+p.extra : days<=6?+p.d5+(days-5)*+p.extra : +p.d7+(days-7)*+p.extra;
+  /* every length from 1 to 7 days is quoted outright in the price list */
+  let sum = days<=1 ? +p.d1 : (days<=7 ? +p['d'+days] : +p.d7+(days-7)*+p.extra);
   const b=bikeById(bid),ins=$('mIns').value;
   if(ins==='basic')sum+=+b.ins_basic; if(ins==='full')sum+=+b.ins_full;
   $('mAdd').querySelectorAll('.chip.on').forEach(c=>{
