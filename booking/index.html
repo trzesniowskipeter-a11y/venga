@@ -553,14 +553,13 @@ function alertMsg(msg){
   a.scrollIntoView({block:'center', behavior:'smooth'});
 }
 
-/* price interpolation — mirrors the server function exactly */
+/* mirrors the server function exactly: the price list quotes every length
+   from 1 to 7 days outright, and only past 7 does the extra-day rate apply */
 function bikePrice(bike, startDs, days){
   const p = bike.prices[seasonOf(startDs)];
   if(!p) return 0;
   if(days <= 1) return +p.d1;
-  if(days === 2) return 2 * +p.d1;
-  if(days <= 4) return +p.d3 + (days-3) * +p.extra;
-  if(days <= 6) return +p.d5 + (days-5) * +p.extra;
+  if(days <= 7) return +p[('d'+days)];
   return +p.d7 + (days-7) * +p.extra;
 }
 function addonPrice(a, days){
