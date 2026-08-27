@@ -963,7 +963,9 @@ async function submit(){
       p_delivery_address: S.delivery ? $('addr').value.trim() : null,
       p_insurance: S.insurance, p_addons: [...S.extras],
       p_name: $('nm').value.trim(), p_email: $('em').value.trim(),
-      p_phone: $('ph').value.trim() || null, p_notes: $('nt').value.trim() || null
+      p_phone: $('ph').value.trim() || null, p_notes: $('nt').value.trim() || null,
+      /* so the confirmation email arrives in the language they booked in */
+      p_lang: (function(){try{return localStorage.getItem('venga_lang')||'en'}catch(e){return 'en'}})()
     });
     if(error) throw error;
     showDone(data);
