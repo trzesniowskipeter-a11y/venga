@@ -840,11 +840,15 @@ function renderSlots(){
 /* ============ EXTRAS ============ */
 function renderExtras(){
   const d = nights() || 1;
+  /* FULL & SOS is suspended for now — set INSURANCE_FULL_ON to true to offer it
+     again. Past bookings that used it still display correctly everywhere. */
+  const INSURANCE_FULL_ON = false;
   const ins = [
     {v:'none', n:'No insurance', d:'You cover any damage or loss yourself.', p:0},
-    {v:'basic', n:'Basic insurance', d:'Reduced liability for damage during your rental.', p:S.bike ? +S.bike.ins_basic : null},
-    {v:'full', n:'FULL & SOS insurance', d:'Full damage and theft cover, plus roadside assistance anywhere on the island.', p:S.bike ? +S.bike.ins_full : null}
+    {v:'basic', n:'Basic insurance', d:'Reduced liability for damage during your rental (cover up to €1,000).', p:S.bike ? +S.bike.ins_basic : null},
+    ...(INSURANCE_FULL_ON ? [{v:'full', n:'FULL & SOS insurance', d:'Full damage and theft cover, plus roadside assistance anywhere on the island.', p:S.bike ? +S.bike.ins_full : null}] : [])
   ];
+  if(!INSURANCE_FULL_ON && S.insurance === 'full') S.insurance = 'basic';
   $('insOpts').innerHTML = ins.map(o => `
     <button class="opt" type="button" data-ins="${o.v}" aria-pressed="${S.insurance===o.v}">
       <span class="box">✓</span>
