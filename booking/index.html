@@ -447,15 +447,15 @@ footer{border-top:1px solid var(--line);padding:24px clamp(18px,4vw,44px);text-a
       <div class="opts" id="insOpts"></div>
       <div class="grp-h">Equipment &amp; services</div>
       <div class="opts" id="addOpts"></div>
-      <div class="grp-h">Delivery</div>
-      <div class="opts">
+      <div class="grp-h" data-delivery hidden>Delivery</div>
+      <div class="opts" data-delivery hidden>
         <button class="opt" id="delBtn" aria-pressed="false" type="button">
           <span class="box">✓</span>
           <span class="tx"><b>Deliver the bike to me</b><span>We bring your bike anywhere on Mallorca and collect it after your ride.</span></span>
           <span class="pr" id="delPrice">€100</span>
         </button>
       </div>
-      <div class="del-addr" id="delAddr">
+      <div class="del-addr" id="delAddr" data-delivery hidden>
         <div class="fld">
           <label for="addr">Delivery address</label>
           <input id="addr" type="text" placeholder="Hotel name, street, town" autocomplete="street-address">
@@ -587,6 +587,16 @@ function addonPrice(a, days){
   if(a.long_threshold && days >= a.long_threshold) return +(a.price_long ?? a.price ?? 0);
   return +(a.price ?? 0);
 }
+
+/* ---- delivery temporarily switched off ----
+   Set DELIVERY_ON to true to offer it again; nothing else needs changing.
+   The database column stays untouched, so past bookings keep their data. */
+const DELIVERY_ON = false;
+if(!DELIVERY_ON){
+  document.querySelectorAll('[data-delivery]').forEach(el=>el.hidden = true);
+  S.delivery = false;
+}
+
 function deliveryFee(){ return +(S.settings?.delivery_fee ?? 100); }
 
 function total(){
@@ -853,7 +863,7 @@ function renderExtras(){
   $('delBtn').setAttribute('aria-pressed', S.delivery);
   $('delAddr').classList.toggle('on', S.delivery);
 }
-$('delBtn').onclick = () => { S.delivery = !S.delivery; renderExtras(); paintSummary(); gate(); };
+$('delBtn').onclick = () => { if(!DELIVERY_ON) return; S.delivery = !S.delivery; renderExtras(); paintSummary(); gate(); };
 
 /* ============ AVAILABILITY SEARCH (step 1, mode B) ============ */
 function setMode(search){
