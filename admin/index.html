@@ -217,6 +217,28 @@ input.cell.wide{width:100%;text-align:left}
   letter-spacing:.14em;text-transform:uppercase;cursor:pointer;padding:2px 0}
 .mcal-foot button:hover{color:var(--gold)}
 .mcal.off{opacity:.4;pointer-events:none}
+
+/* ===== journal (CMS) ===== */
+.cms-wrap{display:grid;grid-template-columns:280px 1fr;gap:22px;align-items:start}
+@media(max-width:900px){.cms-wrap{grid-template-columns:1fr}}
+.cms-list{border:1px solid var(--line);padding:12px;background:rgba(255,255,255,.012)}
+.cms-list #cmsItems{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.cms-item{text-align:left;background:none;border:1px solid transparent;color:var(--ink2);cursor:pointer;
+  padding:11px 12px;font-family:var(--body);font-size:.84rem;line-height:1.3;transition:.2s}
+.cms-item:hover{border-color:var(--line)}
+.cms-item.on{border-color:var(--gold);background:rgba(190,157,82,.08)}
+.cms-item small{display:block;margin-top:4px;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2)}
+.cms-item .st{color:var(--gold)}
+.cms-item .st.live{color:#8FB280}
+.cms-edit{border:1px solid var(--line);padding:20px;background:rgba(255,255,255,.012)}
+.cms-edit textarea{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86rem;line-height:1.55}
+.cnt{float:right;font-size:.62rem;letter-spacing:.06em;color:var(--muted2);text-transform:none}
+.cnt.warn{color:#E0A868}.cnt.bad{color:#C9704A}
+.serp{border:1px solid var(--line);padding:16px;margin:6px 0 14px;background:#fff;border-radius:6px}
+.serp .u{color:#4d5156;font-size:.72rem}
+.serp .t{color:#1a0dab;font-size:1.06rem;line-height:1.3;margin:3px 0 4px}
+.serp .d{color:#4d5156;font-size:.82rem;line-height:1.45}
+.hint b{color:var(--gold);font-weight:600}
 </style>
 </head>
 <body>
@@ -244,6 +266,7 @@ input.cell.wide{width:100%;text-align:left}
         <button class="tab" data-p="blk">Blocked dates</button>
         <button class="tab" data-p="fleet">Fleet &amp; prices</button>
         <button class="tab" data-p="ext">Extras</button>
+        <button class="tab" data-p="cms">Journal</button>
         <button class="tab" data-p="out" style="color:var(--stone)">Sign out</button>
       </div>
     </div>
@@ -344,6 +367,70 @@ input.cell.wide{width:100%;text-align:left}
         <button class="btn btn-o btn-sm" id="extReload">Discard</button>
         <button class="btn btn-g btn-sm" id="extSave">Save changes</button></div>
     </section>
+    <section class="pane" id="p-cms">
+      <h2 class="ph">Journal</h2>
+      <p class="sub">Write an article, set how it looks in Google, publish. Publishing writes a real page to the site — that is what search engines index.</p>
+      <div class="msg err" id="cmsErr"></div>
+      <div class="msg good" id="cmsOk"></div>
+
+      <div class="cms-wrap">
+        <aside class="cms-list">
+          <button class="btn btn-g btn-sm" id="cmsNew" style="width:100%">+ New article</button>
+          <div id="cmsItems"></div>
+        </aside>
+
+        <div class="cms-edit" id="cmsEdit" hidden>
+          <div class="two">
+            <div class="f"><label for="cTitle">Title</label><input id="cTitle" placeholder="Sa Calobra: what nobody tells you"></div>
+            <div class="f"><label for="cSlug">Web address</label><input id="cSlug" placeholder="sa-calobra-what-nobody-tells-you">
+              <small class="hint" id="cUrl"></small></div>
+          </div>
+          <div class="two">
+            <div class="f"><label for="cLang">Language</label>
+              <select id="cLang"><option value="en">English</option><option value="es">Español</option><option value="pl">Polski</option></select></div>
+            <div class="f"><label for="cStatus">Status</label>
+              <select id="cStatus"><option value="draft">Draft</option><option value="published">Published</option></select></div>
+          </div>
+          <div class="f"><label for="cExcerpt">Summary <span class="cnt" id="cExCnt"></span></label>
+            <textarea id="cExcerpt" rows="2" placeholder="One or two sentences shown in the listing."></textarea></div>
+          <div class="two">
+            <div class="f"><label for="cCover">Cover image</label><input id="cCover" placeholder="/assets/img/route-5.webp"></div>
+            <div class="f"><label for="cCoverAlt">Image description</label><input id="cCoverAlt" placeholder="What the photo shows"></div>
+          </div>
+
+          <div class="f"><label for="cBody">Article</label>
+            <textarea id="cBody" rows="16" placeholder="## A heading
+
+Write in plain text. Blank line starts a new paragraph.
+
+## Another heading
+
+- a list item
+- another one
+
+> a pulled-out quote
+
+**bold** and *italic* and [a link](https://example.com)"></textarea>
+            <small class="hint">Markdown: <b>## </b>heading · <b>- </b>list · <b>&gt; </b>quote · <b>**bold**</b> · <b>[text](link)</b></small>
+          </div>
+
+          <h4 class="bkh">Search engine listing</h4>
+          <div class="f"><label for="cSeoTitle">Page title <span class="cnt" id="cStCnt"></span></label>
+            <input id="cSeoTitle" placeholder="Leave empty to use the article title"></div>
+          <div class="f"><label for="cSeoDesc">Description <span class="cnt" id="cSdCnt"></span></label>
+            <textarea id="cSeoDesc" rows="2" placeholder="Leave empty to use the summary"></textarea></div>
+          <div class="serp" id="cSerp"></div>
+          <label class="bkchk"><input type="checkbox" id="cNoindex"> Hide this page from search engines</label>
+
+          <div class="mact">
+            <button class="btn btn-o" id="cDelete">Delete</button>
+            <button class="btn btn-o" id="cSave">Save draft</button>
+            <button class="btn btn-g" id="cPublish">Publish to site</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </div>
 </div>
 
@@ -529,7 +616,7 @@ async function loadAll(){
   if(b.error||r.error){bad('Could not load data. Check your connection and refresh.');return}
   D.bikes=b.data||[];D.sizes=s.data||[];D.prices=p.data||[];D.addons=a.data||[];
   D.settings=st.data?.value||{delivery_fee:100};D.res=r.data||[];D.blocks=bl.data||[];
-  renderRes();renderKpis();renderFleet();renderExt();fillModalBikes();fillBlkSelects();renderBlocks();
+  renderRes();renderKpis();renderFleet();renderExt();if(typeof cmsLoad==='function')cmsLoad();fillModalBikes();fillBlkSelects();renderBlocks();
 }
 const bikeById=id=>D.bikes.find(b=>b.id===id);
 const sizesOf=id=>D.sizes.filter(s=>s.bike_id===id).sort((a,b)=>SIZES_ALL.indexOf(a.size)-SIZES_ALL.indexOf(b.size));
@@ -849,6 +936,140 @@ $('bkSave').onclick=async()=>{
     console.error(e);
   }
   btn.disabled=false; btn.textContent='Add bike';
+};
+
+
+/* ============ JOURNAL (CMS) ============ */
+const CMS = {items:[], cur:null};
+const SITE_URL = 'https://vengacyclingmallorca.com';
+
+function slugify(t){
+  return String(t||'').toLowerCase()
+    .replace(/[ąàáâä]/g,'a').replace(/[ćç]/g,'c').replace(/[ęèéêë]/g,'e')
+    .replace(/[ł]/g,'l').replace(/[ńñ]/g,'n').replace(/[óòôö]/g,'o')
+    .replace(/[śş]/g,'s').replace(/[üùúû]/g,'u').replace(/[żź]/g,'z')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,70);
+}
+async function cmsLoad(){
+  const {data,error} = await sb.from('articles').select('*').order('updated_at',{ascending:false});
+  if(error){flash($('cmsErr'),'Could not load articles: '+error.message,6000);return}
+  CMS.items = data||[];
+  cmsRenderList();
+}
+function cmsRenderList(){
+  $('cmsItems').innerHTML = CMS.items.map(a=>`
+    <button class="cms-item${CMS.cur&&CMS.cur.id===a.id?' on':''}" data-id="${a.id}">
+      ${esc(a.title||'Untitled')}
+      <small><span class="st ${a.status==='published'?'live':''}">${a.status==='published'?'Live':'Draft'}</span>
+      · ${a.lang.toUpperCase()} · ${new Date(a.updated_at).toLocaleDateString('en-GB')}</small>
+    </button>`).join('') || '<p class="sub" style="padding:8px 4px">No articles yet.</p>';
+  $('cmsItems').querySelectorAll('[data-id]').forEach(b=>{
+    b.onclick=()=>cmsOpen(CMS.items.find(x=>x.id===b.dataset.id));
+  });
+}
+function cmsOpen(a){
+  CMS.cur = a ? {...a} : {id:null,slug:'',lang:'en',status:'draft',title:'',excerpt:'',body_md:'',
+                          cover_url:'',cover_alt:'',seo_title:'',seo_description:'',noindex:false};
+  const c = CMS.cur;
+  $('cTitle').value=c.title||''; $('cSlug').value=c.slug||'';
+  $('cLang').value=c.lang||'en'; $('cStatus').value=c.status||'draft';
+  $('cExcerpt').value=c.excerpt||''; $('cBody').value=c.body_md||'';
+  $('cCover').value=c.cover_url||''; $('cCoverAlt').value=c.cover_alt||'';
+  $('cSeoTitle').value=c.seo_title||''; $('cSeoDesc').value=c.seo_description||'';
+  $('cNoindex').checked=!!c.noindex;
+  $('cDelete').style.display = c.id ? '' : 'none';
+  $('cmsEdit').hidden=false;
+  cmsPreview(); cmsRenderList();
+}
+function cmsPreview(){
+  const t = ($('cSeoTitle').value || $('cTitle').value || 'Untitled').trim();
+  const d = ($('cSeoDesc').value || $('cExcerpt').value || '').trim();
+  const slug = $('cSlug').value || slugify($('cTitle').value);
+  $('cUrl').textContent = slug ? SITE_URL+'/blog/'+slug+'/' : '';
+  $('cSerp').innerHTML =
+    `<div class="u">${SITE_URL}/blog/${esc(slug)}/</div>
+     <div class="t">${esc(t.length>60?t.slice(0,60)+'…':t)}</div>
+     <div class="d">${esc(d.length>160?d.slice(0,160)+'…':d) || 'No description yet — Google will pick text from the page.'}</div>`;
+  /* counters: Google shows about 60 characters of title and 160 of description */
+  const mark=(el,len,ideal,max)=>{
+    el.textContent = len+' / '+ideal;
+    el.className = 'cnt' + (len>max?' bad':(len>ideal?' warn':''));
+  };
+  mark($('cStCnt'), t.length, 60, 65);
+  mark($('cSdCnt'), d.length, 160, 175);
+  mark($('cExCnt'), $('cExcerpt').value.length, 160, 200);
+}
+['cTitle','cSeoTitle','cSeoDesc','cExcerpt','cSlug'].forEach(id=>{
+  document.addEventListener('input', e=>{ if(e.target.id===id) cmsPreview(); });
+});
+$('cTitle').addEventListener('input',()=>{
+  if(!CMS.cur.id && !$('cSlug').dataset.touched) $('cSlug').value = slugify($('cTitle').value);
+  cmsPreview();
+});
+$('cSlug').addEventListener('input',()=>{$('cSlug').dataset.touched='1'});
+$('cmsNew').onclick=()=>cmsOpen(null);
+
+function cmsCollect(){
+  return {
+    slug: ($('cSlug').value||slugify($('cTitle').value)).trim(),
+    lang: $('cLang').value, status: $('cStatus').value,
+    title: $('cTitle').value.trim(), excerpt: $('cExcerpt').value.trim()||null,
+    body_md: $('cBody').value, cover_url: $('cCover').value.trim()||null,
+    cover_alt: $('cCoverAlt').value.trim()||null,
+    seo_title: $('cSeoTitle').value.trim()||null,
+    seo_description: $('cSeoDesc').value.trim()||null,
+    noindex: $('cNoindex').checked
+  };
+}
+async function cmsSave(){
+  const v = cmsCollect();
+  if(!v.title) { flash($('cmsErr'),'Give the article a title.',5000); return null; }
+  if(!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(v.slug)){
+    flash($('cmsErr'),'The web address may use lowercase letters, numbers and dashes only.',6000); return null; }
+  let res;
+  if(CMS.cur.id) res = await sb.from('articles').update(v).eq('id',CMS.cur.id).select().single();
+  else           res = await sb.from('articles').insert(v).select().single();
+  if(res.error){
+    flash($('cmsErr'), res.error.message.includes('duplicate')
+      ? 'That web address is already taken by another article.' : 'Could not save: '+res.error.message, 7000);
+    return null;
+  }
+  CMS.cur = res.data;
+  await cmsLoad();
+  return res.data;
+}
+$('cSave').onclick=async()=>{
+  const btn=$('cSave'); btn.disabled=true; btn.textContent='Saving…';
+  const a=await cmsSave();
+  if(a) flash($('cmsOk'),'Draft saved.',3500);
+  btn.disabled=false; btn.textContent='Save draft';
+};
+$('cPublish').onclick=async()=>{
+  const btn=$('cPublish'); btn.disabled=true; btn.textContent='Publishing…';
+  $('cStatus').value='published';
+  const a=await cmsSave();
+  if(a){
+    try{
+      /* the function holds the GitHub token; the browser never sees it */
+      const {data,error} = await sb.functions.invoke('publish',{body:{id:a.id}});
+      if(error) throw error;
+      if(data && data.ok===false) throw new Error(data.error||'unknown');
+      flash($('cmsOk'),'Published. The page appears at '+(data?.url||'')+' in about a minute.',9000);
+    }catch(e){
+      flash($('cmsErr'),'Saved, but publishing failed: '+(e.message||e)+
+        ' — check that GITHUB_TOKEN is set on the publish function.',10000);
+    }
+  }
+  btn.disabled=false; btn.textContent='Publish to site';
+};
+$('cDelete').onclick=async()=>{
+  if(!CMS.cur.id) return;
+  if(!confirm('Delete this article? The published page will be removed from the site too.')) return;
+  try{ await sb.functions.invoke('publish',{body:{id:CMS.cur.id,action:'unpublish'}}); }catch(e){}
+  const {error}=await sb.from('articles').delete().eq('id',CMS.cur.id);
+  if(error){flash($('cmsErr'),'Could not delete: '+error.message,6000);return}
+  CMS.cur=null; $('cmsEdit').hidden=true; await cmsLoad();
+  flash($('cmsOk'),'Article deleted.',3500);
 };
 
 /* ===== EXTRAS ===== */
