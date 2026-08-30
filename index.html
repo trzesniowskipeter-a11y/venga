@@ -2217,6 +2217,60 @@ document.addEventListener('keydown',function(e){
     });
 })();
 
+
+/* ============ ANALYTICS LAYER ============
+   Nothing is sent anywhere on its own. Events are pushed to window.dataLayer,
+   which is what Google Tag Manager reads. Paste the GTM snippet and every event
+   below becomes available as a trigger — no further code changes needed. */
+window.dataLayer = window.dataLayer || [];
+(function(){
+  function track(name, data){
+    try{ window.dataLayer.push(Object.assign({event:name}, data||{})); }catch(e){}
+  }
+  window.vengaTrack = track;
+
+  function lang(){ try{ return localStorage.getItem('venga_lang')||'en' }catch(e){ return 'en' } }
+
+  track('page_view_ready', {page:'home', language:lang()});
+
+  document.addEventListener('click', function(e){
+    /* the fleet card is an <article>, not a link — check it before bailing out */
+    var card0 = e.target.closest('.bike[data-bike]');
+    if(card0 && typeof BIKES!=='undefined' && !window.__railDragged){
+      var b0 = BIKES[+card0.dataset.bike];
+      if(b0) track('bike_view', {bike_name:b0.name, bike_id:b0.id, language:lang()});
+    }
+    var a = e.target.closest('a,button');
+    if(!a) return;
+
+    /* the booking funnel starts here */
+    if(a.matches('.nav-cta') || (a.getAttribute('href')||'').indexOf('booking/')===0){
+      track('booking_start', {placement: a.closest('#nav') ? 'nav' : 'page', language:lang()});
+    }
+    /* book button inside the bike modal */
+    if(a.id==='mBook' && typeof curBike!=='undefined' && curBike){
+      track('booking_start', {placement:'bike_modal', bike_name:curBike.name, language:lang()});
+    }
+    /* 360 spin, gallery, details — engagement signals */
+    if(a.id==='gal360') track('bike_360_open', {bike_name:(typeof curBike!=='undefined'&&curBike)?curBike.name:''});
+    /* contact intents are conversions for a rental shop */
+    var href = a.getAttribute('href')||'';
+    if(href.indexOf('tel:')===0)    track('contact_click', {method:'phone', language:lang()});
+    if(href.indexOf('mailto:')===0) track('contact_click', {method:'email', language:lang()});
+    if(href.indexOf('routes/')>=0)  track('routes_view', {language:lang()});
+    /* language switch tells you which market is actually arriving */
+    if(a.matches('.lang button')) track('language_change', {from:lang(), to:a.dataset.lang});
+  }, true);
+
+  /* how far people actually read */
+  var marks=[25,50,75,100], hit={};
+  addEventListener('scroll', function(){
+    var h=document.documentElement;
+    var pct=Math.round((h.scrollTop)/(h.scrollHeight-innerHeight)*100);
+    marks.forEach(function(m){ if(pct>=m && !hit[m]){ hit[m]=1; track('scroll_depth',{percent:m}); } });
+  }, {passive:true});
+})();
+
 /* hero video autoplay nudge + tap-to-play fallback */
 (function(){
   const v=document.getElementById('heroVid');if(!v)return;
