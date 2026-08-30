@@ -1449,7 +1449,7 @@ section[id]{scroll-margin-top:76px}
 </script>
 <script>
 const BIKES=[
- {id:"propel",cat:"Aero road · Racing",name:"Giant Propel Advanced TOP Pro",gset:"Shimano Dura-Ace Di2 · CADEX wheels · Power meter",img:"assets/img/bike-propel.webp",gallery:["assets/img/propel-1.webp", "assets/img/propel-2.webp", "assets/img/propel-3.webp", "assets/img/propel-4.webp", "assets/img/propel-5.webp", "assets/img/propel-6.webp", "assets/img/propel-7.webp", "assets/img/propel-8.webp"],tag:"Top Pro",
+ {id:"propel",cat:"Aero road · Racing",name:"Giant Propel Advanced TOP Pro",gset:"Shimano Dura-Ace Di2 · CADEX wheels · Power meter",img:"assets/img/bike-propel.webp",gallery:["assets/img/propel-8.webp","assets/img/propel-2.webp","assets/img/propel-3.webp","assets/img/propel-4.webp","assets/img/propel-5.webp","assets/img/propel-6.webp","assets/img/propel-7.webp"],tag:"Top Pro",
   desc:"The essence of modern aerodynamics and engineering excellence. Built to win — low weight, exceptional stiffness and outstanding efficiency, with every second on the road counting.",
   spec:[["Groupset","Dura-Ace Di2 12s"],["Wheels","CADEX Carbon Ultra"],["Gearing","52/36T · 11–34T"],["Weight","≈ 7.0 kg"],["Tyres","28 mm"],["Rider limit","110 kg"]],
   chips:["Dura-Ace Di2","CADEX Ultra","Power meter","7.0 kg"],
@@ -1963,7 +1963,9 @@ const I18N={"Cycling Mallorca": {"es": "Cycling Mallorca", "pl": "Cycling Mallor
 
 
 /* ---------- 360° turntable: drag to rotate ---------- */
-window.TURN={propel:{frames:32,dir:'assets/img/turn/propel-'}};
+/* 360 spin removed: its frames start from a different angle than the
+   catalogue photos, which made the Propel face the wrong way. */
+window.TURN={};
 /* cards are built before this point, so tag the ones that have a turntable */
 (function(){
   document.querySelectorAll('.bike[data-bike]').forEach(function(el){
