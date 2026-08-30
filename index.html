@@ -607,6 +607,9 @@ footer small{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color
 .band.statement p{margin-left:auto;margin-right:auto;max-width:52ch}
 @media(max-width:700px){
   .band.machine::after{background:linear-gradient(180deg,rgba(14,13,11,.55),rgba(14,13,11,.85))}
+  /* narrow screens crop to the centre, which is empty spokes — pull the frame
+     across so the cassette and derailleur stay in shot */
+  .band.machine .plx{object-position:72% 50%}
 }
 
 /* ============ PREMIUM LAYER ============ */
@@ -1131,7 +1134,7 @@ section[id]{scroll-margin-top:76px}
 </section>
 
 <section class="band machine spot">
-  <img class="plx" data-speed="0.06" src="assets/img/detail-drivetrain.webp" alt="Carbon crankset and drivetrain detail at golden hour">
+  <img class="plx" data-speed="0.06" src="assets/img/detail-drivetrain.webp" alt="CADEX carbon wheel, Shimano cassette and rear derailleur on a Giant Propel">
   <div class="band-wrap">
     <div class="cap">
       <div class="eyebrow rv">The machine</div>
