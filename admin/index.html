@@ -387,7 +387,7 @@ input.cell.wide{width:100%;text-align:left}
     </div>
     <div class="two">
       <div class="f"><label for="mPhone">Phone</label><input id="mPhone" type="tel"></div>
-      <div class="f"><label for="mDel">Delivery</label><select id="mDel"><option value="0">Pickup in shop</option><option value="1">Delivery</option></select></div>
+      <div class="f" data-delivery hidden><label for="mDel">Delivery</label><select id="mDel"><option value="0">Pickup in shop</option><option value="1">Delivery</option></select></div>
     </div>
     <div class="f" id="mAddrF" style="display:none"><label for="mAddr">Delivery address</label><input id="mAddr" type="text"></div>
     <div class="f"><label for="mNotes">Notes</label><textarea id="mNotes" rows="2"></textarea></div>
@@ -1015,6 +1015,14 @@ $('mCalClear').onclick=()=>{mcalReset(true);$('mErr').classList.remove('on')};
 }));
 $('mBike').addEventListener('change',()=>{MCAL.key='';mcalLoad()});
 $('mSize').addEventListener('change',()=>{MCAL.key='';mcalLoad()});
+
+
+/* delivery is switched off site-wide for now; flip to true to bring it back */
+const DELIVERY_ON = false;
+if(!DELIVERY_ON){
+  document.querySelectorAll('[data-delivery]').forEach(el=>el.hidden = true);
+  const d=document.getElementById('mDel'); if(d)d.value='0';
+}
 
 function clearModal(){
   ['mName','mMail','mPhone','mNotes','mAddr','mFrom','mTo','mPrice'].forEach(i=>$(i).value='');
