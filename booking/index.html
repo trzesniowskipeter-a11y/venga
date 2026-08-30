@@ -694,6 +694,7 @@ function renderBikes(){
       }
       if(S.bike?.id !== b.id){ S.size = null; if(!S.avail){ S.start = S.end = null; } S.booked = {}; S.blocked = {}; }
       S.bike = b;
+      track('select_bike', {bike_name:b.name, bike_id:b.id});
       renderBikes(); renderSizes(); paintSummary(); gate();
     };
   });
@@ -965,7 +966,25 @@ function gate(){
   n.textContent = S.step === 5 ? 'Confirm reservation' : 'Continue';
   $('back').style.visibility = S.step === 1 ? 'hidden' : 'visible';
 }
+
+/* ============ ANALYTICS LAYER ============
+   Pushes to window.dataLayer only. Paste the GTM snippet and these become
+   triggers: which step people reach, and where they drop out. */
+window.dataLayer = window.dataLayer || [];
+function track(name, data){
+  try{ window.dataLayer.push(Object.assign({event:name}, data||{})); }catch(e){}
+}
+window.vengaTrack = track;
+var STEP_NAME = {1:'choose_bike',2:'choose_size_dates',3:'pickup_time',4:'extras_insurance',5:'your_details'};
+var _seenStep = {};
+function trackStep(n){
+  if(_seenStep[n]) return; _seenStep[n] = 1;
+  track('booking_step', {step_number:n, step_name:STEP_NAME[n]||('step_'+n),
+    bike_name:(S.bike&&S.bike.name)||'', size:S.size||'', days:S.days||''});
+}
+
 function paint(){
+  trackStep(S.step);
   document.querySelectorAll('.step').forEach(s => s.classList.remove('on'));
   $('s'+S.step).classList.add('on');
   renderRail(); gate();
@@ -1025,6 +1044,7 @@ async function submit(){
     if(error) throw error;
     showDone(data);
   }catch(e){
+    track('booking_error', {reason:(e.message||'unknown').slice(0,80)});
     const key = Object.keys(ERRORS).find(k => (e.message||'').includes(k));
     alertMsg(key ? ERRORS[key] : "We couldn't save your reservation. Please try again, or email hola@vengacyclingmallorca.com.");
     btn.disabled = false; btn.textContent = 'Confirm reservation';
@@ -1032,6 +1052,13 @@ async function submit(){
   }
 }
 function showDone(res){
+  /* the conversion: everything a rental shop wants to see in reports */
+  track('booking_complete', {
+    transaction_id: res.code, value: Number(res.total), currency:'EUR',
+    bike_name: S.bike && S.bike.name, size: S.size, days: res.days,
+    insurance: S.insurance, delivery: !!S.delivery,
+    extras: [...S.extras].join(','), language: (function(){try{return localStorage.getItem('venga_lang')||'en'}catch(e){return 'en'}})()
+  });
   document.querySelectorAll('.step').forEach(s => s.classList.remove('on'));
   $('sDone').classList.add('on');
   $('acts').style.display = 'none';
