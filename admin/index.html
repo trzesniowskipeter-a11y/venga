@@ -817,7 +817,7 @@ $('bkSave').onclick=async()=>{
       gearset:$('bkGear').value.trim()||null,
       tag:$('bkTag').value.trim()||null,
       description:$('bkDesc').value.trim()||null,
-      image_url:$('bkImg').value.trim()||null,
+      image_url:(v=>v?(/^(https?:|\/)/.test(v)?v:'/'+v.replace(/^\.?\//,'')):null)($('bkImg').value.trim()),
       ins_basic:+$('bkInsB').value||0,
       ins_full:+$('bkInsF').value||0,
       active:$('bkActive').checked,
