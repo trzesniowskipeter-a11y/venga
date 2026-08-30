@@ -377,7 +377,7 @@ input.cell.wide{width:100%;text-align:left}
     <div class="two">
       <div class="f"><label for="mTime">Pickup</label><select id="mTime"></select></div>
       <div class="f"><label for="mIns">Insurance</label><select id="mIns">
-        <option value="none">None</option><option value="basic">Basic</option><option value="full">FULL &amp; SOS</option>
+        <option value="none">None</option><option value="basic">Basic</option><option value="full" data-ins-full hidden>FULL &amp; SOS</option>
       </select></div>
     </div>
     <div class="f"><label>Extras</label><div class="chips" id="mAdd"></div></div>
@@ -1022,6 +1022,13 @@ const DELIVERY_ON = false;
 if(!DELIVERY_ON){
   document.querySelectorAll('[data-delivery]').forEach(el=>el.hidden = true);
   const d=document.getElementById('mDel'); if(d)d.value='0';
+}
+
+
+/* FULL & SOS suspended: hidden from new bookings, still shown on old ones */
+const INSURANCE_FULL_ON = false;
+if(!INSURANCE_FULL_ON){
+  document.querySelectorAll('[data-ins-full]').forEach(o=>{o.hidden=true;o.disabled=true});
 }
 
 function clearModal(){
