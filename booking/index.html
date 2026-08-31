@@ -199,6 +199,18 @@ header p{color:rgba(244,240,231,.72);max-width:52ch}
 .grp-h:first-child{margin-top:0}
 
 
+
+/* rider profile: position picker */
+.fhint{display:block;margin-top:6px;font-size:.72rem;color:var(--stone);letter-spacing:0;text-transform:none}
+.pos-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+@media(max-width:620px){.pos-opts{grid-template-columns:1fr}}
+.pos{text-align:left;background:rgba(255,255,255,.02);border:1px solid rgba(190,157,82,.24);
+  color:var(--ivory);cursor:pointer;padding:14px 16px;font-family:var(--body);transition:.22s}
+.pos b{display:block;font-size:.86rem;letter-spacing:.02em;margin-bottom:4px}
+.pos span{display:block;font-size:.76rem;color:rgba(244,240,231,.66);line-height:1.4}
+.pos:hover{border-color:var(--gold)}
+.pos[aria-pressed="true"]{background:rgba(190,157,82,.14);border-color:var(--gold)}
+.pos[aria-pressed="true"] b{color:var(--gold)}
 /* pedal system picker inside the addon card */
 .opt-group{display:block}
 .opt-variants{display:none;padding:12px 16px 14px 52px;background:rgba(190,157,82,.06);
@@ -485,7 +497,38 @@ footer{border-top:1px solid var(--line);padding:24px clamp(18px,4vw,44px);text-a
         <div class="fld"><label for="em">Email</label><input id="em" type="email" autocomplete="email"><div class="err">Please enter a valid email address.</div></div>
       </div>
       <div class="fld"><label for="ph">Phone <span style="color:var(--stone);letter-spacing:0;text-transform:none">(optional)</span></label><input id="ph" type="tel" autocomplete="tel"></div>
-      <div class="fld"><label for="nt">Notes <span style="color:var(--stone);letter-spacing:0;text-transform:none">(optional)</span></label><textarea id="nt" placeholder="Height, saddle preference, pedal type, routes you're planning…"></textarea></div>
+
+      <div class="fld"><label for="acc">Where you're staying</label>
+        <input id="acc" type="text" placeholder="Hotel or apartment name, Port de Pollença">
+        <div class="err">Please tell us your hotel or apartment.</div>
+        <small class="fhint">So we know where you're riding from — and where to reach you.</small></div>
+
+      <div class="two">
+        <div class="fld"><label for="hgt">Your height (cm)</label>
+          <input id="hgt" type="number" min="120" max="220" inputmode="numeric" placeholder="182">
+          <div class="err">Please give your height in centimetres (120–220).</div>
+          <small class="fhint">We pick the frame size and set the saddle from this.</small></div>
+        <div class="fld"><label for="wgt">Your weight (kg) <span style="color:var(--stone);letter-spacing:0;text-transform:none">(optional)</span></label>
+          <input id="wgt" type="number" min="35" max="200" inputmode="numeric" placeholder="78">
+          <small class="fhint">Helps us set tyre pressure.</small></div>
+      </div>
+
+      <div class="fld pos-fld">
+        <label>Preferred riding position</label>
+        <small class="fhint">How would you like us to set up your bike?</small>
+        <div class="pos-opts" id="posOpts">
+          <button class="pos" type="button" data-pos="sporty" aria-pressed="false">
+            <b>Sporty</b><span>Lower and more aerodynamic</span></button>
+          <button class="pos" type="button" data-pos="balanced" aria-pressed="false">
+            <b>Balanced</b><span>A mix of performance and comfort</span></button>
+          <button class="pos" type="button" data-pos="relaxed" aria-pressed="false">
+            <b>Relaxed</b><span>More upright for sightseeing and easy rides</span></button>
+          <button class="pos" type="button" data-pos="unsure" aria-pressed="true">
+            <b>Not sure</b><span>Please recommend the best option for me</span></button>
+        </div>
+      </div>
+
+      <div class="fld"><label for="nt">Anything else <span style="color:var(--stone);letter-spacing:0;text-transform:none">(optional)</span></label><textarea id="nt" placeholder="Saddle preference, routes you're planning, riding with a group…"></textarea></div>
     </section>
 
     <!-- DONE -->
@@ -1103,14 +1146,30 @@ $('next').onclick = async () => {
   await submit();
 };
 
+/* ============ RIDING POSITION ============ */
+S.position = 'unsure';
+document.querySelectorAll('#posOpts .pos').forEach(btn=>{
+  btn.onclick = () => {
+    S.position = btn.dataset.pos;
+    document.querySelectorAll('#posOpts .pos').forEach(x=>
+      x.setAttribute('aria-pressed', x === btn));
+    track('riding_position', {position: S.position});
+  };
+});
+
 /* ============ SUBMIT ============ */
 function validForm(){
   let ok = true;
-  const nm = $('nm'), em = $('em');
+  const nm = $('nm'), em = $('em'), acc = $('acc'), hgt = $('hgt');
   const bad = (el, isBad) => el.closest('.fld').classList.toggle('bad', isBad);
   bad(nm, !nm.value.trim()); if(!nm.value.trim()) ok = false;
   const emOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em.value.trim());
   bad(em, !emOk); if(!emOk) ok = false;
+  /* the fitter cannot prepare a bike without these two */
+  bad(acc, !acc.value.trim()); if(!acc.value.trim()) ok = false;
+  const h = parseInt(hgt.value, 10);
+  const hOk = Number.isFinite(h) && h >= 120 && h <= 220;
+  bad(hgt, !hOk); if(!hOk) ok = false;
   return ok;
 }
 const ERRORS = {
@@ -1122,7 +1181,12 @@ const ERRORS = {
   INVALID_DATES: "Please check your dates — the last day must come after the first.",
   BAD_EMAIL: "Please enter a valid email address.",
   TOO_LONG: "For rentals longer than 60 days, please contact us directly.",
-  DATE_BLOCKED: "One of those dates is unavailable for this bike. Please pick a different range."
+  DATE_BLOCKED: "One of those dates is unavailable for this bike. Please pick a different range.",
+  MISSING_ACCOMMODATION: "Please tell us where you're staying.",
+  MISSING_HEIGHT: "Please give your height so we can set the bike up for you.",
+  BAD_HEIGHT: "Please check your height — we expect a value between 120 and 220 cm.",
+  BAD_WEIGHT: "Please check your weight — we expect a value between 35 and 200 kg.",
+  MISSING_NAME: "Please enter your name."
 };
 async function submit(){
   if(!validForm()){ alertMsg('Please check the highlighted fields.'); return; }
@@ -1137,7 +1201,11 @@ async function submit(){
       p_name: $('nm').value.trim(), p_email: $('em').value.trim(),
       p_phone: $('ph').value.trim() || null, p_notes: $('nt').value.trim() || null,
       /* so the confirmation email arrives in the language they booked in */
-      p_lang: (function(){try{return localStorage.getItem('venga_lang')||'en'}catch(e){return 'en'}})()
+      p_lang: (function(){try{return localStorage.getItem('venga_lang')||'en'}catch(e){return 'en'}})(),
+      p_accommodation: $('acc').value.trim(),
+      p_height_cm: parseInt($('hgt').value,10),
+      p_weight_kg: $('wgt').value ? parseInt($('wgt').value,10) : null,
+      p_riding_position: S.position || 'unsure'
     });
     if(error) throw error;
     showDone(data);
