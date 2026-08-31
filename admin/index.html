@@ -239,6 +239,9 @@ input.cell.wide{width:100%;text-align:left}
 .serp .t{color:#1a0dab;font-size:1.06rem;line-height:1.3;margin:3px 0 4px}
 .serp .d{color:#4d5156;font-size:.82rem;line-height:1.45}
 .hint b{color:var(--gold);font-weight:600}
+.pos-tag{font-weight:600}
+.pos-tag.sporty{color:#E0A868}.pos-tag.relaxed{color:#8FB280}
+.pos-tag.balanced{color:var(--gold)}.pos-tag.unsure{color:#C9704A}
 </style>
 </head>
 <body>
@@ -671,6 +674,9 @@ function renderRes(){
           <div><small>Delivery</small><p>${r.delivery?esc(r.delivery_address||'yes')+` (${money(r.delivery_fee)})`:'Pickup in shop'}</p></div>
           <div><small>Season</small><p>${seasonOf(r.start_date)}</p></div>
           <div><small>Booked on</small><p>${new Date(r.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})}</p></div>
+          ${r.accommodation?`<div><small>Staying at</small><p>${esc(r.accommodation)}</p></div>`:''}
+          ${(r.height_cm||r.weight_kg)?`<div><small>Rider</small><p>${r.height_cm?esc(r.height_cm)+' cm':''}${r.height_cm&&r.weight_kg?' · ':''}${r.weight_kg?esc(r.weight_kg)+' kg':''}</p></div>`:''}
+          ${r.riding_position?`<div><small>Set-up</small><p class="pos-tag ${esc(r.riding_position)}">${({sporty:'Sporty — low and aero',balanced:'Balanced',relaxed:'Relaxed — upright',unsure:'Not sure — we recommend'})[r.riding_position]||esc(r.riding_position)}</p></div>`:''}
           ${r.notes?`<div style="grid-column:1/-1"><small>Notes</small><p>${esc(r.notes)}</p></div>`:''}
         </div>
         <div class="acts2">
