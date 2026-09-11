@@ -35,6 +35,7 @@
       marketingD: "Lets us show our bikes to cyclists planning a trip, and measure whether those ads bring anyone here.",
       always: "Always on",
       link: "Cookie settings",
+      policy: "Privacy policy",
     },
     es: {
       title: "Usamos cookies",
@@ -53,6 +54,7 @@
       marketingD: "Nos permite mostrar nuestras bicis a ciclistas que planean un viaje y medir si esos anuncios traen a alguien.",
       always: "Siempre activas",
       link: "Configuración de cookies",
+      policy: "Política de privacidad",
     },
     pl: {
       title: "Używamy plików cookie",
@@ -71,8 +73,16 @@
       marketingD: "Pozwalają pokazywać nasze rowery kolarzom planującym wyjazd i sprawdzać, czy te reklamy kogoś tu przyprowadzają.",
       always: "Zawsze włączone",
       link: "Ustawienia plików cookie",
+      policy: "Polityka prywatności",
     },
   };
+
+
+  /* the policy must be reachable from the banner itself, before any decision */
+  function policyHref() {
+    return location.pathname.replace(/\/[^/]*$/, "/").split("/").length > 2
+      ? "/privacy/" : "/privacy/";
+  }
 
   /* ---------- storage ---------- */
   function read() {
@@ -135,6 +145,9 @@
       ".vc-b.pri:hover{background:#D8BC7A;color:#0E0D0B}",
       ".vc-b.ghost{border-color:transparent;color:rgba(244,240,231,.6);padding-left:6px;padding-right:6px}",
       ".vc-b.ghost:hover{color:#BE9D52}",
+      "#vcBar .vc-pol{color:#BE9D52;text-decoration:underline;text-underline-offset:3px}",
+      "body.vc-open{padding-bottom:170px}",
+      "@media(max-width:700px){body.vc-open{padding-bottom:260px}}",
       "#vcPrefs{position:fixed;inset:0;z-index:10000;background:rgba(6,5,4,.82);backdrop-filter:blur(5px);",
       "display:none;align-items:center;justify-content:center;padding:24px;overflow-y:auto}",
       "#vcPrefs.on{display:flex}",
@@ -171,13 +184,15 @@
     el.setAttribute("aria-label", t.title);
     el.setAttribute("aria-live", "polite");
     el.innerHTML =
-      '<div class="in-w"><div class="tx"><h2>' + t.title + "</h2><p>" + t.body + "</p></div>" +
+      '<div class="in-w"><div class="tx"><h2>' + t.title + "</h2><p>" + t.body +
+      ' <a class="vc-pol" href="' + policyHref() + '">' + t.policy + '</a>.</p></div>' +
       '<div class="btns">' +
       '<button class="vc-b ghost" data-vc="prefs">' + t.settings + "</button>" +
       '<button class="vc-b" data-vc="reject">' + t.reject + "</button>" +
       '<button class="vc-b pri" data-vc="accept">' + t.accept + "</button>" +
       "</div></div>";
     document.body.appendChild(el);
+    document.body.classList.add("vc-open");
     requestAnimationFrame(function () { el.classList.add("in"); });
 
     el.addEventListener("click", function (e) {
@@ -193,6 +208,7 @@
     var el = document.getElementById("vcBar");
     if (!el) return;
     el.classList.remove("in");
+    document.body.classList.remove("vc-open");
     setTimeout(function () { el.remove(); }, 450);
   }
 
@@ -266,6 +282,15 @@
   }
 
   window.vengaConsent = { open: prefs, state: read };
+
+  /* the visitor may switch language while the banner is on screen */
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest(".lang button[data-lang]");
+    if (!b) return;
+    var bar = document.getElementById("vcBar");
+    if (!bar) return;
+    setTimeout(function () { bar.remove(); banner(); }, 60);
+  });
 
   function start() {
     var v = read();
