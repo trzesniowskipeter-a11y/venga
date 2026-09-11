@@ -2,6 +2,36 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- Consent Mode v2 — defaults must run before any tag loads -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('consent','default',{
+  'ad_storage':'denied',
+  'ad_user_data':'denied',
+  'ad_personalization':'denied',
+  'analytics_storage':'denied',
+  'functionality_storage':'granted',
+  'security_storage':'granted',
+  'wait_for_update': 500
+});
+gtag('set','ads_data_redaction', true);
+gtag('set','url_passthrough', true);
+(function(){
+  try{
+    var v = JSON.parse(localStorage.getItem('venga_consent_v1') || 'null');
+    if(v && v.at && (Date.now()-v.at)/86400000 <= 365){
+      var g = function(b){return b ? 'granted' : 'denied';};
+      gtag('consent','update',{
+        'analytics_storage': g(v.analytics),
+        'ad_storage': g(v.marketing),
+        'ad_user_data': g(v.marketing),
+        'ad_personalization': g(v.marketing)
+      });
+    }
+  }catch(e){}
+})();
+</script>
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -9,6 +39,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-WV2HZ972');</script>
 <!-- End Google Tag Manager -->
+<script src="assets/consent.js" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Venga Cycling Mallorca — Premium Bike Rental in Port de Pollença</title>
 <meta name="description" content="Premium Giant and Liv road, gravel, TT and e-bike rental in Port de Pollença, Mallorca. Individually fitted, from €38/day. Sa Calobra, Puig Major and Formentor from our shop door.">
