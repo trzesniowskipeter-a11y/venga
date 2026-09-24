@@ -981,8 +981,8 @@ section[id]{scroll-margin-top:76px}
 <meta name="twitter:description" content="Eight road cycling routes from our shop in Port de Pollença — from a flat 29 km coastal spin to the 217 km Mallorca loop. Real distances and climbing from our own Strava files.">
 <meta name="twitter:image" content="https://vengacyclingmallorca.com/assets/img/og-cover.jpg">
 <link rel="alternate" hreflang="en" href="https://vengacyclingmallorca.com/routes/">
-<link rel="alternate" hreflang="es" href="https://vengacyclingmallorca.com/routes/">
-<link rel="alternate" hreflang="pl" href="https://vengacyclingmallorca.com/routes/">
+<link rel="alternate" hreflang="es" href="https://vengacyclingmallorca.com/routes/?lang=es">
+<link rel="alternate" hreflang="pl" href="https://vengacyclingmallorca.com/routes/?lang=pl">
 <link rel="alternate" hreflang="x-default" href="https://vengacyclingmallorca.com/routes/">
 </head>
 <body>
@@ -1218,6 +1218,9 @@ const I18N={"Cycling Mallorca": {"es": "Cycling Mallorca", "pl": "Cycling Mallor
   }
   var cur='en';
   try{cur=localStorage.getItem('venga_lang')||'en'}catch(e){}
+  /* a ?lang= address wins, so the hreflang links actually land on that language */
+  var q=(location.search.match(/[?&]lang=(en|es|pl)/)||[])[1];
+  if(q){cur=q;try{localStorage.setItem('venga_lang',q)}catch(e){}}
   function setLang(lang){
     cur=lang;
     try{localStorage.setItem('venga_lang',lang)}catch(e){}
