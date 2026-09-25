@@ -58,8 +58,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     }catch(e){}
   }
   if(/[?&]lock(&|$)/.test(q)){localStorage.removeItem('venga_preview')}
+  var MAINTENANCE = false;
+  if(!MAINTENANCE){ return; }
   if(localStorage.getItem('venga_preview')!=='ok'){document.documentElement.className+=' maint'}
-}catch(e){document.documentElement.className+=' maint'}})();
+}catch(e){}})();
 </script>
 <style>
 /* ---------- maintenance gate ---------- */
