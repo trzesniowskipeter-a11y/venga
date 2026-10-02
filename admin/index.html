@@ -946,6 +946,27 @@ $('bkSave').onclick=async()=>{
 
 
 /* ============ JOURNAL (CMS) ============ */
+/* The function only allows the headers authorization, content-type and apikey.
+   supabase-js adds x-client-info, which makes the browser block the request
+   after the preflight — the POST never left the page. A plain fetch sends only
+   the allowed headers. */
+async function callPublish(body){
+  const {data:{session}} = await sb.auth.getSession();
+  const res = await fetch(SB_URL+'/functions/v1/publish',{
+    method:'POST',
+    headers:{
+      'Authorization':'Bearer '+(session ? session.access_token : SB_KEY),
+      'Content-Type':'application/json',
+      'apikey':SB_KEY
+    },
+    body: JSON.stringify(body)
+  });
+  let out={};
+  try{ out = await res.json(); }catch(e){ out={ok:false,error:'HTTP '+res.status}; }
+  if(!res.ok && out.ok!==false) out={ok:false,error:'HTTP '+res.status};
+  return out;
+}
+
 const CMS = {items:[], cur:null};
 const SITE_URL = 'https://vengacyclingmallorca.com';
 
@@ -1057,10 +1078,9 @@ $('cPublish').onclick=async()=>{
   if(a){
     try{
       /* the function holds the GitHub token; the browser never sees it */
-      const {data,error} = await sb.functions.invoke('publish',{body:{id:a.id}});
-      if(error) throw error;
+      const data = await callPublish({id:a.id});
       if(data && data.ok===false) throw new Error(data.error||'unknown');
-      flash($('cmsOk'),'Published. The page appears at '+(data?.url||'')+' in about a minute.',9000);
+      flash($('cmsOk'),'Published. The page appears at '+(data&&data.url?data.url:'')+' in about a minute.',9000);
     }catch(e){
       flash($('cmsErr'),'Saved, but publishing failed: '+(e.message||e)+
         ' — check that GITHUB_TOKEN is set on the publish function.',10000);
@@ -1071,7 +1091,7 @@ $('cPublish').onclick=async()=>{
 $('cDelete').onclick=async()=>{
   if(!CMS.cur.id) return;
   if(!confirm('Delete this article? The published page will be removed from the site too.')) return;
-  try{ await sb.functions.invoke('publish',{body:{id:CMS.cur.id,action:'unpublish'}}); }catch(e){}
+  try{ await callPublish({id:CMS.cur.id,action:'unpublish'}); }catch(e){}
   const {error}=await sb.from('articles').delete().eq('id',CMS.cur.id);
   if(error){flash($('cmsErr'),'Could not delete: '+error.message,6000);return}
   CMS.cur=null; $('cmsEdit').hidden=true; await cmsLoad();
