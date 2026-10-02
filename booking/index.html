@@ -246,6 +246,9 @@ header p{color:rgba(244,240,231,.72);max-width:52ch}
 
 
 
+
+.dy.closed{opacity:.28;text-decoration:line-through;cursor:not-allowed}
+.dy.closed:hover{background:none;border-color:transparent}
 /* rider profile: position picker */
 .fhint{display:block;margin-top:6px;font-size:.72rem;color:var(--stone);letter-spacing:0;text-transform:none}
 .pos-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
@@ -416,8 +419,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </a>
       <div class="mt-card static">
         <small>Opening hours</small>
-        <b>Mon – Sun</b>
-        <span>09:00–13:00 &nbsp;/&nbsp; 16:00–19:00</span>
+        <b>Mon – Sat</b>
+        <span>09:00–13:00 &nbsp;/&nbsp; 16:00–18:30</span>
       </div>
     </div>
 
@@ -503,13 +506,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- STEP 3: PICKUP -->
     <section class="step" id="s3">
       <h2>Pickup time</h2>
-      <p class="hint">Our shop on Carrer de Formentor 59 is open Monday to Sunday, 09:00–13:00 and 16:00–19:00.</p>
+      <p class="hint">Sundays are greyed out — we are closed, so pickups and returns run Monday to Saturday. Our shop on Carrer de Formentor 59 is open Monday to Saturday, 09:00–13:00 and 16:00–18:30. Closed on Sundays.</p>
       <div class="slot-blk">
         <div class="lbl">Morning · 09:00–13:00</div>
         <div class="slots" id="slotsAM"></div>
       </div>
       <div class="slot-blk">
-        <div class="lbl">Afternoon · 16:00–19:00</div>
+        <div class="lbl">Afternoon · 16:00–18:30</div>
         <div class="slots" id="slotsPM"></div>
       </div>
     </section>
@@ -879,13 +882,17 @@ function renderCal(){
   for(let d=1; d<=lastDay; d++){
     const date = new Date(y, mo, d), ds = iso(date);
     const past = date < t, full = dayFull(ds), isToday = ds === iso(t);
+    /* the shop is closed on Sundays, so a rental cannot start or end on one —
+       it may still run through a Sunday, the bike simply stays with you */
+    const closed = date.getDay() === 0;
     const cls = ['dy'];
+    if(closed) cls.push('closed');
     if(full) cls.push('full');
     if(isToday) cls.push('today');
     if(ds === S.start || ds === S.end) cls.push('sel');
     else if(S.start && S.end && ds > S.start && ds < S.end) cls.push('range');
     const left = leftOn(ds);
-    cells.push(`<button class="${cls.join(' ')}" type="button" data-d="${ds}" ${past||full?'disabled':''}>
+    cells.push(`<button class="${cls.join(' ')}" type="button" data-d="${ds}" ${past||full||closed?'disabled':''} ${closed?'title="Closed on Sundays"':''}>
       ${d}${!past && !full && left <= 2 ? `<span class="lft">${left} left</span>` : ''}</button>`);
   }
   $('calGrid').innerHTML = cells.join('');
@@ -937,7 +944,7 @@ function renderSlots(){
     });
   };
   paintSet($('slotsAM'), mk('09:00','12:30'));
-  paintSet($('slotsPM'), mk('16:00','18:30'));
+  paintSet($('slotsPM'), mk('16:00','18:00'));
 }
 
 /* ============ EXTRAS ============ */
@@ -1226,7 +1233,8 @@ function validForm(){
 const ERRORS = {
   NO_AVAILABILITY: "Someone just booked the last bike in that size for these dates. Please pick different dates or another size.",
   SIZE_NOT_AVAILABLE: "That size isn't available for this bike. Please choose another size.",
-  PICKUP_OUTSIDE_HOURS: "Pickup must be within opening hours: 09:00–13:00 or 16:00–19:00.",
+  PICKUP_OUTSIDE_HOURS: "Pickup must be within opening hours: 09:00–12:30 or 16:00–18:00.",
+  CLOSED_SUNDAY: "We are closed on Sundays — please pick another first day.",
   DELIVERY_ADDRESS_REQUIRED: "Please add the delivery address.",
   START_IN_PAST: "The first day can't be in the past. Please pick new dates.",
   INVALID_DATES: "Please check your dates — the last day must come after the first.",
