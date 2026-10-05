@@ -253,8 +253,10 @@ header p{color:rgba(244,240,231,.72);max-width:52ch}
 
 
 
-.dy.closed{opacity:.28;text-decoration:line-through;cursor:not-allowed}
-.dy.closed:hover{background:none;border-color:transparent}
+.dy.sun{position:relative}
+.dy.sun::after{content:'';position:absolute;left:50%;transform:translateX(-50%);bottom:4px;width:4px;height:4px;border-radius:50%;background:var(--gold,#BE9D52)}
+.dy.sun:disabled::after{opacity:.3}
+.appt-note{margin-top:10px;padding:10px 12px;border-left:2px solid var(--gold,#BE9D52);background:rgba(190,157,82,.08);font-size:.82rem;line-height:1.5}
 /* rider profile: position picker */
 .fhint{display:block;margin-top:6px;font-size:.72rem;color:var(--stone);letter-spacing:0;text-transform:none}
 .pos-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
@@ -512,7 +514,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- STEP 3: PICKUP -->
     <section class="step" id="s3">
       <h2>Pickup time</h2>
-      <p class="hint">Our shop on Carrer de Formentor 59 is open Monday to Saturday, 09:00–13:00 and 16:00–18:30. Sundays are greyed out because pick-up and return then need a prior appointment — book around them and call us on +34 643 217 821 if a Sunday is the only option.</p>
+      <p class="hint">Our shop on Carrer de Formentor 59 is open Monday to Saturday, 09:00–13:00 and 16:00–18:30. Sundays (marked with a gold dot) can be booked too — pick-up and return then happen by prior appointment, and we'll call you to confirm the exact time.</p>
       <div class="slot-blk">
         <div class="lbl">Morning · 09:00–13:00</div>
         <div class="slots" id="slotsAM"></div>
@@ -521,6 +523,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="lbl">Afternoon · 16:00–18:30</div>
         <div class="slots" id="slotsPM"></div>
       </div>
+      <div id="slotSunNote"></div>
     </section>
 
     <!-- STEP 4: EXTRAS -->
@@ -888,17 +891,17 @@ function renderCal(){
   for(let d=1; d<=lastDay; d++){
     const date = new Date(y, mo, d), ds = iso(date);
     const past = date < t, full = dayFull(ds), isToday = ds === iso(t);
-    /* the shop is closed on Sundays, so a rental cannot start or end on one —
-       it may still run through a Sunday, the bike simply stays with you */
-    const closed = date.getDay() === 0;
+    /* Sundays are selectable: pick-up and return then happen by prior
+       appointment, so we mark them with a gold dot and confirm the time by phone */
+    const sunday = date.getDay() === 0;
     const cls = ['dy'];
-    if(closed) cls.push('closed');
+    if(sunday) cls.push('sun');
     if(full) cls.push('full');
     if(isToday) cls.push('today');
     if(ds === S.start || ds === S.end) cls.push('sel');
     else if(S.start && S.end && ds > S.start && ds < S.end) cls.push('range');
     const left = leftOn(ds);
-    cells.push(`<button class="${cls.join(' ')}" type="button" data-d="${ds}" ${past||full||closed?'disabled':''} ${closed?'title="Sunday — by prior appointment, please call us"':''}>
+    cells.push(`<button class="${cls.join(' ')}" type="button" data-d="${ds}" ${past||full?'disabled':''} ${sunday?'title="Sunday — pick-up & return by prior appointment"':''}>
       ${d}${!past && !full && left <= 2 ? `<span class="lft">${left} left</span>` : ''}</button>`);
   }
   $('calGrid').innerHTML = cells.join('');
@@ -924,11 +927,24 @@ function pickDay(ds){
   alertMsg('');
   renderCal(); paintSummary(); gate();
 }
+function sundayPickReturn(){
+  /* pick-up day is the first day, return day the last — a Sunday on either
+     end means we arrange the handover by prior appointment */
+  const su = d => d && parse(d).getDay() === 0;
+  if(su(S.start) && su(S.end) && S.start !== S.end) return 'Sunday pick-up and return';
+  if(su(S.start)) return 'Sunday pick-up';
+  if(su(S.end)) return 'Sunday return';
+  return null;
+}
+function sundayNoteHTML(){
+  const w = sundayPickReturn();
+  return w ? `<div class="appt-note"><b>${w}</b> — by prior appointment. Book as normal and we'll call you to confirm the exact time.</div>` : '';
+}
 function renderSeason(){
   if(!S.start){ $('seasonNote').innerHTML = 'Pick your first day — <b>high season</b> runs 1 Mar–31 May and 1 Sep–31 Oct.'; return; }
   const s = seasonOf(S.start), d = nights();
-  if(!S.end){ $('seasonNote').innerHTML = `First day <b>${fmtDate(S.start)}</b> · <b>${s} season</b>. Now pick your last day.`; return; }
-  $('seasonNote').innerHTML = `<b>${d} ${d===1?'day':'days'}</b> · ${fmtDate(S.start)} → ${fmtDate(S.end)} · <b>${s} season</b> rate.`;
+  if(!S.end){ $('seasonNote').innerHTML = `First day <b>${fmtDate(S.start)}</b> · <b>${s} season</b>. Now pick your last day.` + sundayNoteHTML(); return; }
+  $('seasonNote').innerHTML = `<b>${d} ${d===1?'day':'days'}</b> · ${fmtDate(S.start)} → ${fmtDate(S.end)} · <b>${s} season</b> rate.` + sundayNoteHTML();
 }
 
 /* ============ SLOTS ============ */
@@ -951,6 +967,11 @@ function renderSlots(){
   };
   paintSet($('slotsAM'), mk('09:00','12:30'));
   paintSet($('slotsPM'), mk('16:00','18:00'));
+  const n = $('slotSunNote');
+  if(n){
+    const w = sundayPickReturn();
+    n.innerHTML = w ? `<div class="appt-note"><b>${w}</b> — the time you choose is a proposal; we'll call you to confirm it.</div>` : '';
+  }
 }
 
 /* ============ EXTRAS ============ */
