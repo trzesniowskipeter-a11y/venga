@@ -470,7 +470,7 @@ Write in plain text. Blank line starts a new paragraph.
       <div id="seoHome">
         <div class="seo-aud" id="seoAudit"></div>
         <table class="seo-tbl">
-          <thead><tr><th></th><th>Page</th><th>Title in Google</th><th>Keyword</th><th>Status</th></tr></thead>
+          <thead><tr><th>Score</th><th>Page</th><th>Title in Google</th><th>Keyword</th><th>Status</th></tr></thead>
           <tbody id="seoRows"><tr><td colspan="5" style="color:var(--muted2)">Scanning the site…</td></tr></tbody>
         </table>
         <div class="mact" style="margin-top:16px">
@@ -1475,8 +1475,8 @@ $('mSave').onclick=async()=>{
   btn.disabled=false;btn.textContent=editing?'Save changes':'Create reservation';
 };
 
-/* ==================== SEO ==================== */
-const SEO={rows:{},pages:{},cur:null,mob:false,loading:false};
+/* ==================== SEO v2 ==================== */
+const SEO={rows:{},pages:{},cur:null,mob:false,loading:false,broken:null};
 
 async function callSeoApply(body){
   const {data:{session}} = await sb.auth.getSession();
@@ -1493,6 +1493,26 @@ async function callSeoApply(body){
 
 let _seoCnv;
 function pxW(t,font){_seoCnv=_seoCnv||document.createElement('canvas');const c=_seoCnv.getContext('2d');c.font=font;return Math.round(c.measureText(t).width)}
+function fold(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+const _reEsc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+/* 2 = exact phrase or a close variant (one word in between, e.g. "rental IN Port"), 1 = all words present, 0 = missing */
+function kwHit(hay,kw){
+  hay=fold(hay); if(!kw) return 0;
+  if(hay.includes(kw)) return 2;
+  const ws=kw.split(/\s+/).filter(Boolean);
+  if(ws.length>1){
+    const near=new RegExp(ws.map(_reEsc).join('\\s+(?:\\S+\\s+)?'));
+    if(near.test(hay)) return 2;
+  }
+  const big=ws.filter(w=>w.length>2);
+  return big.length&&big.every(w=>hay.includes(w))?1:0;
+}
+function kwCount(hay,kw){
+  if(!kw) return 0;
+  const ws=kw.split(/\s+/).filter(Boolean).map(_reEsc);
+  const re=new RegExp(ws.join('\\s+(?:\\S+\\s+)?'),'g');
+  return (fold(hay).match(re)||[]).length;
+}
 
 async function seoFetchDoc(path){
   const res=await fetch(path,{cache:'no-store'});
@@ -1502,35 +1522,50 @@ async function seoFetchDoc(path){
 
 function seoExtract(doc){
   const q=sel=>doc.querySelector(sel);
+  const vis=el=>!el.closest('[hidden],[aria-hidden="true"]');
   const clone=doc.body.cloneNode(true);
-  clone.querySelectorAll('script,style,noscript,header,footer,nav').forEach(n=>n.remove());
+  clone.querySelectorAll('script,style,noscript,header,footer,nav,[hidden],[aria-hidden="true"]').forEach(n=>n.remove());
   const text=(clone.textContent||'').replace(/\s+/g,' ').trim();
-  const imgs=[...doc.querySelectorAll('img')];
+
+  /* readability raw material: paragraphs + words between consecutive subheadings */
+  const paras=[...clone.querySelectorAll('p,li')].map(n=>(n.textContent||'').replace(/\s+/g,' ').trim()).filter(t=>t.length>0);
+  const flow=[...clone.querySelectorAll('h2,h3,p,li')]; let seg=0,maxSeg=0,segs=0;
+  flow.forEach(n=>{ if(/^h/i.test(n.tagName)){maxSeg=Math.max(maxSeg,seg);seg=0;segs++}
+                   else seg+=(n.textContent||'').trim().split(/\s+/).filter(Boolean).length; });
+  maxSeg=Math.max(maxSeg,seg);
+
+  let ldTypes=[];
+  doc.querySelectorAll('script[type="application/ld+json"]').forEach(sc=>{
+    try{const d=JSON.parse(sc.textContent);(Array.isArray(d)?d:[d]).forEach(o=>{const t=o&&o['@type'];if(t)ldTypes.push(String(t))})}catch(e){}
+  });
+
+  const imgs=[...doc.querySelectorAll('img[src]')].filter(i=>vis(i)&&(i.getAttribute('src')||'').trim());
+  const hrefs=[...doc.querySelectorAll('a[href]')].map(a=>a.getAttribute('href')||'')
+    .filter(h=>h.startsWith('/')&&!h.startsWith('//'))
+    .map(h=>h.split('#')[0].split('?')[0]).filter(Boolean);
+
   return {
     title:(doc.querySelector('title')||{}).textContent||'',
     desc:(q('meta[name="description"]')||{}).content||'',
     canonical:(q('link[rel="canonical"]')||{}).href||'',
     robots:(q('meta[name="robots"]')||{}).content||'',
-    h1:[...doc.querySelectorAll('h1')].map(h=>h.textContent.trim()),
-    h2:doc.querySelectorAll('h2').length,
+    h1:[...doc.querySelectorAll('h1')].filter(vis).map(h=>h.textContent.trim()),
+    h2:[...doc.querySelectorAll('h2')].filter(vis).length,
     og:!!q('meta[property="og:title"]') && !!q('meta[property="og:description"]'),
-    ld:!!q('script[type="application/ld+json"]'),
+    ldTypes, ld:ldTypes.length>0,
     hreflang:doc.querySelectorAll('link[rel="alternate"][hreflang]').length,
-    imgs:imgs.length, imgsNoAlt:imgs.filter(i=>!(i.getAttribute('alt')||'').trim()).length,
-    intLinks:[...doc.querySelectorAll('a[href]')].filter(a=>{const h=a.getAttribute('href')||'';return h.startsWith('/')||h.startsWith('#')||h.includes('vengacyclingmallorca.com')}).length,
+    imgs:imgs.length,
+    imgsNoAlt:imgs.filter(i=>i.getAttribute('alt')===null).length,
+    intLinks:[...doc.querySelectorAll('a[href]')].filter(a=>{const h=a.getAttribute('href')||'';return h.startsWith('/')||h.includes('vengacyclingmallorca.com')}).length,
+    intHrefs:[...new Set(hrefs)],
     words:text?text.split(' ').length:0,
-    text:text.toLowerCase(),
-    firstPara:((doc.querySelector('article p')||doc.querySelector('main p')||doc.querySelector('p')||{}).textContent||'').toLowerCase()
+    text, paras, maxSeg, headedSegs:segs,
+    firstPara:paras[0]||''
   };
 }
 
-function fold(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
-/* 2 = exact phrase, 1 = all words present (any order), 0 = missing */
-function kwHit(hay,kw){hay=fold(hay);if(!kw)return 0;if(hay.includes(kw))return 2;
-  const ws=kw.split(/\s+/).filter(w=>w.length>2);
-  return ws.length&&ws.every(w=>hay.includes(w))?1:0}
 function seoChecks(row,pg){
-  const C=[], add=(st,label,info)=>C.push({st,label,info});
+  const C=[], add=(st,label,info,grp)=>C.push({st,label,info,grp:grp||'seo'});
   const t=(row.title||'').trim(), d=(row.description||'').trim();
   const kw=fold((row.focus_keyword||'').trim());
 
@@ -1539,46 +1574,60 @@ function seoChecks(row,pg){
     const px=pxW(t,'400 20px arial');
     if(t.length<30) add('warn','Page title','Short ('+t.length+' characters) — room to say more.');
     else if(px>580) add('warn','Page title','Likely cut off in Google ('+t.length+' characters, ~'+px+'px of 580px).');
-    else add('good','Page title','Good length ('+t.length+' characters).');
+    else add('good','Page title','Good length ('+t.length+' characters, ~'+px+'px).');
   }
   if(!d) add('bad','Description','Missing — Google will pick random text from the page.');
   else if(d.length<70) add('warn','Description','Short ('+d.length+' of ~155 characters) — use the space.');
   else if(d.length>160) add('warn','Description','Will be cut off ('+d.length+' of ~155 characters).');
   else add('good','Description','Good length ('+d.length+' characters).');
 
-  if(!kw) add('warn','Focus keyword','Not set — set it to unlock the keyword checks below.');
+  if(!kw) add('warn','Focus keyword','Not set — set it to unlock the keyword checks.');
   else if(pg){
     const ht=kwHit(t,kw);
-    add(ht===2?'good':(ht===1?'warn':'bad'),'Keyword in title', ht===2?(fold(t).indexOf(kw)<=12?'Exact phrase, near the start — ideal.':'Exact phrase present.'):(ht===1?'All the words are there, but not as the exact phrase.':'"'+row.focus_keyword+'" does not appear in the title.'));
+    add(ht===2?'good':(ht===1?'warn':'bad'),'Keyword in title', ht===2?(fold(t).indexOf(kw.split(' ')[0])<=12?'Present, near the start — ideal.':'Present.'):(ht===1?'All the words are there, but scattered.':'"'+row.focus_keyword+'" does not appear in the title.'));
     const hd=kwHit(d,kw);
-    add(hd?'good':'warn','Keyword in description', hd===2?'Exact phrase present.':(hd===1?'All the words are there (not as the exact phrase — still fine).':'Not in the description.'));
+    add(hd?'good':'warn','Keyword in description', hd===2?'Present.':(hd===1?'All the words are there (scattered — still fine).':'Not in the description.'));
     const hh=Math.max(...pg.h1.map(h=>kwHit(h,kw)),0);
-    add(hh?'good':'warn','Keyword in main heading', hh===2?'Exact phrase in the H1.':(hh===1?'All the words appear in the H1.':'The main heading does not contain it.'));
+    add(hh?'good':'warn','Keyword in main heading', hh===2?'Present in the H1.':(hh===1?'All the words appear in the H1.':'The main heading does not contain it.'));
     if(row.path!=='/'){
       const slugk=kw.replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
       add(row.path.includes(slugk)?'good':'warn','Keyword in address', row.path.includes(slugk)?'Present in the page address.':'The address does not contain it (fine for existing pages — do not change live addresses lightly).');
     }
     const hf=kwHit(pg.firstPara,kw);
-    add(hf?'good':'warn','Keyword in opening text', hf===2?'Exact phrase early in the content.':(hf===1?'The words appear early in the content.':'Does not appear in the first paragraph.'));
-    const hits=fold(pg.text).split(kw).length-1;
+    add(hf?'good':'warn','Keyword in opening text', hf===2?'Present early in the content.':(hf===1?'The words appear early in the content.':'Does not appear in the first paragraph.'));
+    const hits=kwCount(pg.text,kw);
     const dens=pg.words?Math.round(hits*kw.split(' ').length/pg.words*1000)/10:0;
     if(hits&&dens>3.5) add('warn','Keyword density',hits+'× ('+dens+'%) — reads as keyword stuffing, trim it.');
-    else if(hits) add('good','Keyword in content','Exact phrase appears '+hits+'× ('+dens+'% of the text).');
-    else if(kwHit(pg.text,kw)===1) add('warn','Keyword in content','The words appear separately, but the exact phrase never does — work it in once or twice.');
+    else if(hits) add('good','Keyword in content','Appears '+hits+'× ('+dens+'% of the text).');
+    else if(kwHit(pg.text,kw)===1) add('warn','Keyword in content','The words appear separately, but never together — work the phrase in once or twice.');
     else add('bad','Keyword in content','Does not appear in the page text at all.');
   }
 
   if(pg){
     if(pg.words>=300) add('good','Content length',pg.words+' words.');
-    else if(pg.words>=100) add('warn','Content length',pg.words+' words — thin; 300+ ranks better.');
+    else if(pg.words>=100) add('warn','Content length',pg.words+' words — thin; 300+ ranks better. (Text drawn by scripts is not counted here, though Google sees it.)');
     else add('bad','Content length','Only '+pg.words+' words of visible text.');
-    if(pg.h1.length===1) add('good','Headings','Exactly one H1'+(pg.h2?', '+pg.h2+' subheadings.':'.'));
+    if(pg.h1.length===1) add('good','Headings','Exactly one visible H1'+(pg.h2?', '+pg.h2+' subheadings.':'.'));
     else if(pg.h1.length===0) add('bad','Headings','No H1 on the page.');
-    else add('warn','Headings',pg.h1.length+' H1 tags — should be exactly one.');
-    if(pg.imgs) add(pg.imgsNoAlt?'warn':'good','Image descriptions', pg.imgsNoAlt?pg.imgsNoAlt+' of '+pg.imgs+' images have no alt text.':'All '+pg.imgs+' images described.');
+    else add('warn','Headings',pg.h1.length+' visible H1 tags — should be exactly one.');
+    if(pg.imgs) add(pg.imgsNoAlt?'warn':'good','Image descriptions', pg.imgsNoAlt?pg.imgsNoAlt+' of '+pg.imgs+' images have no alt attribute at all.':'All '+pg.imgs+' images carry an alt attribute (empty alt on decorative images is correct).');
     add(pg.intLinks>=3?'good':'warn','Internal links',pg.intLinks+' links to other pages of the site.');
     add(pg.og?'good':'warn','Social preview',pg.og?'og:title and og:description present.':'Missing og tags — ugly shares on social media.');
-    add(pg.ld?'good':'warn','Structured data',pg.ld?'JSON-LD present.':'No structured data on this page.');
+    add(pg.ld?'good':'warn','Structured data',pg.ld?'JSON-LD present: '+[...new Set(pg.ldTypes)].join(', ')+'.':'No structured data on this page.');
+
+    /* --- readability --- */
+    const sents=pg.paras.join(' ').split(/[.!?]+\s/).map(x=>x.trim()).filter(x=>x.split(/\s+/).length>2);
+    if(sents.length>=5){
+      const long=sents.filter(x=>x.split(/\s+/).length>20).length;
+      const pct=Math.round(long/sents.length*100);
+      add(pct<=25?'good':'warn','Sentence length',pct+'% of sentences run past 20 words'+(pct<=25?' — easy to read.':' — aim for 25% or less.'),'read');
+    }
+    const longP=pg.paras.filter(x=>x.split(/\s+/).length>150).length;
+    add(longP?'warn':'good','Paragraph length', longP?longP+' paragraph(s) over 150 words — split them.':'No overlong paragraphs.','read');
+    if(pg.words>300){
+      if(!pg.headedSegs) add('warn','Subheading use','Over 300 words with no subheadings — add H2s so the text scans.','read');
+      else add(pg.maxSeg<=300?'good':'warn','Subheading use', pg.maxSeg<=300?'Text is broken up well by subheadings.':'Longest block between subheadings is '+pg.maxSeg+' words — add an H2 in there.','read');
+    }
   }
   const cn=(row.canonical||'').trim();
   add(cn?'good':'warn','Canonical address',cn?'Set.':'Not set — risk of duplicate-content signals.');
@@ -1586,13 +1635,16 @@ function seoChecks(row,pg){
   return C;
 }
 
-function seoLight(C){
-  const b=C.filter(c=>c.st==='bad').length, w=C.filter(c=>c.st==='warn').length;
-  return b>=2?'r':(b===1?'o':(w>=4?'o':'g'));
+function seoScore(C){
+  let sc=100;
+  C.forEach(c=>{ if(c.st==='bad') sc-=15; else if(c.st==='warn') sc-=(c.grp==='read'?3:5); });
+  sc=Math.max(0,Math.round(sc));
+  const b=C.filter(c=>c.st==='bad').length;
+  return {score:sc, light: b>=2?'r':(b===1||sc<70?'o':(sc<85?'o':'g'))};
 }
 
 async function loadSeo(force){
-  if(SEO.loading) return; 
+  if(SEO.loading) return;
   if(!force && Object.keys(SEO.pages).length){renderSeo();return}
   SEO.loading=true;
   try{
@@ -1613,7 +1665,6 @@ async function loadSeo(force){
       try{SEO.pages[p]=seoExtract(await seoFetchDoc(p))}catch(e){SEO.pages[p]={err:String(e)}}
     }));
 
-    /* pages in the sitemap but not yet in the database — register them with their current meta */
     for(const p of paths){
       if(!SEO.rows[p] && SEO.pages[p] && !SEO.pages[p].err){
         const pg=SEO.pages[p];
@@ -1624,6 +1675,17 @@ async function loadSeo(force){
         if(!e2) SEO.rows[p]=row;
       }
     }
+
+    /* broken internal links — every unique address linked anywhere on the site */
+    const all=new Set();
+    Object.values(SEO.pages).forEach(pg=>(pg.intHrefs||[]).forEach(h=>all.add(h.endsWith('/')||h.includes('.')?h:h+'/')));
+    const targets=[...all].filter(h=>!h.startsWith('/admin')).slice(0,60);
+    SEO.broken=[];
+    await Promise.all(targets.map(async h=>{
+      try{const r=await fetch(h,{method:'HEAD',cache:'no-store'});if(!r.ok)SEO.broken.push(h+' ('+r.status+')')}
+      catch(e){SEO.broken.push(h+' (unreachable)')}
+    }));
+
     renderSeo();
   }catch(e){flash($('seoErr'),'Could not load SEO data: '+(e.message||e),6000)}
   SEO.loading=false;
@@ -1632,12 +1694,12 @@ async function loadSeo(force){
 function renderSeo(){
   const tb=$('seoRows'); tb.innerHTML='';
   const paths=Object.keys(SEO.rows).sort();
-  const scores={};
+  const res={};
   for(const p of paths){
     const row=SEO.rows[p], pg=SEO.pages[p];
-    const C=seoChecks(row,pg&&!pg.err?pg:null); scores[p]=seoLight(C);
+    res[p]=seoScore(seoChecks(row,pg&&!pg.err?pg:null));
     const tr=document.createElement('tr'); tr.className='seo-row';
-    tr.innerHTML=`<td><span class="dot ${scores[p]}"></span></td>
+    tr.innerHTML=`<td style="white-space:nowrap"><span class="dot ${res[p].light}"></span> <span style="color:var(--muted2);font-size:.72rem">${res[p].score}</span></td>
       <td class="pth">${esc(p)}</td>
       <td class="ttl">${esc(row.title||'—')}</td>
       <td>${esc(row.focus_keyword||'—')}</td>
@@ -1645,7 +1707,6 @@ function renderSeo(){
     tr.onclick=()=>openSeo(p);
     tb.appendChild(tr);
   }
-  /* ---- site-wide audit ---- */
   const A=[], card=(st,name,txt)=>A.push({st,name,txt});
   const titles={},descs={};
   paths.forEach(p=>{const r=SEO.rows[p];
@@ -1655,21 +1716,25 @@ function renderSeo(){
   card(dupT.length?'r':'g','Duplicate titles',dupT.length?dupT.map(v=>v.join(' = ')).join('; '):'Every page has a unique title.');
   card(dupD.length?'o':'g','Duplicate descriptions',dupD.length?dupD.map(v=>v.join(' = ')).join('; '):'Every page has a unique description.');
   card(SEO.sitemap?'g':'r','Sitemap',SEO.sitemap?SEO.sitemap.length+' pages listed in sitemap.xml.':'sitemap.xml could not be read.');
+  const miss=paths.filter(p=>SEO.sitemap&&!SEO.sitemap.includes(p)&&!SEO.rows[p].noindex);
+  card(miss.length?'o':'g','Sitemap coverage',miss.length?'Not in the sitemap: '+miss.join(', '):'Every indexable page is in the sitemap.');
+  card(SEO.broken===null?'o':(SEO.broken.length?'r':'g'),'Broken internal links', SEO.broken===null?'Not checked yet.':(SEO.broken.length?SEO.broken.join(', '):'All internal links on the site lead somewhere.'));
   const hre=SEO.pages['/'] && SEO.pages['/'].hreflang;
   card(hre>=3?'g':'o','Languages (hreflang)',hre?hre+' language links on the homepage (EN/ES/PL).':'No hreflang links found on the homepage.');
   const noidx=paths.filter(p=>SEO.rows[p].noindex);
   card(noidx.length?'o':'g','Hidden pages',noidx.length?noidx.join(', ')+' hidden from Google.':'No page is blocked from indexing.');
   const drafts=paths.filter(p=>SEO.rows[p].status==='draft');
   card(drafts.length?'o':'g','Unapplied drafts',drafts.length?drafts.length+' draft(s) waiting: '+drafts.join(', '):'Everything saved here is live on the site.');
-  const reds=paths.filter(p=>scores[p]==='r');
+  const reds=paths.filter(p=>res[p].light==='r');
   card(reds.length?'r':'g','Pages needing work',reds.length?reds.join(', '):'No page scores red.');
+  const avg=Math.round(paths.reduce((a,p)=>a+res[p].score,0)/Math.max(paths.length,1));
+  card(avg>=85?'g':(avg>=70?'o':'r'),'Site score',avg+' / 100 on average across '+paths.length+' pages.');
   $('seoAudit').innerHTML=A.map(a=>`<div class="c"><b>${esc(a.name)}</b><div style="display:flex;gap:8px"><span class="dot ${a.st}"></span><span>${esc(a.txt)}</span></div></div>`).join('');
 }
 
 function openSeo(p){
   SEO.cur=p;
   const r=SEO.rows[p];
-  $('seoPath').textContent=p;
   $('sTitle').value=r.title||''; $('sDesc').value=r.description||'';
   $('sCanon').value=r.canonical||''; $('sKw').value=r.focus_keyword||'';
   $('sNoindex').checked=!!r.noindex;
@@ -1686,7 +1751,6 @@ function seoDraftFromForm(){
 function seoPreview(){
   if(!SEO.cur) return;
   const d=seoDraftFromForm(), pg=SEO.pages[SEO.cur];
-  const url=SITE_URL+SEO.cur;
   const crumb='vengacyclingmallorca.com'+(SEO.cur==='/'?'':' › '+SEO.cur.replace(/^\/|\/$/g,'').split('/').join(' › '));
   const tpx=pxW(d.title,'400 20px arial'), tcut=tpx>580;
   const t=d.title||'(no title)';
@@ -1700,8 +1764,13 @@ function seoPreview(){
   mark($('sTCnt'),d.title.length,60,65,' · ~'+tpx+'px');
   mark($('sDCnt'),d.description.length,155,170);
   const C=seoChecks(d,pg&&!pg.err?pg:null);
+  const sc=seoScore(C);
+  $('seoPath').innerHTML=esc(SEO.cur)+` <span class="pill" style="margin-left:10px"><span class="dot ${sc.light}" style="margin:0 5px 0 0"></span>${sc.score} / 100</span>`;
   const ICON={good:'g',warn:'o',bad:'r'};
-  $('sChk').innerHTML=C.map(c=>`<li><span class="dot ${ICON[c.st]}"></span><div><b>${esc(c.label)}</b><small>${esc(c.info)}</small></div></li>`).join('');
+  const seoItems=C.filter(c=>c.grp!=='read'), readItems=C.filter(c=>c.grp==='read');
+  const li=c=>`<li><span class="dot ${ICON[c.st]}"></span><div><b>${esc(c.label)}</b><small>${esc(c.info)}</small></div></li>`;
+  $('sChk').innerHTML=seoItems.map(li).join('')
+    +(readItems.length?`<li style="border-bottom:none;padding-top:14px"><div><b style="font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted2)">Readability</b></div></li>`+readItems.map(li).join(''):'');
 }
 
 async function seoSave(quiet){
