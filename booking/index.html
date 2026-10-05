@@ -512,7 +512,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- STEP 3: PICKUP -->
     <section class="step" id="s3">
       <h2>Pickup time</h2>
-      <p class="hint">Sundays are greyed out — we are closed, so pickups and returns run Monday to Saturday. Our shop on Carrer de Formentor 59 is open Monday to Saturday, 09:00–13:00 and 16:00–18:30. Closed on Sundays.</p>
+      <p class="hint">Our shop on Carrer de Formentor 59 is open Monday to Saturday, 09:00–13:00 and 16:00–18:30. Sundays are greyed out because pick-up and return then need a prior appointment — book around them and call us on +34 643 217 821 if a Sunday is the only option.</p>
       <div class="slot-blk">
         <div class="lbl">Morning · 09:00–13:00</div>
         <div class="slots" id="slotsAM"></div>
@@ -898,7 +898,7 @@ function renderCal(){
     if(ds === S.start || ds === S.end) cls.push('sel');
     else if(S.start && S.end && ds > S.start && ds < S.end) cls.push('range');
     const left = leftOn(ds);
-    cells.push(`<button class="${cls.join(' ')}" type="button" data-d="${ds}" ${past||full||closed?'disabled':''} ${closed?'title="Closed on Sundays"':''}>
+    cells.push(`<button class="${cls.join(' ')}" type="button" data-d="${ds}" ${past||full||closed?'disabled':''} ${closed?'title="Sunday — by prior appointment, please call us"':''}>
       ${d}${!past && !full && left <= 2 ? `<span class="lft">${left} left</span>` : ''}</button>`);
   }
   $('calGrid').innerHTML = cells.join('');
@@ -1240,7 +1240,7 @@ const ERRORS = {
   NO_AVAILABILITY: "Someone just booked the last bike in that size for these dates. Please pick different dates or another size.",
   SIZE_NOT_AVAILABLE: "That size isn't available for this bike. Please choose another size.",
   PICKUP_OUTSIDE_HOURS: "Pickup must be within opening hours: 09:00–12:30 or 16:00–18:00.",
-  CLOSED_SUNDAY: "We are closed on Sundays — please pick another first day.",
+  CLOSED_SUNDAY: "Sunday pick-up and return need a prior appointment — please call +34 643 217 821, or choose another day.",
   DELIVERY_ADDRESS_REQUIRED: "Please add the delivery address.",
   START_IN_PAST: "The first day can't be in the past. Please pick new dates.",
   INVALID_DATES: "Please check your dates — the last day must come after the first.",
