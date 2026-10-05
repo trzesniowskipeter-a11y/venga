@@ -242,6 +242,32 @@ input.cell.wide{width:100%;text-align:left}
 .pos-tag{font-weight:600}
 .pos-tag.sporty{color:#E0A868}.pos-tag.relaxed{color:#8FB280}
 .pos-tag.balanced{color:var(--gold)}.pos-tag.unsure{color:#C9704A}
+
+/* ============ SEO tab ============ */
+.seo-aud{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0 20px}
+.seo-aud .c{border:1px solid var(--line);padding:13px 14px;border-radius:6px;font-size:.78rem;line-height:1.45}
+.seo-aud .c b{display:block;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:5px;color:var(--muted2)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none;margin-top:4px}
+.dot.g{background:#5FA868}.dot.o{background:#D8A24A}.dot.r{background:#C9704A}.dot.x{background:#6b6558}
+.seo-tbl{width:100%;border-collapse:collapse}
+.seo-tbl th{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted2);text-align:left;padding:8px;border-bottom:1px solid var(--line)}
+.seo-tbl td{padding:11px 8px;border-bottom:1px solid var(--line);font-size:.82rem;vertical-align:top}
+.seo-row{cursor:pointer}.seo-row:hover{background:rgba(190,157,82,.08)}
+.seo-tbl .pth{font-weight:600;white-space:nowrap}
+.seo-tbl .ttl{color:var(--muted2);max-width:420px}
+.pill{display:inline-block;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--line);border-radius:20px;white-space:nowrap}
+.pill.dr{border-color:#D8A24A;color:#D8A24A}
+.chk{list-style:none;margin:6px 0 0;padding:0}
+.chk li{display:flex;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:.8rem;line-height:1.45}
+.chk li b{font-weight:600}
+.chk li small{display:block;color:var(--muted2)}
+.serp .fv{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.serp .fv .ic{width:26px;height:26px;border-radius:50%;background:#f1f3f4;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#111;flex:none}
+.serp .fv .s1{color:#202124;font-size:.78rem}
+.serp .fv .s2{color:#4d5156;font-size:.68rem}
+.serp.m{max-width:400px}
+.serplnk a{color:var(--muted2);text-decoration:none;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;margin-left:10px}
+.serplnk a.on{color:var(--gold)}
 </style>
 </head>
 <body>
@@ -270,6 +296,7 @@ input.cell.wide{width:100%;text-align:left}
         <button class="tab" data-p="fleet">Fleet &amp; prices</button>
         <button class="tab" data-p="ext">Extras</button>
         <button class="tab" data-p="cms">Journal</button>
+        <button class="tab" data-p="seo">SEO</button>
         <button class="tab" data-p="out" style="color:var(--stone)">Sign out</button>
       </div>
     </div>
@@ -433,6 +460,51 @@ Write in plain text. Blank line starts a new paragraph.
         </div>
       </div>
     </section>
+
+    <section class="pane" id="p-seo">
+      <h2 class="ph">SEO</h2>
+      <p class="sub">How every page of the site appears in Google — titles, descriptions, keywords and overall health. Edits save as drafts first; "Apply to site" writes them to the live pages.</p>
+      <div class="msg err" id="seoErr"></div>
+      <div class="msg good" id="seoOk"></div>
+
+      <div id="seoHome">
+        <div class="seo-aud" id="seoAudit"></div>
+        <table class="seo-tbl">
+          <thead><tr><th></th><th>Page</th><th>Title in Google</th><th>Keyword</th><th>Status</th></tr></thead>
+          <tbody id="seoRows"><tr><td colspan="5" style="color:var(--muted2)">Scanning the site…</td></tr></tbody>
+        </table>
+        <div class="mact" style="margin-top:16px">
+          <button class="btn btn-o btn-sm" id="seoRefresh">Re-scan site</button>
+          <button class="btn btn-g btn-sm" id="seoApplyAll">Apply all drafts to site</button>
+        </div>
+      </div>
+
+      <div id="seoEdit" hidden>
+        <button class="btn btn-o btn-sm" id="seoBack">&larr; All pages</button>
+        <h3 class="bkh" id="seoPath" style="margin-top:16px"></h3>
+        <div class="two">
+          <div class="f"><label for="sKw">Focus keyword</label><input id="sKw" placeholder="e.g. bike rental port de pollenca">
+            <small class="hint">The phrase this page should rank for. The checklist measures the page against it.</small></div>
+          <div class="f"><label for="sCanon">Canonical address</label><input id="sCanon">
+            <small class="hint">The one official address Google should index for this content.</small></div>
+        </div>
+        <div class="f"><label for="sTitle">Page title <span class="cnt" id="sTCnt"></span></label><input id="sTitle"></div>
+        <div class="f"><label for="sDesc">Description <span class="cnt" id="sDCnt"></span></label><textarea id="sDesc" rows="2"></textarea></div>
+        <label class="bkchk"><input type="checkbox" id="sNoindex"> Hide this page from search engines</label>
+
+        <h4 class="bkh">Google preview <span class="serplnk"><a href="#" id="seoDesk" class="on">desktop</a><a href="#" id="seoMob">mobile</a></span></h4>
+        <div class="serp" id="sSerp"></div>
+
+        <h4 class="bkh">Checklist</h4>
+        <ul class="chk" id="sChk"></ul>
+
+        <div class="mact">
+          <button class="btn btn-o" id="sSave">Save draft</button>
+          <button class="btn btn-g" id="sApply">Apply to site</button>
+        </div>
+      </div>
+    </section>
+
 
   </div>
 </div>
@@ -601,6 +673,7 @@ document.querySelectorAll('.tab').forEach(t=>{
     $('p-'+t.dataset.p).classList.add('on');
     if(t.dataset.p==='cal')drawTimeline();
     if(t.dataset.p==='blk')renderBlocks();
+    if(t.dataset.p==='seo')loadSeo();
     window.scrollTo({top:0,behavior:'smooth'});
   };
 });
@@ -1401,6 +1474,271 @@ $('mSave').onclick=async()=>{
   }
   btn.disabled=false;btn.textContent=editing?'Save changes':'Create reservation';
 };
+
+/* ==================== SEO ==================== */
+const SEO={rows:{},pages:{},cur:null,mob:false,loading:false};
+
+async function callSeoApply(body){
+  const {data:{session}} = await sb.auth.getSession();
+  const res = await fetch(SB_URL+'/functions/v1/seo-apply',{
+    method:'POST',
+    headers:{'Authorization':'Bearer '+(session?session.access_token:SB_KEY),
+             'Content-Type':'application/json','apikey':SB_KEY},
+    body:JSON.stringify(body||{})
+  });
+  let out={}; try{out=await res.json()}catch(e){out={ok:false,error:'HTTP '+res.status}}
+  if(!res.ok && out.ok!==false) out={ok:false,error:'HTTP '+res.status};
+  return out;
+}
+
+let _seoCnv;
+function pxW(t,font){_seoCnv=_seoCnv||document.createElement('canvas');const c=_seoCnv.getContext('2d');c.font=font;return Math.round(c.measureText(t).width)}
+
+async function seoFetchDoc(path){
+  const res=await fetch(path,{cache:'no-store'});
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  return new DOMParser().parseFromString(await res.text(),'text/html');
+}
+
+function seoExtract(doc){
+  const q=sel=>doc.querySelector(sel);
+  const clone=doc.body.cloneNode(true);
+  clone.querySelectorAll('script,style,noscript,header,footer,nav').forEach(n=>n.remove());
+  const text=(clone.textContent||'').replace(/\s+/g,' ').trim();
+  const imgs=[...doc.querySelectorAll('img')];
+  return {
+    title:(doc.querySelector('title')||{}).textContent||'',
+    desc:(q('meta[name="description"]')||{}).content||'',
+    canonical:(q('link[rel="canonical"]')||{}).href||'',
+    robots:(q('meta[name="robots"]')||{}).content||'',
+    h1:[...doc.querySelectorAll('h1')].map(h=>h.textContent.trim()),
+    h2:doc.querySelectorAll('h2').length,
+    og:!!q('meta[property="og:title"]') && !!q('meta[property="og:description"]'),
+    ld:!!q('script[type="application/ld+json"]'),
+    hreflang:doc.querySelectorAll('link[rel="alternate"][hreflang]').length,
+    imgs:imgs.length, imgsNoAlt:imgs.filter(i=>!(i.getAttribute('alt')||'').trim()).length,
+    intLinks:[...doc.querySelectorAll('a[href]')].filter(a=>{const h=a.getAttribute('href')||'';return h.startsWith('/')||h.startsWith('#')||h.includes('vengacyclingmallorca.com')}).length,
+    words:text?text.split(' ').length:0,
+    text:text.toLowerCase(),
+    firstPara:((doc.querySelector('article p')||doc.querySelector('main p')||doc.querySelector('p')||{}).textContent||'').toLowerCase()
+  };
+}
+
+function fold(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+/* 2 = exact phrase, 1 = all words present (any order), 0 = missing */
+function kwHit(hay,kw){hay=fold(hay);if(!kw)return 0;if(hay.includes(kw))return 2;
+  const ws=kw.split(/\s+/).filter(w=>w.length>2);
+  return ws.length&&ws.every(w=>hay.includes(w))?1:0}
+function seoChecks(row,pg){
+  const C=[], add=(st,label,info)=>C.push({st,label,info});
+  const t=(row.title||'').trim(), d=(row.description||'').trim();
+  const kw=fold((row.focus_keyword||'').trim());
+
+  if(!t) add('bad','Page title','Missing — Google will invent one.');
+  else{
+    const px=pxW(t,'400 20px arial');
+    if(t.length<30) add('warn','Page title','Short ('+t.length+' characters) — room to say more.');
+    else if(px>580) add('warn','Page title','Likely cut off in Google ('+t.length+' characters, ~'+px+'px of 580px).');
+    else add('good','Page title','Good length ('+t.length+' characters).');
+  }
+  if(!d) add('bad','Description','Missing — Google will pick random text from the page.');
+  else if(d.length<70) add('warn','Description','Short ('+d.length+' of ~155 characters) — use the space.');
+  else if(d.length>160) add('warn','Description','Will be cut off ('+d.length+' of ~155 characters).');
+  else add('good','Description','Good length ('+d.length+' characters).');
+
+  if(!kw) add('warn','Focus keyword','Not set — set it to unlock the keyword checks below.');
+  else if(pg){
+    const ht=kwHit(t,kw);
+    add(ht===2?'good':(ht===1?'warn':'bad'),'Keyword in title', ht===2?(fold(t).indexOf(kw)<=12?'Exact phrase, near the start — ideal.':'Exact phrase present.'):(ht===1?'All the words are there, but not as the exact phrase.':'"'+row.focus_keyword+'" does not appear in the title.'));
+    const hd=kwHit(d,kw);
+    add(hd?'good':'warn','Keyword in description', hd===2?'Exact phrase present.':(hd===1?'All the words are there (not as the exact phrase — still fine).':'Not in the description.'));
+    const hh=Math.max(...pg.h1.map(h=>kwHit(h,kw)),0);
+    add(hh?'good':'warn','Keyword in main heading', hh===2?'Exact phrase in the H1.':(hh===1?'All the words appear in the H1.':'The main heading does not contain it.'));
+    if(row.path!=='/'){
+      const slugk=kw.replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+      add(row.path.includes(slugk)?'good':'warn','Keyword in address', row.path.includes(slugk)?'Present in the page address.':'The address does not contain it (fine for existing pages — do not change live addresses lightly).');
+    }
+    const hf=kwHit(pg.firstPara,kw);
+    add(hf?'good':'warn','Keyword in opening text', hf===2?'Exact phrase early in the content.':(hf===1?'The words appear early in the content.':'Does not appear in the first paragraph.'));
+    const hits=fold(pg.text).split(kw).length-1;
+    const dens=pg.words?Math.round(hits*kw.split(' ').length/pg.words*1000)/10:0;
+    if(hits&&dens>3.5) add('warn','Keyword density',hits+'× ('+dens+'%) — reads as keyword stuffing, trim it.');
+    else if(hits) add('good','Keyword in content','Exact phrase appears '+hits+'× ('+dens+'% of the text).');
+    else if(kwHit(pg.text,kw)===1) add('warn','Keyword in content','The words appear separately, but the exact phrase never does — work it in once or twice.');
+    else add('bad','Keyword in content','Does not appear in the page text at all.');
+  }
+
+  if(pg){
+    if(pg.words>=300) add('good','Content length',pg.words+' words.');
+    else if(pg.words>=100) add('warn','Content length',pg.words+' words — thin; 300+ ranks better.');
+    else add('bad','Content length','Only '+pg.words+' words of visible text.');
+    if(pg.h1.length===1) add('good','Headings','Exactly one H1'+(pg.h2?', '+pg.h2+' subheadings.':'.'));
+    else if(pg.h1.length===0) add('bad','Headings','No H1 on the page.');
+    else add('warn','Headings',pg.h1.length+' H1 tags — should be exactly one.');
+    if(pg.imgs) add(pg.imgsNoAlt?'warn':'good','Image descriptions', pg.imgsNoAlt?pg.imgsNoAlt+' of '+pg.imgs+' images have no alt text.':'All '+pg.imgs+' images described.');
+    add(pg.intLinks>=3?'good':'warn','Internal links',pg.intLinks+' links to other pages of the site.');
+    add(pg.og?'good':'warn','Social preview',pg.og?'og:title and og:description present.':'Missing og tags — ugly shares on social media.');
+    add(pg.ld?'good':'warn','Structured data',pg.ld?'JSON-LD present.':'No structured data on this page.');
+  }
+  const cn=(row.canonical||'').trim();
+  add(cn?'good':'warn','Canonical address',cn?'Set.':'Not set — risk of duplicate-content signals.');
+  if(row.noindex) add('warn','Visibility','This page is hidden from search engines (noindex).');
+  return C;
+}
+
+function seoLight(C){
+  const b=C.filter(c=>c.st==='bad').length, w=C.filter(c=>c.st==='warn').length;
+  return b>=2?'r':(b===1?'o':(w>=4?'o':'g'));
+}
+
+async function loadSeo(force){
+  if(SEO.loading) return; 
+  if(!force && Object.keys(SEO.pages).length){renderSeo();return}
+  SEO.loading=true;
+  try{
+    const {data:rows,error}=await sb.from('seo_pages').select('*').order('path');
+    if(error) throw error;
+    SEO.rows={}; rows.forEach(r=>SEO.rows[r.path]=r);
+
+    let paths=Object.keys(SEO.rows);
+    try{
+      const sm=await fetch('/sitemap.xml',{cache:'no-store'}).then(r=>r.text());
+      const locs=[...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>new URL(m[1]).pathname);
+      for(const p of locs) if(!paths.includes(p)) paths.push(p);
+      SEO.sitemap=locs;
+    }catch(e){SEO.sitemap=null}
+
+    SEO.pages={};
+    await Promise.all(paths.map(async p=>{
+      try{SEO.pages[p]=seoExtract(await seoFetchDoc(p))}catch(e){SEO.pages[p]={err:String(e)}}
+    }));
+
+    /* pages in the sitemap but not yet in the database — register them with their current meta */
+    for(const p of paths){
+      if(!SEO.rows[p] && SEO.pages[p] && !SEO.pages[p].err){
+        const pg=SEO.pages[p];
+        const row={path:p,page_type:p.startsWith('/blog/')&&p!=='/blog/'?'article':'static',
+          title:pg.title,description:pg.desc,canonical:pg.canonical,
+          noindex:/noindex/i.test(pg.robots),status:'applied',applied_at:new Date().toISOString()};
+        const {error:e2}=await sb.from('seo_pages').upsert(row,{onConflict:'path',ignoreDuplicates:true});
+        if(!e2) SEO.rows[p]=row;
+      }
+    }
+    renderSeo();
+  }catch(e){flash($('seoErr'),'Could not load SEO data: '+(e.message||e),6000)}
+  SEO.loading=false;
+}
+
+function renderSeo(){
+  const tb=$('seoRows'); tb.innerHTML='';
+  const paths=Object.keys(SEO.rows).sort();
+  const scores={};
+  for(const p of paths){
+    const row=SEO.rows[p], pg=SEO.pages[p];
+    const C=seoChecks(row,pg&&!pg.err?pg:null); scores[p]=seoLight(C);
+    const tr=document.createElement('tr'); tr.className='seo-row';
+    tr.innerHTML=`<td><span class="dot ${scores[p]}"></span></td>
+      <td class="pth">${esc(p)}</td>
+      <td class="ttl">${esc(row.title||'—')}</td>
+      <td>${esc(row.focus_keyword||'—')}</td>
+      <td>${row.status==='draft'?'<span class="pill dr">Draft — not on site</span>':'<span class="pill">On site</span>'}</td>`;
+    tr.onclick=()=>openSeo(p);
+    tb.appendChild(tr);
+  }
+  /* ---- site-wide audit ---- */
+  const A=[], card=(st,name,txt)=>A.push({st,name,txt});
+  const titles={},descs={};
+  paths.forEach(p=>{const r=SEO.rows[p];
+    if(r.title)(titles[r.title.toLowerCase()]=titles[r.title.toLowerCase()]||[]).push(p);
+    if(r.description)(descs[r.description.toLowerCase()]=descs[r.description.toLowerCase()]||[]).push(p);});
+  const dupT=Object.values(titles).filter(v=>v.length>1), dupD=Object.values(descs).filter(v=>v.length>1);
+  card(dupT.length?'r':'g','Duplicate titles',dupT.length?dupT.map(v=>v.join(' = ')).join('; '):'Every page has a unique title.');
+  card(dupD.length?'o':'g','Duplicate descriptions',dupD.length?dupD.map(v=>v.join(' = ')).join('; '):'Every page has a unique description.');
+  card(SEO.sitemap?'g':'r','Sitemap',SEO.sitemap?SEO.sitemap.length+' pages listed in sitemap.xml.':'sitemap.xml could not be read.');
+  const hre=SEO.pages['/'] && SEO.pages['/'].hreflang;
+  card(hre>=3?'g':'o','Languages (hreflang)',hre?hre+' language links on the homepage (EN/ES/PL).':'No hreflang links found on the homepage.');
+  const noidx=paths.filter(p=>SEO.rows[p].noindex);
+  card(noidx.length?'o':'g','Hidden pages',noidx.length?noidx.join(', ')+' hidden from Google.':'No page is blocked from indexing.');
+  const drafts=paths.filter(p=>SEO.rows[p].status==='draft');
+  card(drafts.length?'o':'g','Unapplied drafts',drafts.length?drafts.length+' draft(s) waiting: '+drafts.join(', '):'Everything saved here is live on the site.');
+  const reds=paths.filter(p=>scores[p]==='r');
+  card(reds.length?'r':'g','Pages needing work',reds.length?reds.join(', '):'No page scores red.');
+  $('seoAudit').innerHTML=A.map(a=>`<div class="c"><b>${esc(a.name)}</b><div style="display:flex;gap:8px"><span class="dot ${a.st}"></span><span>${esc(a.txt)}</span></div></div>`).join('');
+}
+
+function openSeo(p){
+  SEO.cur=p;
+  const r=SEO.rows[p];
+  $('seoPath').textContent=p;
+  $('sTitle').value=r.title||''; $('sDesc').value=r.description||'';
+  $('sCanon').value=r.canonical||''; $('sKw').value=r.focus_keyword||'';
+  $('sNoindex').checked=!!r.noindex;
+  $('seoHome').hidden=true; $('seoEdit').hidden=false;
+  seoPreview(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function seoDraftFromForm(){
+  return {path:SEO.cur,title:$('sTitle').value.trim(),description:$('sDesc').value.trim(),
+    canonical:$('sCanon').value.trim(),focus_keyword:$('sKw').value.trim(),
+    noindex:$('sNoindex').checked,status:'draft'};
+}
+
+function seoPreview(){
+  if(!SEO.cur) return;
+  const d=seoDraftFromForm(), pg=SEO.pages[SEO.cur];
+  const url=SITE_URL+SEO.cur;
+  const crumb='vengacyclingmallorca.com'+(SEO.cur==='/'?'':' › '+SEO.cur.replace(/^\/|\/$/g,'').split('/').join(' › '));
+  const tpx=pxW(d.title,'400 20px arial'), tcut=tpx>580;
+  const t=d.title||'(no title)';
+  const ds=d.description||'No description yet — Google will pick text from the page.';
+  $('sSerp').className='serp'+(SEO.mob?' m':'');
+  $('sSerp').innerHTML=
+    `<div class="fv"><div class="ic">V</div><div><div class="s1">Venga Cycling Mallorca</div><div class="s2">${esc(crumb)}</div></div></div>
+     <div class="t">${esc(tcut?t.slice(0,Math.round(t.length*580/tpx)-1)+' …':t)}</div>
+     <div class="d">${esc(ds.length>160?ds.slice(0,157)+' …':ds)}</div>`;
+  const mark=(el,len,ideal,max,extra)=>{el.textContent=len+' / '+ideal+(extra||'');el.className='cnt'+(len>max?' bad':(len>ideal?' warn':''))};
+  mark($('sTCnt'),d.title.length,60,65,' · ~'+tpx+'px');
+  mark($('sDCnt'),d.description.length,155,170);
+  const C=seoChecks(d,pg&&!pg.err?pg:null);
+  const ICON={good:'g',warn:'o',bad:'r'};
+  $('sChk').innerHTML=C.map(c=>`<li><span class="dot ${ICON[c.st]}"></span><div><b>${esc(c.label)}</b><small>${esc(c.info)}</small></div></li>`).join('');
+}
+
+async function seoSave(quiet){
+  const d=seoDraftFromForm();
+  const {error}=await sb.from('seo_pages').upsert(d,{onConflict:'path'});
+  if(error){flash($('seoErr'),'Not saved: '+error.message,6000);return false}
+  const {data:back}=await sb.from('seo_pages').select('*').eq('path',SEO.cur).single();
+  if(back) SEO.rows[SEO.cur]=back;
+  if(!quiet) flash($('seoOk'),'Saved as draft. It is not on the live site yet — use "Apply to site".',5000);
+  return true;
+}
+
+async function seoApply(paths){
+  flash($('seoOk'),'Applying to the live site…',3000);
+  const out=await callSeoApply(paths?{paths}:{});
+  if(out.ok===false){
+    const msg=/GITHUB_TOKEN/.test(out.error||'')
+      ?'The server is missing the GITHUB_TOKEN secret (Supabase → Edge Functions → Secrets), so it cannot write to the site yet. Your changes are safe as drafts — add the token, or ask Claude to apply them.'
+      :'Could not apply: '+(out.error||JSON.stringify(out.applied||{}));
+    flash($('seoErr'),msg,12000);return;
+  }
+  const done=Object.entries(out.applied||{}).filter(([,v])=>v==='ok').map(([k])=>k);
+  done.forEach(p=>{if(SEO.rows[p]){SEO.rows[p].status='applied';SEO.rows[p].applied_at=new Date().toISOString()}});
+  flash($('seoOk'),done.length?('Applied: '+done.join(', ')+'. Live in about a minute.'):'Nothing to apply — no drafts.',9000);
+  renderSeo();
+}
+
+$('seoBack').onclick=()=>{ $('seoEdit').hidden=true; $('seoHome').hidden=false; renderSeo(); };
+$('seoRefresh').onclick=()=>loadSeo(true);
+$('seoApplyAll').onclick=()=>seoApply(null);
+$('sSave').onclick=()=>seoSave();
+$('sApply').onclick=async()=>{ if(await seoSave(true)) await seoApply([SEO.cur]); };
+$('seoDesk').onclick=e=>{e.preventDefault();SEO.mob=false;$('seoDesk').classList.add('on');$('seoMob').classList.remove('on');seoPreview()};
+$('seoMob').onclick=e=>{e.preventDefault();SEO.mob=true;$('seoMob').classList.add('on');$('seoDesk').classList.remove('on');seoPreview()};
+['sTitle','sDesc','sCanon','sKw'].forEach(id=>$(id).addEventListener('input',seoPreview));
+$('sNoindex').addEventListener('change',seoPreview);
+
 </script>
 
 
