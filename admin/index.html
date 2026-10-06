@@ -365,6 +365,18 @@ body{padding-bottom:env(safe-area-inset-bottom)}
   .mod{max-width:none;min-height:100%;margin:0;border:0;padding:calc(20px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom))}
   #ovl .mact{position:sticky;bottom:0;background:var(--coal);padding:12px 0 calc(4px + env(safe-area-inset-bottom));margin-top:18px;border-top:1px solid var(--line)}
 }
+
+.seo-lf{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 10px}
+.seo-lf button{background:none;border:1px solid var(--line);color:var(--stone);font-size:.66rem;font-weight:700;letter-spacing:.12em;padding:6px 11px;cursor:pointer}
+.seo-lf button.on{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.seo-lf span{margin-left:auto;font-size:.72rem;color:var(--muted2)}
+.pill.lg{font-size:.58rem;padding:2px 7px;letter-spacing:.1em}
+.kwl{margin:-4px 0 16px;padding:12px 14px;border:1px dashed var(--line)}
+.kwl:empty{display:none}
+.kwl-h{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted2);margin-bottom:8px}
+.kwl-r{display:flex;align-items:center;gap:10px;margin-top:6px}
+.kwl-r input{flex:1}
+.kwl-r a{font-size:.72rem;color:var(--gold);white-space:nowrap}
 </style>
 </head>
 <body>
@@ -582,8 +594,9 @@ Write in plain text. Blank line starts a new paragraph.
 
       <div id="seoHome">
         <div class="seo-aud" id="seoAudit"></div>
+        <div class="seo-lf" id="seoLangF"><button data-l="all" class="on">All</button><button data-l="en">EN</button><button data-l="es">ES</button><button data-l="pl">PL</button><span id="seoKwSum"></span></div>
         <table class="seo-tbl">
-          <thead><tr><th>Score</th><th>Page</th><th>Title in Google</th><th>Keyword</th><th>Status</th></tr></thead>
+          <thead><tr><th>Score</th><th>Lang</th><th>Page</th><th>Title in Google</th><th>Keyword</th><th>Status</th></tr></thead>
           <tbody id="seoRows"><tr><td colspan="5" style="color:var(--muted2)">Scanning the site…</td></tr></tbody>
         </table>
         <div class="mact" style="margin-top:16px">
@@ -596,11 +609,12 @@ Write in plain text. Blank line starts a new paragraph.
         <button class="btn btn-o btn-sm" id="seoBack">&larr; All pages</button>
         <h3 class="bkh" id="seoPath" style="margin-top:16px"></h3>
         <div class="two">
-          <div class="f"><label for="sKw">Focus keyword</label><input id="sKw" placeholder="e.g. bike rental port de pollenca">
-            <small class="hint">The phrase this page should rank for. The checklist measures the page against it.</small></div>
+          <div class="f"><label for="sKw">Focus keyword <span class="pill lg" id="sKwLang">EN</span></label><input id="sKw" placeholder="e.g. bike rental port de pollenca">
+            <small class="hint">The phrase this page should rank for, in this page's language. The checklist measures the page against it — Polish and Spanish word endings are recognised.</small></div>
           <div class="f"><label for="sCanon">Canonical address</label><input id="sCanon">
             <small class="hint">The one official address Google should index for this content.</small></div>
         </div>
+        <div class="kwl" id="sKwOther"></div>
         <div class="f"><label for="sTitle">Page title <span class="cnt" id="sTCnt"></span></label><input id="sTitle"></div>
         <div class="f"><label for="sDesc">Description <span class="cnt" id="sDCnt"></span></label><textarea id="sDesc" rows="2"></textarea></div>
         <label class="bkchk"><input type="checkbox" id="sNoindex"> Hide this page from search engines</label>
@@ -1708,23 +1722,37 @@ let _seoCnv;
 function pxW(t,font){_seoCnv=_seoCnv||document.createElement('canvas');const c=_seoCnv.getContext('2d');c.font=font;return Math.round(c.measureText(t).width)}
 function fold(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
 const _reEsc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-/* 2 = exact phrase or a close variant (one word in between, e.g. "rental IN Port"), 1 = all words present, 0 = missing */
+/* ---- languages: every page lives at /, /es/ or /pl/ ---- */
+const SEO_LANGS=['en','es','pl'];
+const langOf=p=>/^\/(es|pl)\//.test(p)?p.slice(1,3):'en';
+const basePath=p=>langOf(p)==='en'?p:p.slice(3);
+const langPath=(b,l)=>l==='en'?b:'/'+l+b;
+const KW_HINT={en:'e.g. bike rental port de pollenca',es:'e.g. alquiler de bicicletas port de pollença',pl:'e.g. wypożyczalnia rowerów majorka'};
+let _kwLang='en';
+/* Polish and Spanish change word endings ("wypożyczalnia" / "wypożyczalni", "bicicleta" / "bicicletas"),
+   so for those languages a word matches on its stem rather than letter for letter */
+function stem(w){
+  if(_kwLang==='en'||w.length<4)return w;
+  const cut=_kwLang==='pl'?(w.length>=7?3:(w.length>=5?2:1)):(w.length>=6?2:1);
+  return w.slice(0,w.length-cut);
+}
+function kwRe(ws,flags){
+  const part=_kwLang==='en'?ws.map(_reEsc):ws.map(w=>_reEsc(stem(w))+'[^\\s.,;:!?]*');
+  return new RegExp(part.join('\\s+(?:\\S+\\s+)?'),flags);
+}
+/* 2 = the phrase (or a close/inflected variant), 1 = all words present, 0 = missing */
 function kwHit(hay,kw){
   hay=fold(hay); if(!kw) return 0;
   if(hay.includes(kw)) return 2;
   const ws=kw.split(/\s+/).filter(Boolean);
-  if(ws.length>1){
-    const near=new RegExp(ws.map(_reEsc).join('\\s+(?:\\S+\\s+)?'));
-    if(near.test(hay)) return 2;
-  }
-  const big=ws.filter(w=>w.length>2);
+  if(kwRe(ws).test(hay)) return 2;
+  const big=ws.filter(w=>w.length>2).map(stem);
   return big.length&&big.every(w=>hay.includes(w))?1:0;
 }
 function kwCount(hay,kw){
   if(!kw) return 0;
-  const ws=kw.split(/\s+/).filter(Boolean).map(_reEsc);
-  const re=new RegExp(ws.join('\\s+(?:\\S+\\s+)?'),'g');
-  return (fold(hay).match(re)||[]).length;
+  const ws=kw.split(/\s+/).filter(Boolean);
+  return (fold(hay).match(kwRe(ws,'g'))||[]).length;
 }
 
 async function seoFetchDoc(path){
@@ -1780,6 +1808,7 @@ function seoExtract(doc){
 function seoChecks(row,pg){
   const C=[], add=(st,label,info,grp)=>C.push({st,label,info,grp:grp||'seo'});
   const t=(row.title||'').trim(), d=(row.description||'').trim();
+  _kwLang=langOf(row.path||'/');
   const kw=fold((row.focus_keyword||'').trim());
 
   if(!t) add('bad','Page title','Missing — Google will invent one.');
@@ -1802,7 +1831,7 @@ function seoChecks(row,pg){
     add(hd?'good':'warn','Keyword in description', hd===2?'Present.':(hd===1?'All the words are there (scattered — still fine).':'Not in the description.'));
     const hh=Math.max(...pg.h1.map(h=>kwHit(h,kw)),0);
     add(hh?'good':'warn','Keyword in main heading', hh===2?'Present in the H1.':(hh===1?'All the words appear in the H1.':'The main heading does not contain it.'));
-    if(row.path!=='/'){
+    if(row.path!=='/'&&_kwLang==='en'){
       const slugk=kw.replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
       add(row.path.includes(slugk)?'good':'warn','Keyword in address', row.path.includes(slugk)?'Present in the page address.':'The address does not contain it (fine for existing pages — do not change live addresses lightly).');
     }
@@ -1889,6 +1918,15 @@ async function loadSeo(force){
       }
     }
 
+    for(const p of Object.keys(SEO.rows)){
+      const r=SEO.rows[p], pg=SEO.pages[p];
+      if(r&&!r.title&&pg&&!pg.err){
+        const fill={title:pg.title,description:pg.desc,canonical:pg.canonical};
+        const {error:e3}=await sb.from('seo_pages').update(fill).eq('path',p);
+        if(!e3)Object.assign(r,fill);
+      }
+    }
+
     /* broken internal links — every unique address linked anywhere on the site */
     const all=new Set();
     Object.values(SEO.pages).forEach(pg=>(pg.intHrefs||[]).forEach(h=>all.add(h.endsWith('/')||h.includes('.')?h:h+'/')));
@@ -1906,13 +1944,18 @@ async function loadSeo(force){
 
 function renderSeo(){
   const tb=$('seoRows'); tb.innerHTML='';
-  const paths=Object.keys(SEO.rows).sort();
+  const paths=Object.keys(SEO.rows).sort((a,b)=>(basePath(a)+langOf(a)).localeCompare(basePath(b)+langOf(b)));
   const res={};
+  const lf=SEO.langFilter||'all';
+  const kwSum=SEO_LANGS.map(l=>{const ps=paths.filter(p=>langOf(p)===l);return l.toUpperCase()+' '+ps.filter(p=>(SEO.rows[p].focus_keyword||'').trim()).length+'/'+ps.length}).join(' · ');
+  if($('seoKwSum'))$('seoKwSum').textContent='Keywords set: '+kwSum;
   for(const p of paths){
     const row=SEO.rows[p], pg=SEO.pages[p];
     res[p]=seoScore(seoChecks(row,pg&&!pg.err?pg:null));
+    if(lf!=='all'&&langOf(p)!==lf)continue;
     const tr=document.createElement('tr'); tr.className='seo-row';
     tr.innerHTML=`<td style="white-space:nowrap"><span class="dot ${res[p].light}"></span> <span style="color:var(--muted2);font-size:.72rem">${res[p].score}</span></td>
+      <td><span class="pill lg">${langOf(p).toUpperCase()}</span></td>
       <td class="pth">${esc(p)}</td>
       <td class="ttl">${esc(row.title||'—')}</td>
       <td>${esc(row.focus_keyword||'—')}</td>
@@ -1950,6 +1993,12 @@ function openSeo(p){
   const r=SEO.rows[p];
   $('sTitle').value=r.title||''; $('sDesc').value=r.description||'';
   $('sCanon').value=r.canonical||''; $('sKw').value=r.focus_keyword||'';
+  const L=langOf(p); $('sKwLang').textContent=L.toUpperCase(); $('sKw').placeholder=KW_HINT[L];
+  /* the same page in the other languages: their keywords can be set here too */
+  const b=basePath(p), sib=SEO_LANGS.filter(l=>l!==L).map(l=>({l,p:langPath(b,l)})).filter(x=>SEO.rows[x.p]||SEO.pages[x.p]);
+  $('sKwOther').innerHTML=sib.length?'<div class="kwl-h">Focus keyword in the other language versions of this page</div>'+sib.map(x=>
+    `<div class="kwl-r"><span class="pill lg">${x.l.toUpperCase()}</span><input data-kwp="${esc(x.p)}" value="${esc((SEO.rows[x.p]||{}).focus_keyword||'')}" placeholder="${esc(KW_HINT[x.l])}"><a href="#" data-open="${esc(x.p)}">Open</a></div>`).join(''):'';
+  $('sKwOther').querySelectorAll('[data-open]').forEach(a=>a.onclick=async e=>{e.preventDefault();if(await seoSave(true))openSeo(a.dataset.open)});
   $('sNoindex').checked=!!r.noindex;
   $('seoHome').hidden=true; $('seoEdit').hidden=false;
   seoPreview(); window.scrollTo({top:0,behavior:'smooth'});
@@ -1988,7 +2037,18 @@ function seoPreview(){
 
 const isArticlePath=p=>/^\/blog\/[^/]+\/$/.test(p);
 const slugOf=p=>p.replace(/^\/blog\/|\/$/g,'');
+async function seoSaveSiblingKeywords(){
+  const ins=[...document.querySelectorAll('#sKwOther [data-kwp]')];
+  for(const i of ins){
+    const p=i.dataset.kwp, kw=i.value.trim(), r=SEO.rows[p];
+    if(r&&(r.focus_keyword||'')===kw)continue;
+    if(r){const {error}=await sb.from('seo_pages').update({focus_keyword:kw||null}).eq('path',p);if(!error)r.focus_keyword=kw||null}
+    else{const pg=SEO.pages[p]||{};const row={path:p,page_type:'static',title:pg.title||null,description:pg.desc||null,canonical:pg.canonical||null,focus_keyword:kw||null,status:'applied'};
+      const {error}=await sb.from('seo_pages').upsert(row,{onConflict:'path'});if(!error)SEO.rows[p]=row}
+  }
+}
 async function seoSave(quiet){
+  await seoSaveSiblingKeywords();
   const d=seoDraftFromForm();
   if(isArticlePath(d.path)){
     /* one source of truth: an article's search listing lives in the article itself,
@@ -2041,6 +2101,11 @@ async function seoApply(paths){
   renderSeo();
 }
 
+document.querySelectorAll('#seoLangF [data-l]').forEach(b=>b.onclick=()=>{
+  SEO.langFilter=b.dataset.l;
+  document.querySelectorAll('#seoLangF [data-l]').forEach(x=>x.classList.toggle('on',x===b));
+  renderSeo();
+});
 $('seoBack').onclick=()=>{ $('seoEdit').hidden=true; $('seoHome').hidden=false; renderSeo(); };
 $('seoRefresh').onclick=()=>loadSeo(true);
 $('seoApplyAll').onclick=()=>seoApply(null);

@@ -175,7 +175,9 @@
 
     /* ---- SEO ---- */
     'How every page of the site appears in Google — titles, descriptions, keywords and overall health. Edits save as drafts first; "Apply to site" writes them to the live pages.': 'Jak każda strona serwisu wygląda w Google — tytuły, opisy, frazy i ogólna kondycja. Zmiany zapisują się najpierw jako szkice; „Zastosuj na stronie” wprowadza je na żywe strony.',
-    'Score': 'Wynik', 'Page': 'Strona', 'Title in Google': 'Tytuł w Google', 'Keyword': 'Fraza',
+    'Score': 'Wynik', 'Lang': 'Język', 'Open': 'Otwórz',
+    'Focus keyword in the other language versions of this page': 'Fraza kluczowa w pozostałych wersjach językowych tej strony',
+    'The phrase this page should rank for, in this page\'s language. The checklist measures the page against it — Polish and Spanish word endings are recognised.': 'Fraza, na którą ta strona ma się pozycjonować, w języku tej strony. Lista kontrolna ocenia stronę pod jej kątem — rozpoznaje polską i hiszpańską odmianę.', 'Page': 'Strona', 'Title in Google': 'Tytuł w Google', 'Keyword': 'Fraza',
     'Scanning the site…': 'Skanowanie serwisu…', 'Re-scan site': 'Skanuj ponownie', 'Apply all drafts to site': 'Zastosuj wszystkie szkice',
     '← All pages': '← Wszystkie strony', 'Focus keyword': 'Fraza kluczowa', 'Canonical address': 'Adres kanoniczny',
     'e.g. bike rental port de pollenca': 'np. bike rental port de pollenca',
@@ -259,6 +261,8 @@
     [/^Saved, but publishing failed: (.*)$/, 'Zapisano, ale publikacja się nie udała: $1'],
     [/^Could not (save|delete|apply|load SEO data|load articles): (.*)$/, function (m, a, r) { return ({ 'save': 'Nie zapisano', 'delete': 'Nie usunięto', 'apply': 'Nie wprowadzono', 'load SEO data': 'Nie wczytano danych SEO', 'load articles': 'Nie wczytano artykułów' })[a] + ': ' + r; }],
     [/^Not saved: (.*)$/, 'Nie zapisano: $1'],
+    [/^Keywords set: (.*)$/, 'Ustawione frazy: $1'],
+    [/^e\.g\. (.*)$/, 'np. $1'],
     [/^Publishing failed: (.*) — the article was kept as a draft\.$/, 'Publikacja nie powiodła się: $1 — artykuł pozostał szkicem.'],
     [/^Could not apply: (.*)$/, 'Nie wprowadzono: $1'],
     [/^Applied: (.+)\. Live in about a minute\.$/, 'Wprowadzono: $1. Na żywo za około minutę.'],
