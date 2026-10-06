@@ -2,9 +2,9 @@
    Pages: network first, so staff always get the newest panel; the cached copy
    only opens the app when there is no connection.
    Reservation data (supabase.co) is never cached — it must always be live. */
-const VERSION = 'venga-admin-v1';
+const VERSION = 'venga-admin-v2';
 const LIB = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
-const SHELL = ['/admin/', '/assets/fonts.css', '/admin/icons/icon-192.png', '/admin/icons/apple-180.png'];
+const SHELL = ['/admin/', '/admin/i18n.js', '/assets/fonts.css', '/admin/icons/icon-192.png', '/admin/icons/apple-180.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(VERSION).then(c => Promise.all([

@@ -13,6 +13,13 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/admin/icons/favicon-32.png">
 <meta name="robots" content="noindex, nofollow">
 <title>Venga — Admin</title>
+<script>
+window.ADMIN_LANG=(function(){try{var v=localStorage.getItem('adminLang');if(v==='pl'||v==='en')return v}catch(e){}
+  return /^pl\b/i.test(navigator.language||'')?'pl':'en'})();
+document.documentElement.lang=window.ADMIN_LANG;
+window.LOC=window.ADMIN_LANG==='pl'?'pl-PL':window.LOC;
+</script>
+<script src="/admin/i18n.js"></script>
 <link rel="stylesheet" href="../assets/fonts.css">
 <style>
 :root{
@@ -298,6 +305,11 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 .pwa-bar .x{margin-left:auto;background:none;border:0;color:var(--stone);font-size:1.2rem;cursor:pointer;padding:0 4px}
 #offline{display:none;position:fixed;left:0;right:0;bottom:0;z-index:200;background:var(--warn);color:var(--ink);text-align:center;font-size:.78rem;font-weight:600;padding:8px 12px calc(8px + env(safe-area-inset-bottom))}
 #offline.on{display:block}
+
+.langsw{display:inline-flex;margin-left:12px;border:1px solid var(--line);background:none;padding:0;cursor:pointer;vertical-align:middle}
+.langsw i{font-style:normal;font-family:var(--body);font-stretch:normal;font-size:.62rem;font-weight:700;letter-spacing:.12em;padding:4px 8px;color:var(--stone)}
+.langsw i.on{background:var(--gold);color:var(--ink)}
+.lg-sw{margin:0 0 18px}
 </style>
 </head>
 <body>
@@ -307,6 +319,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}
   <div class="lbox">
     <div class="lg">VENG<b>A</b></div>
     <p>Reservation management</p>
+    <button class="langsw lg-sw" data-notr type="button" aria-label="Language / Język"><i data-l="en">EN</i><i data-l="pl">PL</i></button>
     <div class="msg err" id="lErr"></div>
     <div class="f"><label for="le">Email</label><input id="le" type="email" autocomplete="username"></div>
     <div class="f"><label for="lp">Password</label><input id="lp" type="password" autocomplete="current-password"></div>
@@ -319,7 +332,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 <div id="app">
   <div class="top">
     <div class="top-in">
-      <div class="brand">VENG<b>A</b><span>Admin</span></div>
+      <div class="brand">VENG<b>A</b><span>Admin</span><button class="langsw" data-notr type="button" aria-label="Language / Język"><i data-l="en">EN</i><i data-l="pl">PL</i></button></div>
       <div class="tabs">
         <button class="tab on" data-p="res">Reservations<span class="bdg" id="bNew" style="display:none">0</span></button>
         <button class="tab" data-p="cal">Occupancy</button>
@@ -679,8 +692,8 @@ const SB_KEY="sb_publishable_tnL3RCcKwMTQVWPAlKV58g_iNPgbqy0";
 const sb=supabase.createClient(SB_URL,SB_KEY);
 const $=i=>document.getElementById(i);
 const SIZES_ALL=['XS','S','M','ML','L','XL'];
-const MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const money=n=>'€'+Number(n||0).toLocaleString('en-GB',{maximumFractionDigits:0});
+const MO=window.ADMIN_LANG==='pl'?['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru']:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const money=n=>'€'+Number(n||0).toLocaleString(window.LOC,{maximumFractionDigits:0});
 const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const parseD=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
 const fmt=s=>{const d=parseD(s);return `${d.getDate()} ${MO[d.getMonth()]}`};
@@ -788,7 +801,7 @@ function renderRes(){
           <div><small>Extras</small><p>${ex.length?esc(ex.join(', ')):'—'}</p></div>
           <div><small>Delivery</small><p>${r.delivery?esc(r.delivery_address||'yes')+` (${money(r.delivery_fee)})`:'Pickup in shop'}</p></div>
           <div><small>Season</small><p>${seasonOf(r.start_date)}</p></div>
-          <div><small>Booked on</small><p>${new Date(r.created_at).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'})}</p></div>
+          <div><small>Booked on</small><p>${new Date(r.created_at).toLocaleString(window.LOC,{dateStyle:'medium',timeStyle:'short'})}</p></div>
           ${r.accommodation?`<div><small>Staying at</small><p>${esc(r.accommodation)}</p></div>`:''}
           ${(r.height_cm||r.weight_kg)?`<div><small>Rider</small><p>${r.height_cm?esc(r.height_cm)+' cm':''}${r.height_cm&&r.weight_kg?' · ':''}${r.weight_kg?esc(r.weight_kg)+' kg':''}</p></div>`:''}
           ${r.riding_position?`<div><small>Set-up</small><p class="pos-tag ${esc(r.riding_position)}">${({sporty:'Sporty — low and aero',balanced:'Balanced',relaxed:'Relaxed — upright',unsure:'Not sure — we recommend'})[r.riding_position]||esc(r.riding_position)}</p></div>`:''}
@@ -887,10 +900,10 @@ $('tlNext').onclick=()=>{UI.tlMonth=new Date(UI.tlMonth.getFullYear(),UI.tlMonth
 function drawTimeline(){
   const y=UI.tlMonth.getFullYear(),m=UI.tlMonth.getMonth();
   const days=new Date(y,m+1,0).getDate();
-  $('tlLabel').textContent=`${['January','February','March','April','May','June','July','August','September','October','November','December'][m]} ${y}`;
+  $('tlLabel').textContent=`${(window.ADMIN_LANG==='pl'?['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień']:['January','February','March','April','May','June','July','August','September','October','November','December'])[m]} ${y}`;
   const gt=`grid-template-columns:repeat(${days},minmax(26px,1fr))`;
   let html=`<div class="tl-row hd"><div class="tl-lbl"><b>Bike / size</b><span>${days} days</span></div><div class="tl-days" style="${gt}">`;
-  for(let d=1;d<=days;d++){const dw=new Date(y,m,d).getDay();html+=`<div class="tl-d ${dw===0||dw===6?'we':''}"><b>${d}</b>${['Su','Mo','Tu','We','Th','Fr','Sa'][dw]}</div>`}
+  for(let d=1;d<=days;d++){const dw=new Date(y,m,d).getDay();html+=`<div class="tl-d ${dw===0||dw===6?'we':''}"><b>${d}</b>${(window.ADMIN_LANG==='pl'?['Nd','Pn','Wt','Śr','Cz','Pt','So']:['Su','Mo','Tu','We','Th','Fr','Sa'])[dw]}</div>`}
   html+='</div></div>';
   const live=D.res.filter(r=>r.status!=='cancelled');
   D.bikes.forEach(b=>{
@@ -1103,7 +1116,7 @@ function cmsRenderList(){
     <button class="cms-item${CMS.cur&&CMS.cur.id===a.id?' on':''}" data-id="${a.id}">
       ${esc(a.title||'Untitled')}
       <small><span class="st ${a.status==='published'?'live':''}">${a.status==='published'?'Live':'Draft'}</span>
-      · ${a.lang.toUpperCase()} · ${new Date(a.updated_at).toLocaleDateString('en-GB')}</small>
+      · ${a.lang.toUpperCase()} · ${new Date(a.updated_at).toLocaleDateString(window.LOC)}</small>
     </button>`).join('') || '<p class="sub" style="padding:8px 4px">No articles yet.</p>';
   $('cmsItems').querySelectorAll('[data-id]').forEach(b=>{
     b.onclick=()=>cmsOpen(CMS.items.find(x=>x.id===b.dataset.id));
@@ -1285,7 +1298,7 @@ function setModalMode(edit){
    actually free. This grid shows stock per day for the chosen bike and size,
    and writes straight into the existing #mFrom / #mTo fields. */
 const MCAL={month:null,from:null,to:null,booked:{},blocked:{},qty:0,key:''};
-const MO_FULL=['January','February','March','April','May','June',
+const MO_FULL=window.ADMIN_LANG==='pl'?['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec','Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień']:['January','February','March','April','May','June',
                'July','August','September','October','November','December'];
 
 function mcalQty(){
@@ -1914,5 +1927,19 @@ $('sNoindex').addEventListener('change',seoPreview);
 </script>
 
 
+
+<script>
+/* language switch — remembered on this device; a reload redraws everything */
+(function(){
+  document.querySelectorAll('.langsw').forEach(function(b){
+    b.querySelectorAll('i').forEach(function(i){i.classList.toggle('on',i.dataset.l===window.ADMIN_LANG)});
+    b.addEventListener('click',function(){
+      var next=window.ADMIN_LANG==='pl'?'en':'pl';
+      try{localStorage.setItem('adminLang',next)}catch(e){}
+      location.reload();
+    });
+  });
+})();
+</script>
 </body>
 </html>
