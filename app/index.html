@@ -887,7 +887,7 @@ function resCard(r){
     return `<div class="res" data-s="${r.status}" data-id="${r.id}">
       <div class="res-h">
         <span class="cd">${r.code}</span>
-        <span class="who"><b>${esc(r.customer_name)}</b><span>${esc(r.email)}</span></span>
+        <span class="who"><b>${esc(r.customer_name)}</b><span>${esc(r.email||r.phone||'—')}</span></span>
         <span class="bk">${esc(b?.name||'—')}<span>Size ${r.size}</span></span>
         <span class="dt">${fmt(r.start_date)} → ${fmt(r.end_date)}<span>${r.days} days · pickup ${String(r.pickup_time).slice(0,5)}</span></span>
         <span class="tagpill ${r.status}">${r.status}</span>
@@ -916,7 +916,7 @@ function resCard(r){
           <button class="btn btn-o btn-sm" data-edit="${r.id}">Edit</button>
           ${r.status!=='cancelled'?`<button class="btn btn-o btn-sm" data-act="cancelled">Cancel</button>`:''}
           ${r.status==='cancelled'?`<button class="btn btn-o btn-sm" data-act="new">Reopen</button>`:''}
-          <a class="btn btn-o btn-sm" href="mailto:${encodeURIComponent(r.email)}?subject=${encodeURIComponent('Venga Cycling — reservation '+r.code)}">Email customer</a>
+          ${r.email?`<a class="btn btn-o btn-sm" href="mailto:${encodeURIComponent(r.email)}?subject=${encodeURIComponent('Venga Cycling — reservation '+r.code)}">Email customer</a>`:''}
         </div>
       </div></div>`;
 }
