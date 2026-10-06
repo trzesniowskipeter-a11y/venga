@@ -11,7 +11,11 @@
     /* ---- login & shell ---- */
     'Reservation management': 'Zarządzanie rezerwacjami',
     'Email': 'E-mail', 'Password': 'Hasło', 'Sign in': 'Zaloguj się', 'Signing in…': 'Logowanie…',
-    'Admin': 'Panel', 'Reservations': 'Rezerwacje', 'Occupancy': 'Obłożenie', 'Blocked dates': 'Zablokowane dni',
+    'Admin': 'Panel',
+    'Today': 'Dziś', 'Pickups today': 'Odbiory dziś', 'Returns today': 'Zwroty dziś', 'Bikes out now': 'Rowery na trasie',
+    'To confirm': 'Do potwierdzenia', 'Waiting for confirmation': 'Czekają na potwierdzenie', 'Pickups tomorrow': 'Odbiory jutro',
+    'Nothing to confirm.': 'Nic do potwierdzenia.', 'No pickups today.': 'Dziś brak odbiorów.', 'No returns today.': 'Dziś brak zwrotów.',
+    'No pickups tomorrow.': 'Jutro brak odbiorów.', 'More': 'Więcej', 'Call': 'Zadzwoń', 'Main': 'Menu', 'Reservations': 'Rezerwacje', 'Occupancy': 'Obłożenie', 'Blocked dates': 'Zablokowane dni',
     'Fleet & prices': 'Flota i ceny', 'Extras': 'Dodatki', 'Journal': 'Blog', 'SEO': 'SEO', 'Sign out': 'Wyloguj',
     'No connection — reservations shown may be out of date.': 'Brak połączenia — widoczne rezerwacje mogą być nieaktualne.',
     'Install': 'Zainstaluj', 'Close': 'Zamknij',

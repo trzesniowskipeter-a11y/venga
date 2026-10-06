@@ -310,6 +310,63 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 .langsw i{font-style:normal;font-family:var(--body);font-stretch:normal;font-size:.62rem;font-weight:700;letter-spacing:.12em;padding:4px 8px;color:var(--stone)}
 .langsw i.on{background:var(--gold);color:var(--ink)}
 .lg-sw{margin:0 0 18px}
+
+/* ============ PHONE APP: today, contact, bottom bar, sheet, pull to refresh ============ */
+.qa{display:flex;gap:6px;margin-left:auto}
+.qa a{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--line);color:var(--gold);border-radius:50%;text-decoration:none;transition:.2s}
+.qa a:hover,.qa a:active{background:var(--gold);color:var(--ink)}
+.res-h .pz+.qa{margin-left:6px}
+.rlist{display:grid;gap:10px}
+.cnt-n{display:inline-block;margin-left:8px;color:var(--stone);font-weight:600}
+.empty.sm{padding:16px;font-size:.82rem}
+#p-today .bkh{margin-top:26px}
+.bnav,.sheet{display:none}
+.ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 8px);z-index:120;transform:translate(-50%,-70px);transition:transform .2s;pointer-events:none}
+.ptr span{display:block;width:34px;height:34px;border-radius:50%;background:var(--coal-2);border:1px solid var(--line);box-shadow:0 6px 20px rgba(0,0,0,.4);position:relative}
+.ptr span::after{content:"";position:absolute;inset:9px;border:2px solid var(--gold);border-top-color:transparent;border-radius:50%}
+.ptr.spin span::after{animation:ptrs .7s linear infinite}
+@keyframes ptrs{to{transform:rotate(360deg)}}
+@media(max-width:760px){
+  html,body{overscroll-behavior-y:contain}
+  .tabs{display:none}
+  .top-in{flex-wrap:nowrap;justify-content:space-between}
+  .brand{padding:12px 16px 12px}
+  .wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+  #offline{bottom:calc(64px + env(safe-area-inset-bottom));padding-bottom:8px}
+  .bnav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:80;
+    background:rgba(14,13,11,.96);backdrop-filter:blur(14px);border-top:1px solid var(--line);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  .bnav button{background:none;border:0;color:var(--stone);display:flex;flex-direction:column;align-items:center;gap:3px;
+    font-size:.58rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 0;position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .bnav button svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .bnav button.on{color:var(--gold)}
+  .bnav button span{white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  .bnav .plus{align-self:center}
+  .bnav .plus svg{width:50px;height:50px;padding:13px;background:var(--gold);color:var(--ink);stroke:var(--ink);stroke-width:2.4;border-radius:50%;margin-top:-22px;box-shadow:0 8px 22px rgba(190,157,82,.35)}
+  .bnav .bdg{position:absolute;top:0;left:calc(50% + 6px);font-style:normal;min-width:17px;padding:1px 5px;background:var(--new);color:var(--ink);font-size:.6rem;font-weight:700;border-radius:9px}
+  .sheet{display:block;position:fixed;inset:0;z-index:95;background:rgba(6,5,4,.6);opacity:0;pointer-events:none;transition:opacity .2s}
+  .sheet.on{opacity:1;pointer-events:auto}
+  .sheet-in{position:absolute;left:0;right:0;bottom:0;background:var(--coal);border-top:1px solid var(--line);
+    padding:10px 18px calc(18px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .25s}
+  .sheet.on .sheet-in{transform:none}
+  .sheet .grab{display:block;width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 10px}
+  .sheet-in>button{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid rgba(190,157,82,.12);
+    color:var(--ivory);font-size:.98rem;padding:15px 4px;cursor:pointer}
+  .sheet-in>button.dim{color:var(--stone);border-bottom:0}
+  .sheet-row{display:flex;align-items:center;justify-content:space-between;padding:13px 4px;border-bottom:1px solid rgba(190,157,82,.12);color:var(--stone);font-size:.9rem}
+  .top .langsw{display:none}
+  /* reservation cards: tidy two-line layout on a phone */
+  .res-h{gap:6px 12px;padding:13px 14px}
+  .res-h .who{min-width:0;flex:1 1 60%}
+  .res-h .bk,.res-h .dt{min-width:0;flex:1 1 45%}
+  .res-h .pz{min-width:0;margin-left:auto}
+  .qa{flex-basis:100%;justify-content:flex-start;margin:6px 0 0}
+  .qa a{width:40px;height:40px}
+  /* manual reservation: full screen */
+  .ovl{padding:0}
+  .mod{max-width:none;min-height:100%;margin:0;border:0;padding:calc(20px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom))}
+  #ovl .mact{position:sticky;bottom:0;background:var(--coal);padding:12px 0 calc(4px + env(safe-area-inset-bottom));margin-top:18px;border-top:1px solid var(--line)}
+}
 </style>
 </head>
 <body>
@@ -334,6 +391,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}
     <div class="top-in">
       <div class="brand">VENG<b>A</b><span>Admin</span><button class="langsw" data-notr type="button" aria-label="Language / Język"><i data-l="en">EN</i><i data-l="pl">PL</i></button></div>
       <div class="tabs">
+        <button class="tab" data-p="today">Today</button>
         <button class="tab on" data-p="res">Reservations<span class="bdg" id="bNew" style="display:none">0</span></button>
         <button class="tab" data-p="cal">Occupancy</button>
         <button class="tab" data-p="blk">Blocked dates</button>
@@ -352,6 +410,13 @@ body{padding-bottom:env(safe-area-inset-bottom)}
     <div class="msg err" id="erMsg"></div>
 
     <!-- RESERVATIONS -->
+    <section class="pane" id="p-today">
+      <h1 class="pt">Today</h1>
+      <p class="sub" id="tdDate"></p>
+      <div class="kpis" id="tdKpis"></div>
+      <div id="tdBody"></div>
+    </section>
+
     <section class="pane on" id="p-res">
       <h1 class="pt">Reservations</h1>
       <p class="sub">New requests appear here first. Confirm to lock the bike, cancel to release it.</p>
@@ -555,6 +620,28 @@ Write in plain text. Blank line starts a new paragraph.
 </div>
 
 <!-- MANUAL RESERVATION MODAL -->
+
+  <nav class="bnav" aria-label="Main">
+    <button data-go="today"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.6" fill="currentColor"/></svg><span>Today</span></button>
+    <button data-go="res"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg><span>Reservations</span><i class="bdg" id="bnNew" style="display:none">0</i></button>
+    <button data-go="new" class="plus" aria-label="Manual reservation"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+    <button data-go="cal"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11M15 9v11"/></svg><span>Occupancy</span></button>
+    <button data-go="more"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/></svg><span>More</span></button>
+  </nav>
+  <div class="sheet" id="moreSheet" aria-hidden="true">
+    <div class="sheet-in">
+      <i class="grab"></i>
+      <button data-go="blk">Blocked dates</button>
+      <button data-go="fleet">Fleet &amp; prices</button>
+      <button data-go="ext">Extras</button>
+      <button data-go="cms">Journal</button>
+      <button data-go="seo">SEO</button>
+      <div class="sheet-row"><span>Language</span><button class="langsw" data-notr type="button" aria-label="Language / Język"><i data-l="en">EN</i><i data-l="pl">PL</i></button></div>
+      <button data-go="out" class="dim">Sign out</button>
+    </div>
+  </div>
+  <div class="ptr" id="ptr"><span></span></div>
+
 <div class="ovl" id="ovl">
   <div class="mod">
     <h3 id="mTitle">Manual reservation</h3>
@@ -717,7 +804,8 @@ $('lBtn').onclick=async()=>{
 $('lp').addEventListener('keydown',e=>{if(e.key==='Enter')$('lBtn').click()});
 sb.auth.getSession().then(({data})=>{if(data.session)start()});
 
-async function start(){$('login').style.display='none';$('app').style.display='block';await loadAll()}
+async function start(){$('login').style.display='none';$('app').style.display='block';await loadAll();
+  if(matchMedia('(max-width:760px)').matches&&!new URLSearchParams(location.search).get('tab')){const t=document.querySelector('.tab[data-p="today"]');if(t)t.click()}}
 
 /* ===== TABS ===== */
 document.querySelectorAll('.tab').forEach(t=>{
@@ -727,6 +815,7 @@ document.querySelectorAll('.tab').forEach(t=>{
     document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
     $('p-'+t.dataset.p).classList.add('on');
     if(t.dataset.p==='cal')drawTimeline();
+    if(t.dataset.p==='today')renderToday();
     if(t.dataset.p==='blk')renderBlocks();
     if(t.dataset.p==='seo')loadSeo();
     window.scrollTo({top:0,behavior:'smooth'});
@@ -747,7 +836,7 @@ async function loadAll(){
   if(b.error||r.error){bad('Could not load data. Check your connection and refresh.');return}
   D.bikes=b.data||[];D.sizes=s.data||[];D.prices=p.data||[];D.addons=a.data||[];
   D.settings=st.data?.value||{delivery_fee:100};D.res=r.data||[];D.blocks=bl.data||[];
-  renderRes();renderKpis();renderFleet();renderExt();if(typeof cmsLoad==='function')cmsLoad();fillModalBikes();fillBlkSelects();renderBlocks();
+  renderRes();renderKpis();renderToday();renderFleet();renderExt();if(typeof cmsLoad==='function')cmsLoad();fillModalBikes();fillBlkSelects();renderBlocks();
 }
 const bikeById=id=>D.bikes.find(b=>b.id===id);
 const sizesOf=id=>D.sizes.filter(s=>s.bike_id===id).sort((a,b)=>SIZES_ALL.indexOf(a.size)-SIZES_ALL.indexOf(b.size));
@@ -766,6 +855,8 @@ function renderKpis(){
     <div class="kpi"><b>${outNow}</b><span>Bikes out today</span></div>
     <div class="kpi"><b>${money(rev)}</b><span>Booked value</span></div>`;
   const bg=$('bNew');bg.style.display=newN?'inline-block':'none';bg.textContent=newN;
+  const bb=$('bnNew');if(bb){bb.style.display=newN?'inline-block':'none';bb.textContent=newN}
+  try{if('setAppBadge' in navigator){newN?navigator.setAppBadge(newN):navigator.clearAppBadge()}}catch(e){}
 }
 
 /* ===== RESERVATIONS ===== */
@@ -778,7 +869,10 @@ function renderRes(){
   let list=D.res.filter(r=>UI.filter==='all'?true:r.status===UI.filter);
   if(UI.q)list=list.filter(r=>[r.customer_name,r.email,r.code,r.phone||''].join(' ').toLowerCase().includes(UI.q));
   if(!list.length){$('rlist').innerHTML=`<div class="empty">${UI.q?'Nothing matches that search.':'No reservations in this view yet.'}</div>`;return}
-  $('rlist').innerHTML=list.map(r=>{
+  $('rlist').innerHTML=list.map(resCard).join('');
+  bindCards($('rlist'));
+}
+function resCard(r){
     const b=bikeById(r.bike_id);
     const ex=(r.addons||[]).map(s=>D.addons.find(a=>a.slug===s)?.name).filter(Boolean);
     return `<div class="res" data-s="${r.status}" data-id="${r.id}">
@@ -793,6 +887,7 @@ function renderRes(){
             ? `<span class="tagpill mailbad" title="${esc(r.notify_error)}">email failed</span>`
             : (r.notified_at ? '<span class="tagpill mailok" title="Guest has been emailed">emailed</span>' : '')}
         <span class="pz">${money(r.total_price)}</span>
+        ${contactBtns(r)}
       </div>
       <div class="res-b">
         <div class="dgrid">
@@ -815,8 +910,9 @@ function renderRes(){
           <a class="btn btn-o btn-sm" href="mailto:${encodeURIComponent(r.email)}?subject=${encodeURIComponent('Venga Cycling — reservation '+r.code)}">Email customer</a>
         </div>
       </div></div>`;
-  }).join('');
-  $('rlist').querySelectorAll('.res').forEach(card=>{
+}
+function bindCards(root){
+  root.querySelectorAll('.res').forEach(card=>{
     card.querySelector('.res-h').onclick=()=>card.classList.toggle('open');
     card.querySelectorAll('[data-act]').forEach(btn=>{
       btn.onclick=async e=>{e.stopPropagation();await setStatus(card.dataset.id,btn.dataset.act)};
@@ -824,14 +920,60 @@ function renderRes(){
     const ed=card.querySelector('[data-edit]');
     if(ed)ed.onclick=e=>{e.stopPropagation();openEdit(ed.dataset.edit)};
   });
+  root.querySelectorAll('.qa a').forEach(x=>x.addEventListener('click',e=>e.stopPropagation()));
 }
+
+const ICO={
+  tel:'<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>',
+  wa:'<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.6-4.7A8.5 8.5 0 1 1 7.8 19.6z"/><path d="M9 9.5c.3 2.4 2.2 4.4 4.6 4.8l1.2-1.2 1.7.8-.4 1.6c-3.7.3-7.2-3.1-7-6.9l1.6-.4.8 1.7z"/></svg>',
+  mail:'<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>'
+};
+function waNumber(p){let d=String(p||'').replace(/[^\d+]/g,'');if(d.startsWith('00'))d='+'+d.slice(2);return d.replace(/^\+/,'')}
+function contactBtns(r){
+  const out=[];
+  if(r.phone){
+    out.push(`<a href="tel:${esc(String(r.phone).replace(/[^\d+]/g,''))}" title="Call" aria-label="Call">${ICO.tel}</a>`);
+    const w=waNumber(r.phone); if(w.length>=8)out.push(`<a href="https://wa.me/${w}" target="_blank" rel="noopener" title="WhatsApp" aria-label="WhatsApp">${ICO.wa}</a>`);
+  }
+  if(r.email)out.push(`<a href="mailto:${esc(r.email)}?subject=${encodeURIComponent('Venga Cycling — reservation '+r.code)}" title="Email" aria-label="Email">${ICO.mail}</a>`);
+  return out.length?`<span class="qa">${out.join('')}</span>`:'';
+}
+
+/* ===== TODAY ===== */
+function renderToday(){
+  if(!$('p-today'))return;
+  const now=new Date(), t=iso(now), tm=iso(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1));
+  const live=D.res.filter(r=>r.status!=='cancelled');
+  const byTime=(a,b)=>String(a.pickup_time).localeCompare(String(b.pickup_time));
+  const pick=live.filter(r=>r.start_date===t).sort(byTime);
+  const ret=live.filter(r=>r.end_date===t&&r.start_date!==t).sort(byTime);
+  const tom=live.filter(r=>r.start_date===tm).sort(byTime);
+  const conf=D.res.filter(r=>r.status==='new').sort((a,b)=>a.start_date<b.start_date?-1:1);
+  const out=D.res.filter(r=>r.status==='confirmed'&&r.start_date<=t&&r.end_date>=t).length;
+  $('tdDate').textContent=now.toLocaleDateString(window.LOC||'en-GB',{weekday:'long',day:'numeric',month:'long'});
+  $('tdKpis').innerHTML=`
+    <div class="kpi"><b>${pick.length}</b><span>Pickups today</span></div>
+    <div class="kpi"><b>${ret.length}</b><span>Returns today</span></div>
+    <div class="kpi"><b>${out}</b><span>Bikes out now</span></div>
+    <div class="kpi"><b>${conf.length}</b><span>To confirm</span></div>`;
+  const sec=(title,list,empty)=>`<h4 class="bkh">${title}<span class="cnt-n">${list.length}</span></h4>`+
+    (list.length?`<div class="rlist">${list.map(resCard).join('')}</div>`:`<div class="empty sm">${empty}</div>`);
+  $('tdBody').innerHTML=
+    sec('Waiting for confirmation',conf,'Nothing to confirm.')+
+    sec('Pickups today',pick,'No pickups today.')+
+    sec('Returns today',ret,'No returns today.')+
+    sec('Pickups tomorrow',tom,'No pickups tomorrow.');
+  bindCards($('tdBody'));
+}
+
 function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
 async function setStatus(id,status){
   const {error}=await sb.from('reservations').update({status}).eq('id',id);
   if(error){bad('Could not update that reservation.');return}
   const r=D.res.find(x=>x.id===id);if(r)r.status=status;
-  renderRes();renderKpis();
+  renderRes();renderKpis();renderToday();
+  try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}
   ok(status==='confirmed'?'Reservation confirmed — the bike is locked for those dates.':(status==='cancelled'?'Reservation cancelled — the bike is available again.':'Reservation reopened.'));
 }
 
@@ -1938,6 +2080,43 @@ $('sNoindex').addEventListener('change',seoPreview);
       try{localStorage.setItem('adminLang',next)}catch(e){}
       location.reload();
     });
+  });
+})();
+</script>
+
+<script>
+/* ===== phone app: bottom bar, "more" sheet, pull to refresh ===== */
+(function(){
+  const $=id=>document.getElementById(id);
+  const sheet=$('moreSheet'), nav=document.querySelector('.bnav');
+  if(!nav)return;
+  const tabBtn=p=>document.querySelector('.tab[data-p="'+p+'"]');
+  const mark=p=>nav.querySelectorAll('[data-go]').forEach(b=>b.classList.toggle('on',b.dataset.go===p||(b.dataset.go==='more'&&['blk','fleet','ext','cms','seo'].includes(p))));
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>mark(t.dataset.p)));
+  const openSheet=on=>{sheet.classList.toggle('on',on);sheet.setAttribute('aria-hidden',on?'false':'true')};
+  document.querySelectorAll('.bnav [data-go], #moreSheet [data-go]').forEach(b=>b.addEventListener('click',()=>{
+    const g=b.dataset.go;
+    if(g==='more'){openSheet(!sheet.classList.contains('on'));return}
+    openSheet(false);
+    if(g==='new'){const a=$('addRes');if(a)a.click();return}
+    const t=tabBtn(g);if(t)t.click();
+  }));
+  sheet.addEventListener('click',e=>{if(e.target===sheet)openSheet(false)});
+  const cur=document.querySelector('.tab.on');if(cur)mark(cur.dataset.p);
+
+  /* pull down at the top of the page to reload the data */
+  const ptr=$('ptr');let y0=null,dy=0,busy=false;
+  const ok=()=>matchMedia('(max-width:760px)').matches&&$('app').style.display==='block'&&!document.querySelector('.ovl.on')&&!sheet.classList.contains('on');
+  addEventListener('touchstart',e=>{if(busy||!ok()||scrollY>0||e.target.closest('.tl-scroll,.bnav')){y0=null;return}y0=e.touches[0].clientY;dy=0},{passive:true});
+  addEventListener('touchmove',e=>{if(y0===null)return;dy=Math.max(0,e.touches[0].clientY-y0);
+    const p=Math.min(dy,110);ptr.style.transform='translate(-50%,'+(p-70)+'px) rotate('+(p*3)+'deg)'},{passive:true});
+  addEventListener('touchend',async()=>{
+    if(y0===null)return;const go=dy>80;y0=null;
+    if(!go){ptr.style.transform='';return}
+    busy=true;ptr.classList.add('spin');ptr.style.transform='translate(-50%,30px)';
+    try{if(typeof loadAll==='function')await loadAll()}catch(e){}
+    try{navigator.vibrate&&navigator.vibrate(10)}catch(e){}
+    ptr.classList.remove('spin');ptr.style.transform='';busy=false;
   });
 })();
 </script>
