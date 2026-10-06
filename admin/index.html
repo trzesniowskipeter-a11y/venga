@@ -2,7 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="manifest" href="/admin/manifest.webmanifest">
+<meta name="theme-color" content="#0E0D0B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Venga Admin">
+<link rel="apple-touch-icon" href="/admin/icons/apple-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/admin/icons/favicon-32.png">
 <meta name="robots" content="noindex, nofollow">
 <title>Venga — Admin</title>
 <link rel="stylesheet" href="../assets/fonts.css">
@@ -268,6 +276,28 @@ input.cell.wide{width:100%;text-align:left}
 .serp.m{max-width:400px}
 .serplnk a{color:var(--muted2);text-decoration:none;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;margin-left:10px}
 .serplnk a.on{color:var(--gold)}
+
+/* ============ PHONE / INSTALLED APP ============ */
+.top{padding-top:env(safe-area-inset-top)}
+body{padding-bottom:env(safe-area-inset-bottom)}
+#login{padding-top:calc(24px + env(safe-area-inset-top))}
+@media(max-width:1100px){
+  .top{padding-left:0;padding-right:0}
+  .top-in{flex-wrap:wrap;height:auto;gap:0}
+  .brand{padding:12px clamp(14px,3vw,28px) 4px}
+  .tabs{width:100%;margin-left:0;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 clamp(8px,3vw,22px);scroll-padding:0 24px}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:none;padding:12px 12px;white-space:nowrap}
+}
+@media(max-width:560px){
+  input,select,textarea{font-size:16px!important}  /* stops iOS zooming into fields */
+}
+.pwa-bar{display:none;align-items:center;gap:12px;padding:10px 14px;margin-bottom:16px;border:1px solid var(--line);background:var(--coal);font-size:.8rem;line-height:1.45}
+.pwa-bar.on{display:flex}
+.pwa-bar b{color:var(--gold)}
+.pwa-bar .x{margin-left:auto;background:none;border:0;color:var(--stone);font-size:1.2rem;cursor:pointer;padding:0 4px}
+#offline{display:none;position:fixed;left:0;right:0;bottom:0;z-index:200;background:var(--warn);color:var(--ink);text-align:center;font-size:.78rem;font-weight:600;padding:8px 12px calc(8px + env(safe-area-inset-bottom))}
+#offline.on{display:block}
 </style>
 </head>
 <body>
@@ -285,6 +315,7 @@ input.cell.wide{width:100%;text-align:left}
 </div>
 
 <!-- APP -->
+<div id="offline">No connection — reservations shown may be out of date.</div>
 <div id="app">
   <div class="top">
     <div class="top-in">
@@ -303,6 +334,7 @@ input.cell.wide{width:100%;text-align:left}
   </div>
 
   <div class="wrap">
+    <div class="pwa-bar" id="pwaBar"><span id="pwaTxt"></span><button class="btn btn-g btn-sm" id="pwaBtn" hidden>Install</button><button class="x" id="pwaX" aria-label="Close">&times;</button></div>
     <div class="msg good" id="okMsg"></div>
     <div class="msg err" id="erMsg"></div>
 
@@ -1824,6 +1856,60 @@ $('seoDesk').onclick=e=>{e.preventDefault();SEO.mob=false;$('seoDesk').classList
 $('seoMob').onclick=e=>{e.preventDefault();SEO.mob=true;$('seoMob').classList.add('on');$('seoDesk').classList.remove('on');seoPreview()};
 ['sTitle','sDesc','sCanon','sKw'].forEach(id=>$(id).addEventListener('input',seoPreview));
 $('sNoindex').addEventListener('change',seoPreview);
+
+
+</script>
+<script>
+/* ==================== INSTALLABLE APP (PWA) ==================== */
+(function(){
+  const $=id=>document.getElementById(id);
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>navigator.serviceWorker.register('/admin/sw.js',{scope:'/admin/'}).catch(e=>console.warn('SW',e)));
+  }
+  const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const safari=ios&&!/crios|fxios|edgios/i.test(navigator.userAgent);
+  const bar=$('pwaBar'),txt=$('pwaTxt'),btn=$('pwaBtn');
+  let dismissed=false; try{dismissed=localStorage.getItem('pwaHide')==='1'}catch(e){}
+  let deferred=null;
+  const show=html=>{if(standalone||dismissed)return;txt.innerHTML=html;bar.classList.add('on')};
+  window.addEventListener('beforeinstallprompt',e=>{
+    e.preventDefault();deferred=e;btn.hidden=false;
+    show('<b>Install Venga Admin</b> on this device — it opens like an app, full screen, from the home screen.');
+  });
+  btn.onclick=async()=>{if(!deferred)return;deferred.prompt();const r=await deferred.userChoice;deferred=null;btn.hidden=true;if(r.outcome==='accepted')bar.classList.remove('on')};
+  if(ios&&!standalone){
+    show(safari
+      ?'<b>Install on iPhone:</b> tap the Share button <span aria-hidden="true">⎋</span> at the bottom of Safari, then <b>Add to Home Screen</b>.'
+      :'<b>Install on iPhone:</b> open this page in <b>Safari</b>, tap Share, then <b>Add to Home Screen</b>.');
+  }
+  $('pwaX').onclick=()=>{bar.classList.remove('on');try{localStorage.setItem('pwaHide','1')}catch(e){}};
+  window.addEventListener('appinstalled',()=>bar.classList.remove('on'));
+
+  const net=()=>$('offline').classList.toggle('on',!navigator.onLine);
+  window.addEventListener('online',()=>{net();if(typeof loadAll==='function'&&$('app').style.display==='block')loadAll()});
+  window.addEventListener('offline',net); net();
+
+  /* keep the tapped tab visible in the scrolling strip on phones */
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>t.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'})));
+
+  /* app shortcuts: ?tab=cal opens a tab, ?new=1 opens the manual reservation form */
+  const q=new URLSearchParams(location.search);
+  if(q.get('tab')||q.get('new')){
+    const go=()=>{
+      if($('app').style.display!=='block'){return setTimeout(go,300)}
+      const t=q.get('tab'); if(t){const b=document.querySelector('.tab[data-p="'+t+'"]'); if(b)b.click()}
+      if(q.get('new')){const a=$('addRes'); if(a)a.click()}
+    };
+    setTimeout(go,600);
+  }
+  /* coming back to the app after a while: refresh the reservations */
+  let hiddenAt=0;
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){hiddenAt=Date.now();return}
+    if(hiddenAt&&Date.now()-hiddenAt>60000&&navigator.onLine&&typeof loadAll==='function'&&$('app').style.display==='block')loadAll();
+  });
+})();
 
 </script>
 
