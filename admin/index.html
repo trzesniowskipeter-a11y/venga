@@ -1346,7 +1346,9 @@ $('cSave').onclick=async()=>{
   btn.disabled=false; btn.textContent='Save draft';
 };
 $('cPublish').onclick=async()=>{
+  if($('cNoindex').checked&&!confirm('This article is set to "Hide this page from search engines". Google will not show it. Publish anyway?'))return;
   const btn=$('cPublish'); btn.disabled=true; btn.textContent='Publishing…';
+  const prevStatus=$('cStatus').value;
   $('cStatus').value='published';
   const a=await cmsSave();
   if(a){
@@ -1356,8 +1358,11 @@ $('cPublish').onclick=async()=>{
       if(data && data.ok===false) throw new Error(data.error||'unknown');
       flash($('cmsOk'),'Published. The page appears at '+(data&&data.url?data.url:'')+' in about a minute.',9000);
     }catch(e){
-      flash($('cmsErr'),'Saved, but publishing failed: '+(e.message||e)+
-        ' — check that GITHUB_TOKEN is set on the publish function.',10000);
+      /* the page did not reach the site, so do not leave the article marked as published */
+      if(prevStatus!=='published'){
+        try{await sb.from('articles').update({status:prevStatus||'draft',published_at:null}).eq('id',a.id);$('cStatus').value=prevStatus||'draft';await cmsLoad();}catch(_){}
+      }
+      flash($('cmsErr'),'Publishing failed: '+(e.message||e)+' — the article was kept as a draft.',10000);
     }
   }
   btn.disabled=false; btn.textContent='Publish to site';
@@ -1981,8 +1986,20 @@ function seoPreview(){
     +(readItems.length?`<li style="border-bottom:none;padding-top:14px"><div><b style="font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted2)">Readability</b></div></li>`+readItems.map(li).join(''):'');
 }
 
+const isArticlePath=p=>/^\/blog\/[^/]+\/$/.test(p);
+const slugOf=p=>p.replace(/^\/blog\/|\/$/g,'');
 async function seoSave(quiet){
   const d=seoDraftFromForm();
+  if(isArticlePath(d.path)){
+    /* one source of truth: an article's search listing lives in the article itself,
+       so a later re-publish from the Journal can never overwrite it */
+    const def='https://vengacyclingmallorca.com'+d.path;
+    const {error:ea}=await sb.from('articles').update({
+      seo_title:d.title||null, seo_description:d.description||null,
+      canonical_url:(d.canonical&&d.canonical!==def)?d.canonical:null, noindex:d.noindex
+    }).eq('slug',slugOf(d.path));
+    if(ea){flash($('seoErr'),'Not saved: '+ea.message,6000);return false}
+  }
   const {error}=await sb.from('seo_pages').upsert(d,{onConflict:'path'});
   if(error){flash($('seoErr'),'Not saved: '+error.message,6000);return false}
   const {data:back}=await sb.from('seo_pages').select('*').eq('path',SEO.cur).single();
@@ -1993,16 +2010,34 @@ async function seoSave(quiet){
 
 async function seoApply(paths){
   flash($('seoOk'),'Applying to the live site…',3000);
-  const out=await callSeoApply(paths?{paths}:{});
-  if(out.ok===false){
+  const list=paths||Object.keys(SEO.rows).filter(p=>SEO.rows[p].status==='draft');
+  const arts=list.filter(isArticlePath), rest=list.filter(p=>!isArticlePath(p));
+  const done=[], fail=[];
+  for(const p of arts){
+    try{
+      const {data:a}=await sb.from('articles').select('id').eq('slug',slugOf(p)).single();
+      const r=a?await callPublish({id:a.id}):{ok:false,error:'article not found'};
+      if(r&&r.ok!==false){done.push(p);await sb.from('seo_pages').update({status:'applied',applied_at:new Date().toISOString()}).eq('path',p)}
+      else fail.push(p+': '+((r&&r.error)||'error'));
+    }catch(e){fail.push(p+': '+(e.message||e))}
+  }
+  if(!rest.length){
+    done.forEach(p=>{if(SEO.rows[p]){SEO.rows[p].status='applied'}});
+    if(fail.length)flash($('seoErr'),'Could not apply: '+fail.join('; '),12000);
+    else flash($('seoOk'),done.length?('Applied: '+done.join(', ')+'. Live in about a minute.'):'Nothing to apply — no drafts.',9000);
+    renderSeo();return;
+  }
+  const out=await callSeoApply({paths:rest});
+  if(out&&out.applied)Object.entries(out.applied).forEach(([k,v])=>{if(v==='ok')done.push(k);else fail.push(k+': '+v)});
+  if(fail.length&&out.ok!==false){flash($('seoErr'),'Could not apply: '+fail.join('; '),12000)}
+  if(out.ok===false&&!out.applied){
     const msg=/GITHUB_TOKEN/.test(out.error||'')
       ?'The server is missing the GITHUB_TOKEN secret (Supabase → Edge Functions → Secrets), so it cannot write to the site yet. Your changes are safe as drafts — add the token, or ask Claude to apply them.'
       :'Could not apply: '+(out.error||JSON.stringify(out.applied||{}));
     flash($('seoErr'),msg,12000);return;
   }
-  const done=Object.entries(out.applied||{}).filter(([,v])=>v==='ok').map(([k])=>k);
   done.forEach(p=>{if(SEO.rows[p]){SEO.rows[p].status='applied';SEO.rows[p].applied_at=new Date().toISOString()}});
-  flash($('seoOk'),done.length?('Applied: '+done.join(', ')+'. Live in about a minute.'):'Nothing to apply — no drafts.',9000);
+  if(!fail.length)flash($('seoOk'),done.length?('Applied: '+done.join(', ')+'. Live in about a minute.'):'Nothing to apply — no drafts.',9000);
   renderSeo();
 }
 

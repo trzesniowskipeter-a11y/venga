@@ -230,7 +230,8 @@
     'Over 300 words with no subheadings — add H2s so the text scans.': 'Ponad 300 słów bez śródtytułów — dodaj H2, żeby tekst dało się przeskanować wzrokiem.',
     'Text is broken up well by subheadings.': 'Tekst jest dobrze podzielony śródtytułami.',
     'Set.': 'Ustawiony.', 'Not set — risk of duplicate-content signals.': 'Nie ustawiono — ryzyko sygnałów o powielonej treści.',
-    'This page is hidden from search engines (noindex).': 'Ta strona jest ukryta przed wyszukiwarkami (noindex).'
+    'This page is hidden from search engines (noindex).': 'Ta strona jest ukryta przed wyszukiwarkami (noindex).',
+    'This article is set to "Hide this page from search engines". Google will not show it. Publish anyway?': 'Ten artykuł ma zaznaczone „Ukryj tę stronę przed wyszukiwarkami”. Google go nie pokaże. Opublikować mimo to?'
   };
 
   var P = [
@@ -258,6 +259,8 @@
     [/^Saved, but publishing failed: (.*)$/, 'Zapisano, ale publikacja się nie udała: $1'],
     [/^Could not (save|delete|apply|load SEO data|load articles): (.*)$/, function (m, a, r) { return ({ 'save': 'Nie zapisano', 'delete': 'Nie usunięto', 'apply': 'Nie wprowadzono', 'load SEO data': 'Nie wczytano danych SEO', 'load articles': 'Nie wczytano artykułów' })[a] + ': ' + r; }],
     [/^Not saved: (.*)$/, 'Nie zapisano: $1'],
+    [/^Publishing failed: (.*) — the article was kept as a draft\.$/, 'Publikacja nie powiodła się: $1 — artykuł pozostał szkicem.'],
+    [/^Could not apply: (.*)$/, 'Nie wprowadzono: $1'],
     [/^Applied: (.+)\. Live in about a minute\.$/, 'Wprowadzono: $1. Na żywo za około minutę.'],
     [/^Short \((\d+) characters\) — room to say more\.$/, 'Krótki ($1 znaków) — jest miejsce na więcej.'],
     [/^Likely cut off in Google \((\d+) characters, ~(\d+)px of 580px\)\.$/, 'Google go prawdopodobnie przytnie ($1 znaków, ~$2px z 580px).'],
