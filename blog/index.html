@@ -1,98 +1,69 @@
 <!DOCTYPE html><html lang="en"><head>
-<meta charset="utf-8">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/icon-16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/icon-180.png">
-<link rel="manifest" href="/site.webmanifest">
-<meta name="theme-color" content="#0E0D0B">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- Consent Mode v2 — defaults before any tag -->
-<script>
-window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
-gtag('consent','default',{'ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied',
-'analytics_storage':'denied','functionality_storage':'granted','security_storage':'granted','wait_for_update':500});
-gtag('set','ads_data_redaction',true);gtag('set','url_passthrough',true);
-(function(){try{var v=JSON.parse(localStorage.getItem('venga_consent_v1')||'null');
-if(v&&v.at&&(Date.now()-v.at)/86400000<=365){var g=function(b){return b?'granted':'denied';};
-gtag('consent','update',{'analytics_storage':g(v.analytics),'ad_storage':g(v.marketing),
-'ad_user_data':g(v.marketing),'ad_personalization':g(v.marketing)});}}catch(e){}})();
-</script>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-WV2HZ972');</script>
-<script src="/assets/consent.js" defer></script>
-<link rel="stylesheet" href="/assets/fonts.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Journal — riding notes from Port de Pollença | Venga Cycling Mallorca</title>
 <meta name="description" content="Riding notes, route guides and bike advice from our rental shop in Port de Pollença, Mallorca.">
 <link rel="canonical" href="https://vengacyclingmallorca.com/blog/">
+<meta name="robots" content="index,follow,max-image-preview:large">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Venga Cycling Mallorca">
 <meta property="og:title" content="Journal — Venga Cycling Mallorca">
+<meta property="og:description" content="Riding notes, route guides and bike advice from our rental shop in Port de Pollença, Mallorca.">
+<meta property="og:url" content="https://vengacyclingmallorca.com/blog/">
 <meta property="og:image" content="https://vengacyclingmallorca.com/assets/img/og-cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="/assets/fonts.css">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"Blog","name":"Venga Journal","url":"https://vengacyclingmallorca.com/blog/","description":"Riding notes, route guides and bike advice from our rental shop in Port de Pollença, Mallorca.","publisher":{"@type":"Organization","name":"Venga Cycling Mallorca","url":"https://vengacyclingmallorca.com/"},"blogPost":[{"@type":"BlogPosting","headline":"Bike Rental in Mallorca: Why Port de Pollença Is the Perfect Starting Point","url":"https://vengacyclingmallorca.com/blog/bike-rental-mallorca-port-de-pollenca/","datePublished":"2026-10-05T15:44:44.218688+00:00"},{"@type":"BlogPosting","headline":"Road bike rental in Port de Pollença: finding your fit","url":"https://vengacyclingmallorca.com/blog/road-bike-rental-port-de-pollenca/","datePublished":"2026-10-02T07:56:05.990015+00:00"}]},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Venga Cycling Mallorca","item":"https://vengacyclingmallorca.com/"},{"@type":"ListItem","position":2,"name":"Journal","item":"https://vengacyclingmallorca.com/blog/"}]}]</script>
 <style>
 :root{--ink:#0E0D0B;--paper:#F4F0E7;--gold:#BE9D52;--stone:#8E8677;
  --disp:'Archivo Var','Archivo Ext',Impact,sans-serif;--body:'Instrument Sans','Instrument Ext',system-ui,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.65;-webkit-font-smoothing:antialiased}
 a{color:inherit}
-.wrap{max-width:760px;margin:0 auto;padding:0 24px}
-header{background:var(--ink);padding:16px 0;position:sticky;top:0;z-index:10}
-header .wrap{max-width:1180px;display:flex;justify-content:space-between;align-items:center}
-header .brand{color:var(--paper);text-decoration:none;font-family:var(--disp);font-weight:800;font-stretch:125%;letter-spacing:.06em;font-size:1.05rem}
-header .brand b{color:var(--gold)}
-header nav a{color:rgba(244,240,231,.8);text-decoration:none;font-weight:600;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;margin-left:20px}
-header nav a:hover{color:var(--gold)}
-article{padding:clamp(36px,6vw,74px) 0 clamp(50px,8vw,100px)}
-.kicker{font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px}
-h1{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;line-height:1.03;
- font-size:clamp(1.9rem,5vw,3.2rem);margin-bottom:16px;padding-bottom:.06em}
-.meta{font-size:.74rem;color:#6B6558;margin-bottom:28px;letter-spacing:.04em}
-.cover{width:100%;height:auto;display:block;margin:0 0 34px;
- clip-path:polygon(0 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%)}
-article h2{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;
- font-size:clamp(1.22rem,2.7vw,1.72rem);line-height:1.1;margin:40px 0 14px}
-article h3{font-family:var(--disp);font-stretch:110%;font-weight:700;font-size:1.14rem;margin:28px 0 10px}
-article p{margin-bottom:17px;font-size:1.02rem;color:#2A2621}
-article ul{margin:0 0 20px 20px}article li{margin-bottom:9px;color:#2A2621}
-article img{max-width:100%;height:auto;display:block;margin:26px 0}
-blockquote{border-left:2px solid var(--gold);padding-left:20px;margin:26px 0;color:#4A453A;font-size:1.06rem}
-.cta{margin-top:48px;padding:30px;background:var(--ink);color:var(--paper);
- clip-path:polygon(0 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%)}
-.cta h3{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:1.3rem;margin-bottom:10px;color:var(--paper)}
-.cta p{color:rgba(244,240,231,.76);margin-bottom:4px}
-.cta a{display:inline-block;margin-top:16px;background:var(--gold);color:var(--ink);text-decoration:none;
- padding:13px 24px;font-size:.66rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase}
-.cta a:hover{background:#D8BC7A}
+header{background:var(--ink);padding:18px 0}
+header .wrap{max-width:1240px;display:flex;justify-content:space-between;align-items:center}
+header a{color:var(--paper);text-decoration:none;font-family:var(--disp);font-weight:800;font-stretch:125%;letter-spacing:.06em}
+header a b{color:var(--gold)}
+header nav a{font-family:var(--body);font-weight:600;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;margin-left:22px}
+.crumbs{font-size:.72rem;color:#6B6558;margin-bottom:18px}.crumbs a{text-decoration:none}
 footer{background:var(--ink);color:var(--stone);padding:26px 0;font-size:.74rem}
-footer a{color:var(--stone)}
-</style>
-<style>
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:26px;padding-bottom:80px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+h1{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;
+  font-size:clamp(2rem,6vw,3.6rem);margin:clamp(30px,5vw,56px) 0 10px;padding-bottom:.06em}
+.lead{color:#4A453A;margin-bottom:38px;max-width:620px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:26px;padding-bottom:70px}
 .card{background:var(--ink);color:var(--paper);text-decoration:none;display:block;overflow:hidden;
- clip-path:polygon(0 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%);transition:transform .4s}
-.card:hover{transform:translateY(-4px)}
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%)}
 .card img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block}
 .card .tx{padding:20px}
-.card small{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+.card small{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
 .card h2{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;
- font-size:1.2rem;line-height:1.1;margin:8px 0;color:var(--paper)}
-.card p{font-size:.88rem;color:rgba(244,240,231,.7)}
-.wrap.list{max-width:1180px}
-.lead{color:#4A453A;margin-bottom:38px;max-width:620px}
+  font-size:1.24rem;line-height:1.08;margin:8px 0 8px}
+.card p{font-size:.9rem;color:rgba(244,240,231,.72)}
+.empty{padding:40px 0 90px;color:#6B6558}
 </style></head><body>
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WV2HZ972" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<header><div class="wrap">
- <a class="brand" href="/">VENG<b>A</b></a>
- <nav><a href="/#fleet">Fleet</a><a href="/routes/">Routes</a><a href="/blog/">Journal</a><a href="/booking/">Book your bike</a></nav>
-</div></header>
-<div class="wrap list">
- <h1 style="margin:clamp(40px,6vw,70px) 0 10px">Journal.</h1>
- <p class="lead">Route notes, bike advice and what the island is like right now — written in the shop.</p>
- <div class="grid"><a class="card" href="/blog/road-bike-rental-port-de-pollenca/"><img src="https://vengacyclingmallorca.com/assets/img/island-1.webp" alt="Road bike rental in Port de Pollença: finding your fit" loading="lazy">
-      <div class="tx"><small>2 Oct 2026</small><h2>Road bike rental in Port de Pollença: finding your fit</h2><p>TCR or Propel? How we help you choose the right size, prepare your riding position and sort the accessories before your Mallorca trip.</p></div></a></div>
+<header><div class="wrap"><a href="/">VENG<b>A</b></a>
+<nav><a href="/routes/">Routes</a><a href="/booking/">Book</a></nav></div></header>
+<div class="wrap">
+  <h1>Journal.</h1>
+  <p class="lead">Route notes, bike advice and what the island is like right now — written in the shop, not by a marketing agency.</p>
+  <div class="grid">
+    <a class="card" href="/blog/bike-rental-mallorca-port-de-pollenca/">
+      <img src="https://vengacyclingmallorca.com/assets/img/route-5.webp" alt="Road cycling in Mallorca near Port de Pollença – bike rental and cycling routes in northern Mallorca" loading="lazy">
+      <div class="tx">
+        <small>5 Oct 2026</small>
+        <h2>Bike Rental in Mallorca: Why Port de Pollença Is the Perfect Starting Point</h2>
+        <p>Looking for bike rental in Mallorca? Discover why Port de Pollença is the perfect base for road cycling, from coastal rides to Sa Calobra.</p>
+      </div>
+    </a>
+    <a class="card" href="/blog/road-bike-rental-port-de-pollenca/">
+      <img src="https://vengacyclingmallorca.com/assets/img/island-1.webp" alt="Road bike rental in Port de Pollença: finding your fit" loading="lazy">
+      <div class="tx">
+        <small>2 Oct 2026</small>
+        <h2>Road bike rental in Port de Pollença: finding your fit</h2>
+        <p>TCR or Propel? How we help you choose the right size, prepare your riding position and sort the accessories before your Mallorca trip.</p>
+      </div>
+    </a></div>
 </div>
-<footer><div class="wrap">© 2026 Venga Cycling Mallorca · Carrer de Formentor 59 · Port de Pollença · <a href="/privacy/">Privacy</a></div></footer>
+<footer><div class="wrap">© 2026 Venga Cycling Mallorca · Port de Pollença</div></footer>
 </body></html>
