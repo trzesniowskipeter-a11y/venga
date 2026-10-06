@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script data-vlang>var q=(location.search.match(/[?&]lang=(es|pl)/)||[])[1];if(q){location.replace('/'+q+'/privacy/'+location.hash);}try{localStorage.setItem('venga_lang','en')}catch(e){}</script>
 <meta charset="UTF-8">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32.png">
@@ -971,12 +972,16 @@ section[id]{scroll-margin-top:76px}
    the same job — no sideways scrolling — without creating that container. */
 @supports (overflow:clip){html,body{overflow-x:clip}}
 </style>
+<link rel="alternate" hreflang="en" href="https://vengacyclingmallorca.com/privacy/">
+<link rel="alternate" hreflang="es" href="https://vengacyclingmallorca.com/es/privacy/">
+<link rel="alternate" hreflang="pl" href="https://vengacyclingmallorca.com/pl/privacy/">
+<link rel="alternate" hreflang="x-default" href="https://vengacyclingmallorca.com/privacy/">
 <link rel="canonical" href="https://vengacyclingmallorca.com/privacy/">
 <!-- link previews on WhatsApp, Facebook, iMessage, Slack -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Venga Cycling Mallorca">
-<meta property="og:title" content="Routes — 8 cycling routes from Port de Pollença | Venga Cycling Mallorca">
-<meta property="og:description" content="Eight road cycling routes from our shop in Port de Pollença — from a flat 29 km coastal spin to the 217 km Mallorca loop. Real distances and climbing from our own Strava files.">
+<meta property="og:title" content="Privacy policy — Venga Cycling Mallorca">
+<meta property="og:description" content="How Venga Cycling Mallorca handles your personal data: what we collect when you book a bike, who processes it, how long we keep it and what your rights are.">
 <meta property="og:url" content="https://vengacyclingmallorca.com/privacy/">
 <meta property="og:image" content="https://vengacyclingmallorca.com/assets/img/og-cover.jpg">
 <meta property="og:image:width" content="1200">
@@ -985,13 +990,9 @@ section[id]{scroll-margin-top:76px}
 <meta property="og:locale:alternate" content="es_ES">
 <meta property="og:locale:alternate" content="pl_PL">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Routes — 8 cycling routes from Port de Pollença | Venga Cycling Mallorca">
-<meta name="twitter:description" content="Eight road cycling routes from our shop in Port de Pollença — from a flat 29 km coastal spin to the 217 km Mallorca loop. Real distances and climbing from our own Strava files.">
+<meta name="twitter:title" content="Privacy policy — Venga Cycling Mallorca">
+<meta name="twitter:description" content="How Venga Cycling Mallorca handles your personal data: what we collect when you book a bike, who processes it, how long we keep it and what your rights are.">
 <meta name="twitter:image" content="https://vengacyclingmallorca.com/assets/img/og-cover.jpg">
-<link rel="alternate" hreflang="en" href="https://vengacyclingmallorca.com/privacy/">
-<link rel="alternate" hreflang="es" href="https://vengacyclingmallorca.com/privacy/">
-<link rel="alternate" hreflang="pl" href="https://vengacyclingmallorca.com/privacy/">
-<link rel="alternate" hreflang="x-default" href="https://vengacyclingmallorca.com/privacy/">
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
@@ -1151,5 +1152,6 @@ body{background:var(--paper)}
   pick();
 })();
 </script>
+<script data-vlangsw>(function(){var M={en:'/privacy/',es:'/es/privacy/',pl:'/pl/privacy/'};document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.lang button[data-lang]');if(!b)return;var t=M[b.dataset.lang];if(!t||t===location.pathname)return;e.preventDefault();e.stopImmediatePropagation();try{localStorage.setItem('venga_lang',b.dataset.lang)}catch(_){}location.href=t;},true);})();</script>
 </body>
 </html>

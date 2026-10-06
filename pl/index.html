@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<script data-vlang>try{localStorage.setItem('venga_lang','pl')}catch(e){}</script>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/icon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/icon-180.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0E0D0B">
+<!-- Consent Mode v2 — defaults must run before any tag loads -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('consent','default',{
+  'ad_storage':'denied',
+  'ad_user_data':'denied',
+  'ad_personalization':'denied',
+  'analytics_storage':'denied',
+  'functionality_storage':'granted',
+  'security_storage':'granted',
+  'wait_for_update': 500
+});
+gtag('set','ads_data_redaction', true);
+gtag('set','url_passthrough', true);
+(function(){
+  try{
+    var v = JSON.parse(localStorage.getItem('venga_consent_v1') || 'null');
+    if(v && v.at && (Date.now()-v.at)/86400000 <= 365){
+      var g = function(b){return b ? 'granted' : 'denied';};
+      gtag('consent','update',{
+        'analytics_storage': g(v.analytics),
+        'ad_storage': g(v.marketing),
+        'ad_user_data': g(v.marketing),
+        'ad_personalization': g(v.marketing)
+      });
+    }
+  }catch(e){}
+})();
+</script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-WV2HZ972');</script>
+<!-- End Google Tag Manager -->
+<script src="/assets/consent.js" defer></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wypożyczalnia rowerów premium w Port de Pollença | Venga</title>
+<meta name="description" content="Wypożyczalnia rowerów Giant i Liv — szosowe, gravel, czasowe i elektryczne — w Port de Pollença na Majorce. Dopasowane do Ciebie, od €38/dzień. Sa Calobra spod drzwi.">
+<link rel="stylesheet" href="/assets/fonts.css">
+<script>
+/* runs before paint: decide whether the site is locked, so nothing flashes */
+(function(){try{
+  var q=location.search;
+  if(/[?&]preview=911(&|$)/.test(q)){
+    localStorage.setItem('venga_preview','ok');
+    /* strip the code from the address bar: a guest who copies the link
+       would otherwise be handing the preview code to someone else */
+    try{
+      var clean=location.pathname+location.search.replace(/([?&])preview=911(&|$)/,'$1').replace(/[?&]$/,'')+location.hash;
+      history.replaceState(null,'',clean);
+    }catch(e){}
+  }
+  /* ---- SITE IS LIVE ----
+     Set MAINTENANCE to true to put the gate back; the markup and the unlock
+     form below stay in place, so it is a one-word change. */
+  var MAINTENANCE = false;
+  if(!MAINTENANCE){ var m=document.getElementById && null; return; }
+  if(/[?&]lock(&|$)/.test(q)){localStorage.removeItem('venga_preview')}
+  if(localStorage.getItem('venga_preview')!=='ok'){document.documentElement.className+=' maint'}
+}catch(e){}})();
+</script>
+<style>
+/* ---------- maintenance gate ---------- */
+#maint{display:none}
+html.maint{overflow:hidden}
+html.maint body>*:not(#maint){display:none!important}
+html.maint #maint{display:flex}
+#maint{position:fixed;inset:0;z-index:9999;background:#0E0D0B;color:#F4F0E7;
+  align-items:center;justify-content:center;padding:clamp(20px,5vw,48px);overflow-y:auto;
+  background-image:radial-gradient(120% 90% at 76% 8%,rgba(190,157,82,.12),transparent 60%)}
+.mt-box{width:100%;max-width:760px;margin:auto}
+.mt-logo{font-family:'Archivo Var',Impact,sans-serif;font-stretch:125%;font-weight:800;text-transform:uppercase;
+  font-size:1.4rem;letter-spacing:.02em;margin-bottom:clamp(30px,7vw,58px)}
+.mt-logo b{color:#BE9D52}
+.mt-logo span{display:block;font-family:'Instrument Sans',system-ui,sans-serif;font-stretch:normal;
+  font-weight:500;font-size:.6rem;letter-spacing:.32em;color:#8E8677;margin-top:5px}
+.mt-h{font-family:'Archivo Var',Impact,sans-serif;font-stretch:125%;font-weight:800;text-transform:uppercase;
+  font-size:clamp(1.9rem,6vw,3.4rem);line-height:.96;letter-spacing:-.01em;margin-bottom:16px}
+.mt-h em{font-style:normal;color:#BE9D52}
+.mt-p{font-family:'Instrument Sans',system-ui,sans-serif;color:rgba(244,240,231,.76);
+  font-size:clamp(.94rem,1.6vw,1.04rem);line-height:1.6;max-width:52ch;margin-bottom:clamp(26px,5vw,40px)}
+.mt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:10px;margin-bottom:22px}
+.mt-card{display:block;background:#161410;border:1px solid rgba(190,157,82,.18);padding:17px 19px;
+  text-decoration:none;color:inherit;transition:border-color .3s,transform .3s;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.mt-card:not(.static):hover{border-color:#BE9D52;transform:translateY(-2px)}
+.mt-card small{display:block;font-family:'Instrument Sans',system-ui,sans-serif;font-size:.6rem;
+  letter-spacing:.2em;text-transform:uppercase;color:#BE9D52;font-weight:600;margin-bottom:7px}
+.mt-card b{display:block;font-family:'Instrument Sans',system-ui,sans-serif;font-size:.98rem;
+  font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.mt-card.mail{grid-column:span 2}
+.mt-card.mail b{font-size:.94rem}
+@media(max-width:560px){.mt-card.mail{grid-column:span 1}.mt-card.mail b{font-size:.84rem}}
+.mt-card span{display:block;font-family:'Instrument Sans',system-ui,sans-serif;font-size:.78rem;
+  color:#8E8677;margin-top:4px}
+.mt-fleet{font-family:'Instrument Sans',system-ui,sans-serif;font-size:.8rem;color:#8E8677;
+  border-left:2px solid rgba(190,157,82,.5);padding-left:14px;line-height:1.5;margin-bottom:clamp(28px,6vw,44px)}
+.mt-gate{border-top:1px solid rgba(190,157,82,.16);padding-top:20px}
+.mt-gate label{display:block;font-family:'Instrument Sans',system-ui,sans-serif;font-size:.6rem;
+  letter-spacing:.22em;text-transform:uppercase;color:#8E8677;font-weight:600;margin-bottom:9px}
+.mt-row{display:flex;gap:8px;max-width:340px}
+.mt-row input{flex:1;background:#161410;border:1px solid rgba(190,157,82,.22);color:#F4F0E7;
+  font-family:'Instrument Sans',system-ui,sans-serif;font-size:.94rem;padding:12px 14px;transition:border-color .25s}
+.mt-row input:focus{outline:none;border-color:#BE9D52}
+.mt-row button{background:#BE9D52;color:#0E0D0B;border:0;cursor:pointer;
+  font-family:'Instrument Sans',system-ui,sans-serif;font-size:.72rem;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;padding:12px 22px;transition:background .25s}
+.mt-row button:hover{background:#D9C08B}
+.mt-err{font-family:'Instrument Sans',system-ui,sans-serif;font-size:.78rem;color:#C9704A;
+  margin-top:9px;visibility:hidden}
+.mt-err.on{visibility:visible}
+@media(prefers-reduced-motion:reduce){.mt-card{transition:none}}
+.privlink{color:inherit;text-decoration:underline;text-underline-offset:3px;opacity:.75}
+.privlink:hover{opacity:1;color:var(--gold)}
+.sep{opacity:.4;margin:0 2px}
+.c-item .closed{display:block;margin-top:4px;color:var(--stone);font-size:.82rem}
+</style>
+<style>
+:root{
+  --ink:#0E0D0B;
+  --coal:#161410;
+  --coal-2:#1E1B15;
+  --gold:#BE9D52;
+  --gold-soft:#D9C08B;
+  --ivory:#F4F0E7;
+  --paper:#EDE8DC;
+  --stone:#8E8677;
+  --line:rgba(190,157,82,.28);
+  --cut:26px;
+  --disp:'Archivo Var','Archivo Ext',Impact,sans-serif;
+  --body:'Instrument Sans','Instrument Ext',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:hidden;overscroll-behavior-x:none;width:100%}
+body{font-family:var(--body);background:var(--ink);color:var(--ivory);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;overscroll-behavior-x:none;width:100%;position:relative}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+.disp{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;line-height:.92;letter-spacing:-.01em}
+.eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:14px}
+.eyebrow::before{content:"";width:34px;height:2px;background:var(--gold);transform:skewX(-24deg)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+section{position:relative}
+
+/* ---------- reveals ---------- */
+.rv{opacity:0;transform:translateY(34px);transition:opacity .9s cubic-bezier(.2,.6,.2,1),transform .9s cubic-bezier(.2,.6,.2,1)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.24s}.rv.d3{transition-delay:.36s}
+@media (prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;transition:none}
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---------- preloader: the bike assembles itself ---------- */
+#loader{position:fixed;inset:0;background:var(--ink);z-index:200;display:flex;align-items:center;
+  justify-content:center;overflow:hidden}
+#loader.done{animation:ldExit .8s cubic-bezier(.76,0,.24,1) both;pointer-events:none}
+@keyframes ldExit{
+  0%  {clip-path:inset(0 0 0 0)}
+  100%{clip-path:inset(0 0 100% 0);visibility:hidden}
+}
+#loader.off{display:none}
+.ld-wrap{position:relative;flex:none;width:min(1240px,96vw)}
+.ld-ridge,.ld-dust{position:absolute;left:50%;top:50%;width:120%;pointer-events:none;
+  opacity:0;transform:translate3d(-50%,-50%,0)}
+.ld-ridge{transition:opacity 1.3s ease,transform 1.6s cubic-bezier(.2,.7,.2,1);
+  transform:translate3d(-50%,-47%,0)}
+#loader.peak .ld-ridge{transform:translate3d(-50%,-50%,0)}
+.ld-dust{transition:opacity 1.5s ease}
+#loader.riding .ld-dust{opacity:.4}
+#loader.peak .ld-ridge{opacity:.45}
+
+.ld-stage{position:relative;width:100%;aspect-ratio:16/9}
+.ld-bike{position:absolute;inset:0}
+
+/* the bike assembles itself: 16 native-resolution frames swapped on one <img>.
+   A sprite sheet would have to be 7500 px wide at this quality, past the 4096 px
+   texture limit on most phone GPUs — separate frames keep every step a small,
+   cheap upload and stay pin sharp. */
+/* the fade and the mask live on this static wrapper: swapping the <img> src
+   restarts any animation on the image itself, which left it stuck at opacity 0 */
+.ld-seqw{position:absolute;inset:0;display:block;opacity:0;transition:opacity .45s ease;
+  -webkit-mask-image:radial-gradient(ellipse 78% 82% at 50% 50%,#000 62%,transparent 100%);
+  mask-image:radial-gradient(ellipse 78% 82% at 50% 50%,#000 62%,transparent 100%)}
+.ld-seq{display:block;width:100%;height:100%;object-fit:contain;background:transparent}
+}
+
+#loader.riding .ld-bike{animation:ldBob 1.15s ease-in-out .3s infinite}
+@keyframes ldBob{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-.55%,0)}}
+
+/* ground shadows fade in as each wheel lands, and breathe with the bob */
+.ld-shadow{position:absolute;top:87.5%;height:4%;border-radius:50%;opacity:0;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,.6),rgba(0,0,0,0) 68%)}
+.ld-shadow.r{left:12%;width:27%}
+.ld-shadow.f{left:58%;width:27%}
+#loader.build .ld-shadow.r{animation:ldShadowIn .6s ease 1.30s both}
+#loader.build .ld-shadow.f{animation:ldShadowIn .6s ease 1.42s both}
+#loader.riding .ld-shadow{opacity:.8;animation:ldShadowBreath 1.15s ease-in-out .3s infinite}
+@keyframes ldShadowIn{from{opacity:0;transform:scaleX(.55)}to{opacity:.8;transform:scaleX(1)}}
+@keyframes ldShadowBreath{0%,100%{transform:scaleX(1);opacity:.8}50%{transform:scaleX(1.05);opacity:.6}}
+
+/* one pass of warm light across the assembled bike */
+.ld-sweep{position:absolute;top:8%;bottom:4%;left:0;width:26%;opacity:0;pointer-events:none;
+  background:linear-gradient(100deg,transparent 0%,rgba(255,238,205,.16) 45%,rgba(255,238,205,.05) 55%,transparent 100%);
+  transform:translate3d(-120%,0,0) skewX(-12deg);mix-blend-mode:screen}
+#loader.build .ld-sweep{animation:ldSweep 1s cubic-bezier(.4,.1,.3,1) 1.75s both}
+@keyframes ldSweep{
+  0%  {opacity:0;transform:translate3d(-120%,0,0) skewX(-12deg)}
+  18% {opacity:1}
+  82% {opacity:1}
+  100%{opacity:0;transform:translate3d(420%,0,0) skewX(-12deg)}
+}
+
+/* the road draws itself under the wheels as the bike rolls out */
+.ld-road{position:absolute;left:-6%;right:-6%;top:89.6%;height:1.5px;opacity:0;transform:scaleX(0);
+  transform-origin:18% 50%;
+  background:linear-gradient(90deg,transparent,rgba(190,157,82,.55) 12%,rgba(190,157,82,.55) 82%,transparent)}
+#loader.riding .ld-road{animation:ldRoad 1.5s cubic-bezier(.25,.6,.3,1) .15s both}
+@keyframes ldRoad{from{opacity:0;transform:scaleX(0)}30%{opacity:1}to{opacity:.85;transform:scaleX(1)}}
+#loader.peak .ld-road{opacity:.2;transition:opacity .9s ease}
+/* transparent PNG-style parts: no blend mode, so every move stays on the GPU */
+.ld-p{position:absolute;display:block;opacity:0;
+  transform:translate3d(0,0,0);          /* create the GPU layer up front */
+  will-change:transform,opacity;backface-visibility:hidden}
+.ld-frame {left:22.67%;top:20.51%;width:52.03%}
+.ld-wr    {left:10.22%;top:34.50%;width:32.59%}
+.ld-wf    {left:58.17%;top:36.74%;width:30.70%}
+.ld-crank {left:41.85%;top:58.60%;width:10.10%}
+.ld-bar   {left:62.20%;top:13.50%;width:26.00%}
+.ld-saddle{left:34.60%;top:18.60%;width:14.50%}
+
+/* ===== assembly: long, overlapping moves so it reads as one build ===== */
+/* frame glides in from the left and settles */
+@keyframes ldFrame{
+  0%  {opacity:0;transform:translate3d(-14%,3%,0) rotate(-3deg) scale(.94)}
+  55% {opacity:1}
+  100%{opacity:1;transform:translate3d(0,0,0) rotate(0) scale(1)}
+}
+/* wheels roll in from off-frame while spinning, then keep rolling */
+@keyframes ldWheelIn{
+  0%  {opacity:0;transform:translate3d(-70%,0,0) rotate(-300deg)}
+  35% {opacity:1}
+  100%{opacity:1;transform:translate3d(0,0,0) rotate(0)}
+}
+@keyframes ldWheelInR{
+  0%  {opacity:0;transform:translate3d(70%,0,0) rotate(300deg)}
+  35% {opacity:1}
+  100%{opacity:1;transform:translate3d(0,0,0) rotate(0)}
+}
+/* crank spins into place */
+@keyframes ldCrank{
+  0%  {opacity:0;transform:rotate(-220deg) scale(.7)}
+  100%{opacity:1;transform:rotate(0) scale(1)}
+}
+/* cockpit and saddle drop from above */
+@keyframes ldDropFrom{
+  0%  {opacity:0;transform:translate3d(0,-90%,0)}
+  60% {opacity:1}
+  100%{opacity:1;transform:translate3d(0,0,0)}
+}
+
+/* every move lands by 1.60 s, exactly when the bike starts rolling — no snap */
+#loader.build .ld-frame {animation:ldFrame    1.10s cubic-bezier(.16,.84,.24,1)  .00s both}
+#loader.build .ld-wr    {animation:ldWheelIn  1.30s cubic-bezier(.18,.86,.22,1)  .30s both}
+#loader.build .ld-wf    {animation:ldWheelInR 1.30s cubic-bezier(.18,.86,.22,1)  .30s both}
+#loader.build .ld-crank {animation:ldCrank     .75s cubic-bezier(.2,.86,.25,1)   .85s both}
+#loader.build .ld-saddle{animation:ldDropFrom  .70s cubic-bezier(.2,.88,.26,1)   .80s both}
+#loader.build .ld-bar   {animation:ldDropFrom  .70s cubic-bezier(.2,.88,.26,1)   .90s both}
+
+/* ===== rolling out: wheels + crank keep turning, bike eases forward ===== */
+#loader.riding .ld-stage{animation:ldRollFwd 2.2s cubic-bezier(.36,.02,.4,1) both}
+@keyframes ldRollFwd{from{transform:translate3d(0,0,0) scale(1)}
+  to{transform:translate3d(4%,0,0) scale(1.05)}}
+
+/* ===== summit ===== */
+.ld-flash{position:absolute;left:50%;top:50%;opacity:0;pointer-events:none;text-align:center;
+  transform:translate3d(-50%,-50%,0);
+  font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;
+  font-size:clamp(2.4rem,6.6vw,5rem);letter-spacing:.42em;color:var(--ivory);
+  text-shadow:0 0 70px rgba(190,157,82,.55)}
+.ld-flash b{color:var(--gold)}
+.ld-flash small{display:block;margin-top:14px;font-family:var(--body);font-weight:600;
+  font-size:clamp(.58rem,1vw,.72rem);letter-spacing:.58em;color:var(--stone);opacity:0}
+#loader.peak .ld-flash{animation:ldFlashIn 1.15s cubic-bezier(.16,.86,.24,1) both}
+#loader.peak .ld-flash small{animation:ldSubIn .8s ease .45s both}
+@keyframes ldFlashIn{
+  0%  {opacity:0;letter-spacing:.42em;transform:translate3d(-50%,-46%,0)}
+  55% {opacity:1}
+  100%{opacity:1;letter-spacing:.16em;transform:translate3d(-50%,-50%,0)}
+}
+@keyframes ldSubIn{from{opacity:0;letter-spacing:.72em}to{opacity:.9;letter-spacing:.5em}}
+#loader.peak .ld-seqw{filter:brightness(.34) saturate(.72);transition:filter .9s ease}
+#loader.peak .ld-shadow{opacity:.25;transition:opacity .9s ease}
+
+.ld-foot{margin-top:clamp(14px,2.4vw,26px)}
+.ld-bar-p{height:2px;background:rgba(190,157,82,.14);overflow:hidden}
+.ld-bar-p i{display:block;height:100%;width:0;transition:width .45s cubic-bezier(.3,.6,.3,1);
+  background:linear-gradient(90deg,rgba(190,157,82,.55),var(--gold));
+  box-shadow:0 0 12px rgba(190,157,82,.7)}
+.ld-txt{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.ld-txt span{font-size:.68rem;letter-spacing:.26em;text-transform:uppercase;color:var(--stone);
+  transition:opacity .24s ease}
+.ld-txt span.swap{opacity:0}
+.ld-txt button{background:none;border:0;color:rgba(142,134,119,.7);font-family:var(--body);
+  font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;
+  padding:6px 0 6px 20px;transition:color .3s}
+.ld-txt button:hover{color:var(--gold)}
+
+/* small screens: crop the sides so the bike fills the width */
+@media(max-width:860px){
+  .ld-wrap{width:114vw}
+  .ld-foot{position:fixed;left:clamp(14px,4vw,28px);right:clamp(14px,4vw,28px);bottom:26px;margin:0}
+}
+@media(max-width:520px){ .ld-wrap{width:126vw} }
+@media(prefers-reduced-motion:reduce){#loader{display:none}}
+
+/* ---------- nav ---------- */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:background .4s,box-shadow .4s,padding .4s;padding:22px 0}
+nav .wrap{display:flex;align-items:center;justify-content:space-between}
+nav.solid{background:rgba(14,13,11,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:12px 0;box-shadow:0 1px 0 rgba(190,157,82,.18)}
+.nav-logo img{height:30px;width:auto}
+.nav-links{display:flex;gap:34px;list-style:none;align-items:center}
+.nav-links a{font-size:.78rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;position:relative;padding:4px 0;transition:color .3s}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:2px;background:var(--gold);transform:scaleX(0) skewX(-24deg);transform-origin:left;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.nav-links a:hover{color:var(--gold-soft)}
+.nav-links a:hover::after{transform:scaleX(1) skewX(-24deg)}
+.nav-cta{border:1px solid var(--gold);padding:10px 22px!important;color:var(--gold)}
+.nav-cta:hover{background:var(--gold);color:var(--ink)!important}
+#burger{display:none;background:none;border:0;cursor:pointer;width:40px;height:32px;position:relative;z-index:120}
+#burger span{position:absolute;left:6px;right:6px;height:2px;background:var(--ivory);transition:.35s}
+#burger span:nth-child(1){top:8px}#burger span:nth-child(2){top:15px}#burger span:nth-child(3){top:22px}
+body.menu-open #burger span:nth-child(1){top:15px;transform:rotate(45deg)}
+body.menu-open #burger span:nth-child(2){opacity:0}
+body.menu-open #burger span:nth-child(3){top:15px;transform:rotate(-45deg)}
+@media(max-width:900px){
+  .nav-links{position:fixed;inset:0;background:var(--ink);flex-direction:column;justify-content:center;gap:30px;clip-path:polygon(0 0,100% 0,100% 0,0 0);transition:clip-path .55s cubic-bezier(.7,0,.2,1);z-index:110}
+  body.menu-open .nav-links{clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
+  .nav-links a{font-size:1.1rem}
+  #burger{display:block}
+}
+
+/* ---------- hero ---------- */
+#hero{min-height:min(100svh,var(--hero-min,640px));height:auto;display:flex;align-items:flex-end;overflow:hidden;padding-top:96px}
+#hero video,#hero .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,13,11,.42) 0%,rgba(14,13,11,.12) 40%,rgba(14,13,11,.86) 100%)}
+.hero-inner{position:relative;z-index:2;width:100%;padding-bottom:clamp(56px,9vh,110px)}
+.hero-kicker{font-size:.75rem;font-weight:600;letter-spacing:.4em;text-transform:uppercase;color:var(--gold-soft);margin-bottom:22px;display:flex;align-items:center;gap:16px}
+.hero-kicker::before{content:"";width:44px;height:2px;background:var(--gold);transform:skewX(-24deg)}
+h1.disp{font-size:clamp(2rem,7.4vw,6.6rem);margin-bottom:10px}
+h1 .word{display:inline-block;overflow:hidden;vertical-align:bottom;
+  padding:.14em .02em .18em;margin:-.14em -.02em -.18em}
+h1 .word i{display:inline-block;font-style:normal;transform:translateY(110%);animation:rise 1s cubic-bezier(.2,.7,.2,1) forwards}
+h1 .gold{color:var(--gold)}
+@keyframes rise{to{transform:none}}
+.hero-sub{max-width:520px;color:rgba(244,240,231,.82);font-size:clamp(.98rem,1.25vw,1.12rem);margin:18px 0 34px;opacity:0;animation:fadeup 1s ease .9s forwards}
+@keyframes fadeup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.hero-ctas{display:flex;gap:16px;flex-wrap:wrap;opacity:0;animation:fadeup 1s ease 1.1s forwards}
+.btn{display:inline-flex;align-items:center;gap:12px;font-size:.8rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;padding:16px 30px;position:relative;overflow:hidden;transition:color .35s;cursor:pointer;border:0;font-family:var(--body)}
+.btn::before{content:"";position:absolute;inset:0;transform:skewX(-24deg) scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+.btn span{position:relative;z-index:1}
+.btn-gold{background:var(--gold);color:var(--ink)}
+.btn-gold::before{background:var(--ivory)}
+.btn-gold:hover::before{transform:skewX(-24deg) scaleX(1.4)}
+.btn-ghost{border:1px solid rgba(244,240,231,.4);color:var(--ivory)}
+.btn-ghost::before{background:var(--gold)}
+.btn-ghost:hover{color:var(--ink);border-color:var(--gold)}
+.btn-ghost:hover::before{transform:skewX(-24deg) scaleX(1.4)}
+.scroll-cue{position:absolute;right:clamp(20px,4vw,56px);bottom:36px;z-index:3;writing-mode:vertical-rl;font-size:.68rem;letter-spacing:.4em;text-transform:uppercase;color:rgba(244,240,231,.6);display:flex;align-items:center;gap:14px}
+.scroll-cue::after{content:"";width:2px;height:52px;background:linear-gradient(var(--gold),transparent);animation:cue 1.8s ease-in-out infinite}
+@keyframes cue{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(10px);opacity:.4}}
+@media(max-width:700px){.scroll-cue{display:none}}
+#tapCue{display:none;position:absolute;z-index:4;left:50%;top:44%;transform:translate(-50%,-50%);align-items:center;gap:8px;background:rgba(14,13,11,.55);backdrop-filter:blur(6px);border:1px solid var(--gold);color:var(--gold);font-family:var(--body);font-size:.74rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;padding:14px 22px;cursor:pointer;transition:background .3s,color .3s}
+#tapCue:hover{background:var(--gold);color:var(--ink)}
+
+/* ---------- ticker ---------- */
+#ticker{background:var(--gold);color:var(--ink);overflow:hidden;padding:14px 0;position:relative;z-index:5}
+.ticker-track{display:flex;gap:0;width:max-content;animation:tick 34s linear infinite;pointer-events:none}
+#ticker:hover .ticker-track{animation-play-state:paused}
+.ticker-track span{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:.95rem;letter-spacing:.12em;padding:0 30px;white-space:nowrap;display:flex;align-items:center;gap:30px}
+.ticker-track span::after{content:"◤";font-size:.6rem}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* ---------- intro ---------- */
+#intro{background:var(--ivory);color:var(--ink);padding:clamp(90px,12vw,150px) 0}
+#intro .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(40px,6vw,90px);align-items:center}
+#intro h2{font-size:clamp(2rem,4.2vw,3.6rem);margin:22px 0 26px;color:var(--ink)}
+#intro h2 em{font-style:normal;color:var(--gold)}
+#intro p{color:#4A453A;margin-bottom:16px;max-width:54ch}
+.intro-media{position:relative}
+.intro-media .ph{overflow:hidden;clip-path:polygon(0 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%)}
+.intro-media img{transform:scale(1.08);transition:transform .2s linear;will-change:transform}
+.intro-tag{background:var(--ink);color:var(--ivory);padding:20px 22px;display:flex;
+  flex-direction:column;justify-content:center;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)}
+.intro-tag b{display:block;font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:clamp(1.1rem,1.6vw,1.4rem);color:var(--gold);line-height:1.05;margin-bottom:7px}
+.intro-tag small{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--stone)}
+.intro-stats{display:flex;gap:clamp(24px,4vw,54px);margin-top:36px;flex-wrap:wrap}
+.stat b{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:clamp(1.7rem,2.6vw,2.4rem);color:var(--ink);line-height:1;display:block;white-space:nowrap}
+.stat b i{font-style:normal;color:var(--gold);font-size:.6em}
+.stat small{display:block;margin-top:8px;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#6B6558;line-height:1.35}
+@media(max-width:860px){#intro .grid{grid-template-columns:1fr}.intro-tag{left:12px}}
+
+/* ---------- fleet ---------- */
+#fleet{background:var(--coal);padding:clamp(90px,11vw,140px) 0 0}
+#fleet .head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:clamp(40px,5vw,64px);flex-wrap:wrap}
+#fleet h2{font-size:clamp(2.2rem,5vw,4.2rem)}
+#fleet h2 em{font-style:normal;color:var(--gold)}
+.fleet-hint{font-size:.74rem;letter-spacing:.24em;text-transform:uppercase;color:var(--stone);display:flex;align-items:center;gap:12px}
+.fleet-hint::after{content:"→";color:var(--gold);animation:nudge 1.6s ease-in-out infinite}
+@keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(8px)}}
+.rail-outer{overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:clamp(80px,9vw,120px);cursor:grab;scroll-padding-left:clamp(20px,4vw,56px)}
+.rail-outer::-webkit-scrollbar{display:none}
+.rail{display:flex;gap:clamp(18px,2.4vw,34px);width:max-content;padding:0 clamp(20px,4vw,56px)}
+.bike{width:clamp(300px,34vw,460px);scroll-snap-align:start;background:var(--coal-2);border:1px solid rgba(190,157,82,.14);position:relative;transition:transform .5s cubic-bezier(.2,.7,.2,1),border-color .4s;display:flex;flex-direction:column}
+.bike:hover{transform:translateY(-10px);border-color:var(--line)}
+.bike .num{position:absolute;top:16px;left:20px;font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:.85rem;color:var(--gold);z-index:2;letter-spacing:.1em}
+.bike .tag{position:absolute;top:16px;right:0;background:var(--gold);color:var(--ink);font-size:.62rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;padding:6px 14px;z-index:2;clip-path:polygon(12px 0,100% 0,100% 100%,0 100%)}
+.bike .ph{aspect-ratio:4/3;overflow:hidden;background:radial-gradient(ellipse at 50% 60%,#26221A 0%,var(--coal-2) 75%)}
+.bike .ph img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.bike:hover .ph img{transform:scale(1.06)}
+.bike .body{padding:26px 26px 28px;display:flex;flex-direction:column;gap:14px;flex:1}
+.bike h3{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:1.32rem;line-height:1.05}
+.bike .sub{font-size:.78rem;color:var(--stone);letter-spacing:.06em;margin-top:-8px}
+.bike .chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;border:1px solid rgba(244,240,231,.18);padding:6px 12px;color:rgba(244,240,231,.75)}
+.bike .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(244,240,231,.1);padding-top:18px}
+.bike .price small{display:block;font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--stone)}
+.bike .price b{font-family:var(--disp);font-stretch:125%;font-size:1.5rem;font-weight:800;color:var(--gold)}
+.bike .more{font-size:.72rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ivory);display:flex;align-items:center;gap:8px;background:none;border:0;cursor:pointer;font-family:var(--body);padding:8px 0}
+.bike .more::after{content:"◢";color:var(--gold);font-size:.6rem;transition:transform .3s}
+.bike .more:hover{color:var(--gold-soft)}
+.bike .more:hover::after{transform:translate(4px,4px)}
+
+/* ---------- routes ---------- */
+#routes{background:var(--ivory);color:var(--ink);padding:clamp(90px,11vw,150px) 0}
+#routes .head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;margin-bottom:clamp(40px,5vw,70px)}
+#routes h2{font-size:clamp(2.2rem,5vw,4.2rem);color:var(--ink)}
+#routes h2 em{font-style:normal;color:var(--gold)}
+.routes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.4vw,32px)}
+.route{position:relative;overflow:hidden;aspect-ratio:3/4.1;display:flex;align-items:flex-end;clip-path:polygon(0 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%);color:var(--ivory)}
+.route img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1s cubic-bezier(.2,.7,.2,1)}
+.route:hover img{transform:scale(1.07)}
+.route::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,13,11,.1) 30%,rgba(14,13,11,.88) 100%)}
+.route .rb{position:relative;z-index:2;padding:26px}
+.route .lvl{display:inline-block;font-size:.62rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;padding:6px 14px;margin-bottom:14px;clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%)}
+.lvl.easy{background:#8FA871;color:var(--ink)}
+.lvl.medium{background:var(--gold);color:var(--ink)}
+.lvl.hard{background:#A6532F;color:var(--ivory)}
+.route h3{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:1.35rem;line-height:1.05;margin-bottom:14px}
+.route .rs{display:flex;gap:26px}
+.route .rs div b{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:1.4rem;display:block;line-height:1;color:var(--gold-soft)}
+.route .rs div small{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(244,240,231,.65)}
+.route .strava{margin-top:16px;display:inline-flex;align-items:center;gap:8px;font-size:.7rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ivory);border-bottom:1px solid var(--gold);padding-bottom:4px;transition:color .3s}
+.route .strava:hover{color:var(--gold-soft)}
+@media(max-width:860px){.routes-grid{grid-template-columns:1fr;max-width:440px;margin:0 auto}}
+
+/* ---------- why ---------- */
+#why{padding:clamp(100px,13vw,180px) 0;background:var(--ink)}
+#why .bg{position:absolute;inset:0;overflow:hidden}
+#why .bg video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.34;z-index:1}
+#why .bg img{position:absolute;inset:0;width:100%;height:120%;object-fit:cover;opacity:.28;will-change:transform;z-index:0}
+#why .bg::after{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,var(--ink) 0%,rgba(14,13,11,.35) 26%,rgba(14,13,11,.35) 74%,var(--ink) 100%)}
+#why .bg::before{content:"";position:absolute;inset:0;z-index:2;background:radial-gradient(120% 80% at 30% 50%,rgba(14,13,11,.55),transparent 70%)}
+#why .wrap{position:relative;z-index:2}
+#why h2{font-size:clamp(2.2rem,5vw,4.2rem);margin:20px 0 clamp(44px,6vw,80px);max-width:14ch}
+#why h2 em{font-style:normal;color:var(--gold)}
+.why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(24px,3vw,44px)}
+.why-item{border-top:2px solid var(--line);padding-top:22px}
+.why-item b{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:1.05rem;display:block;margin-bottom:10px;color:var(--gold-soft)}
+.why-item p{font-size:.92rem;color:rgba(244,240,231,.72)}
+@media(max-width:900px){.why-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.why-grid{grid-template-columns:1fr}}
+
+/* ---------- pricing band ---------- */
+#pricing{background:var(--gold);color:var(--ink);padding:clamp(60px,7vw,90px) 0;clip-path:polygon(0 var(--cut),100% 0,100% calc(100% - var(--cut)),0 100%)}
+#pricing .wrap{display:flex;justify-content:space-between;align-items:center;gap:36px;flex-wrap:wrap}
+#pricing h2{font-size:clamp(1.7rem,3.4vw,2.7rem);max-width:22ch}
+#pricing p{font-weight:500;max-width:44ch;color:#3A3220}
+.btn-ink{background:var(--ink);color:var(--ivory)}
+.btn-ink::before{background:var(--ivory)}
+.btn-ink:hover{color:var(--ink)}
+.btn-ink:hover::before{transform:skewX(-24deg) scaleX(1.4)}
+
+/* ---------- event ---------- */
+#event{background:var(--coal);padding:clamp(90px,11vw,150px) 0}
+#event .grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:clamp(40px,6vw,90px);align-items:center}
+#event .ph{overflow:hidden;clip-path:polygon(var(--cut) 0,100% 0,100% 100%,0 100%,0 var(--cut))}
+#event img{transform:scale(1.06);will-change:transform}
+#event h2{font-size:clamp(2rem,4.4vw,3.6rem);margin:20px 0 22px}
+#event h2 em{font-style:normal;color:var(--gold)}
+#event p{color:rgba(244,240,231,.78);margin-bottom:16px;max-width:56ch}
+#event .date{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;color:var(--gold);font-size:1.05rem;letter-spacing:.06em;margin-bottom:8px}
+@media(max-width:860px){#event .grid{grid-template-columns:1fr}}
+
+/* ---------- about ---------- */
+#about{background:var(--ivory);color:var(--ink);padding:clamp(90px,11vw,150px) 0}
+#about .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(40px,6vw,90px);align-items:center}
+#about h2{font-size:clamp(2rem,4.4vw,3.6rem);margin:20px 0 24px;color:var(--ink)}
+#about h2 em{font-style:normal;color:var(--gold)}
+#about p{color:#4A453A;margin-bottom:16px;max-width:54ch}
+#about blockquote{border-left:3px solid var(--gold);padding-left:22px;font-size:1.15rem;font-weight:500;color:var(--ink);margin:26px 0}
+.about-media{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.about-media .ph{overflow:hidden;clip-path:polygon(0 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%)}
+.about-media .ph:first-child{grid-column:1/-1;aspect-ratio:16/9}
+.about-media .ph img{width:100%;height:100%;object-fit:cover;transition:transform .8s}
+.about-media .ph:hover img{transform:scale(1.05)}
+.about-media .ph:not(:first-child){aspect-ratio:1}
+@media(max-width:860px){#about .grid{grid-template-columns:1fr}}
+
+/* ---------- contact ---------- */
+#contact{background:var(--ink);padding:clamp(90px,11vw,150px) 0 0}
+#contact .top{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(40px,6vw,100px);padding-bottom:clamp(70px,8vw,110px)}
+#contact h2{font-size:clamp(2.4rem,5.6vw,4.6rem)}
+#contact h2 em{font-style:normal;color:var(--gold)}
+#contact .lead{color:rgba(244,240,231,.7);margin:22px 0 34px;max-width:44ch}
+.c-list{display:flex;flex-direction:column;gap:22px}
+.c-item small{display:block;font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--stone);margin-bottom:6px}
+.c-item a,.c-item span{font-size:clamp(1.05rem,1.6vw,1.3rem);font-weight:500;transition:color .3s}
+.c-item a:hover{color:var(--gold-soft)}
+footer{border-top:1px solid rgba(190,157,82,.2);padding:26px 0}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+footer img{height:24px}
+footer small{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--stone)}
+@media(max-width:860px){#contact .top{grid-template-columns:1fr}}
+
+/* ---------- modal ---------- */
+#modal{position:fixed;inset:0;z-index:150;display:none;align-items:flex-end;justify-content:center}
+#modal.open{display:flex}
+#modal .backdrop{position:absolute;inset:0;background:rgba(10,9,7,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .4s}
+#modal.show .backdrop{opacity:1}
+.sheet{position:relative;background:var(--coal-2);width:min(1080px,100%);max-height:92svh;overflow-y:auto;transform:translateY(60px);opacity:0;transition:transform .5s cubic-bezier(.2,.7,.2,1),opacity .5s;border-top:2px solid var(--gold)}
+#modal.show .sheet{transform:none;opacity:1}
+.sheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.sheet .ph{position:sticky;top:0;height:100%;min-height:340px;background:radial-gradient(ellipse at 50% 60%,#28241B,var(--coal-2))}
+.sheet .ph img{width:100%;height:100%;object-fit:cover}
+.sheet .cnt{padding:clamp(28px,4vw,54px)}
+.sheet .cnt .eyebrow{margin-bottom:14px}
+.sheet h3{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:clamp(1.5rem,2.6vw,2.1rem);line-height:1.02;margin-bottom:6px}
+.sheet .gset{color:var(--stone);font-size:.85rem;margin-bottom:20px}
+.sheet .desc{color:rgba(244,240,231,.8);font-size:.95rem;margin-bottom:26px}
+.spec{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(190,157,82,.16);border:1px solid rgba(190,157,82,.16);margin-bottom:28px}
+.spec div{background:var(--coal-2);padding:14px 16px}
+.spec small{display:block;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--stone);margin-bottom:4px}
+.spec b{font-size:.86rem;font-weight:600}
+.season-toggle{display:inline-flex;border:1px solid var(--line);margin-bottom:16px}
+.season-toggle button{background:none;border:0;color:var(--stone);font-family:var(--body);font-size:.68rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;padding:10px 18px;cursor:pointer;transition:.3s}
+.season-toggle button.on{background:var(--gold);color:var(--ink)}
+.ptable{width:100%;border-collapse:collapse;margin-bottom:26px}
+.ptable th,.ptable td{padding:10px 8px;text-align:center;font-size:.85rem;border-bottom:1px solid rgba(244,240,231,.08)}
+.ptable th{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--stone);font-weight:600}
+.ptable td{font-family:var(--disp);font-stretch:115%;font-weight:800;color:var(--gold-soft)}
+.sheet .ins{font-size:.78rem;color:var(--stone);margin-bottom:28px;border-left:2px solid var(--line);padding-left:14px}
+.sheet .close{position:absolute;top:16px;right:16px;z-index:5;width:46px;height:46px;border:1px solid rgba(244,240,231,.3);background:rgba(14,13,11,.5);color:var(--ivory);font-size:1.1rem;cursor:pointer;transition:.3s}
+.sheet .close:hover{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+@media(max-width:820px){.sheet-grid{grid-template-columns:1fr}.sheet .ph{position:relative;min-height:240px;max-height:300px}}
+
+/* ============ ELEVATION PROFILES ============ */
+.route .prof{position:relative;z-index:2;height:40px;margin:2px 0 14px;padding-bottom:5px;border-bottom:1px solid rgba(190,157,82,.3)}
+.route .prof svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 1px 3px rgba(14,13,11,.85))}
+.prof-line{fill:none;stroke:var(--gold-soft);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.prof-area{stroke:none}
+
+/* The Climbs */
+#climbs{background:var(--ink);padding:clamp(70px,10vw,130px) 0}
+#climbs .head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;margin-bottom:clamp(36px,4.6vw,60px)}
+.climb-list{display:grid;gap:clamp(16px,2vw,26px)}
+.climb{position:relative;background:var(--coal);border:1px solid rgba(190,157,82,.16);padding:clamp(22px,3vw,34px);display:grid;grid-template-columns:minmax(250px,300px) 1fr;gap:clamp(20px,3vw,44px);align-items:center;transition:border-color .5s;clip-path:polygon(0 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%)}
+.climb:hover{border-color:rgba(190,157,82,.42)}
+@media(max-width:840px){.climb{grid-template-columns:1fr;gap:20px}}
+.climb .meta .num{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:.72rem;letter-spacing:.24em;color:var(--gold);display:block;margin-bottom:10px}
+.climb .meta h3{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:clamp(1.3rem,2.3vw,1.85rem);line-height:.98;margin-bottom:8px}
+.climb .meta p{font-size:.86rem;color:var(--stone);line-height:1.5}
+.climb .figs{display:flex;gap:22px;margin-top:16px;flex-wrap:wrap}
+.climb .figs div b{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:1.32rem;color:var(--gold-soft);display:block;line-height:1}
+.climb .figs div small{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--stone)}
+.climb .chart{position:relative;min-height:150px}
+.climb .chart svg{display:block;width:100%;height:auto;overflow:visible}
+.cl-line{fill:none;stroke:var(--gold);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round;
+  stroke-dasharray:var(--len);stroke-dashoffset:var(--len);transition:stroke-dashoffset 2.1s cubic-bezier(.32,.72,.24,1)}
+.climb.drawn .cl-line{stroke-dashoffset:0}
+.cl-area{opacity:0;transition:opacity 1.3s ease .5s}
+.climb.drawn .cl-area{opacity:1}
+.cl-grid{stroke:rgba(190,157,82,.14);stroke-width:1}
+.cl-tick{fill:var(--stone);font-family:var(--body);font-size:9px;letter-spacing:.08em}
+.cl-peak{fill:var(--gold);opacity:0;transition:opacity .6s ease 1.7s}
+.climb.drawn .cl-peak{opacity:1}
+.cl-peak-lbl{fill:var(--gold);font-family:var(--body);font-size:9.5px;font-weight:600;letter-spacing:.1em;opacity:0;transition:opacity .6s ease 1.85s}
+.climb.drawn .cl-peak-lbl{opacity:1}
+@media(prefers-reduced-motion:reduce){
+  .cl-line{stroke-dashoffset:0!important;transition:none}
+  .cl-area,.cl-peak,.cl-peak-lbl{opacity:1!important;transition:none}
+}
+
+/* ============ RIDE THE ISLAND (horizontal journey) ============ */
+#island{position:relative;height:420vh;background:var(--ink)}
+.isl-pin-view{position:sticky;top:0;height:100vh;overflow:hidden}
+.isl-head{position:absolute;top:clamp(78px,12vh,110px);left:clamp(18px,4vw,44px);z-index:6}
+.isl-track{display:flex;height:100%;width:400vw;will-change:transform}
+.isl-scene{position:relative;width:100vw;height:100%;flex:0 0 100vw;overflow:hidden}
+.isl-scene img{position:absolute;inset:-4% -6%;width:112%;height:108%;object-fit:cover;will-change:transform}
+.isl-scene::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(14,13,11,.86) 0%,rgba(14,13,11,.18) 26%,rgba(14,13,11,.1) 62%,rgba(14,13,11,.7) 100%)}
+.isl-scene::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(14,13,11,.92) 0%,transparent 34%)}
+.isl-card{position:absolute;z-index:3;left:clamp(20px,6vw,90px);bottom:clamp(72px,15vh,130px);max-width:430px}
+.isl-card .km{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:.74rem;letter-spacing:.26em;color:var(--gold);display:block;margin-bottom:10px}
+.isl-card h3{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:clamp(1.8rem,4vw,3rem);line-height:.95;margin-bottom:10px}
+.isl-card p{font-size:.94rem;color:rgba(244,240,231,.82);line-height:1.55}
+.isl-card .st{display:flex;gap:20px;margin-top:14px}
+.isl-card .st div b{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:1.2rem;color:var(--gold-soft);display:block;line-height:1}
+.isl-card .st div small{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--stone)}
+/* the gold road running through the journey */
+.isl-road{position:absolute;left:0;right:0;bottom:clamp(40px,9vh,74px);z-index:2;height:2px;background:linear-gradient(90deg,transparent,var(--gold) 6%,var(--gold) 94%,transparent)}
+.isl-road::before{content:"";position:absolute;left:0;right:0;top:-3px;height:8px;background:repeating-linear-gradient(90deg,transparent 0 118px,rgba(190,157,82,.9) 118px 120px)}
+.isl-dot{position:absolute;bottom:clamp(34px,8.4vh,68px);z-index:3;width:14px;height:14px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 5px rgba(190,157,82,.22)}
+.isl-dot::after{content:"";position:absolute;inset:-11px;border-radius:50%;border:1px solid rgba(190,157,82,.4);animation:islPing 2.2s ease-out infinite}
+@keyframes islPing{0%{transform:scale(.5);opacity:1}100%{transform:scale(1.35);opacity:0}}
+/* progress within journey */
+.isl-prog{position:absolute;bottom:clamp(18px,3.4vh,30px);left:50%;transform:translateX(-50%);z-index:6;display:flex;align-items:center;gap:14px}
+.isl-prog i{width:56px;height:2px;background:rgba(190,157,82,.24);position:relative;overflow:hidden}
+.isl-prog i b{position:absolute;inset:0;background:var(--gold);transform-origin:left;transform:scaleX(0)}
+.isl-prog span{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--stone)}
+@media(max-width:840px),(prefers-reduced-motion:reduce){
+  #island{height:auto}
+  .isl-pin-view{position:static;height:auto;overflow:visible}
+  .isl-head{position:static;padding:clamp(50px,9vw,70px) clamp(18px,4vw,44px) 8px}
+  .isl-track{display:block;width:auto;height:auto}
+  .isl-scene{width:100%;flex:none;height:74vh;min-height:480px}
+  .isl-prog{display:none}
+}
+
+/* ============ DETAIL BANDS ============ */
+.band{position:relative;height:clamp(380px,58vh,640px);overflow:hidden;display:flex;align-items:center;background:var(--ink)}
+.band img{position:absolute;inset:0;width:100%;height:114%;object-fit:cover;will-change:transform}
+.band .band-wrap{position:relative;z-index:2;width:100%;max-width:1240px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+.band .cap{max-width:44ch}
+.band .eyebrow{margin-bottom:18px}
+.band h2{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:clamp(1.8rem,4vw,3.4rem);line-height:.98;color:var(--ivory)}
+.band h2 em{font-style:normal;color:var(--gold)}
+.band p{margin-top:18px;color:rgba(244,240,231,.82);font-size:clamp(.95rem,1.2vw,1.08rem);max-width:46ch}
+/* machine band: dark image, caption left, cut top */
+.band.machine{clip-path:polygon(0 var(--cut),100% 0,100% 100%,0 100%)}
+.band.machine::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(14,13,11,.9) 0%,rgba(14,13,11,.55) 42%,transparent 72%)}
+/* statement band: full overlay, centered, cut bottom */
+.band.statement{clip-path:polygon(0 0,100% 0,100% calc(100% - var(--cut)),0 100%);text-align:center}
+.band.statement::after{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(120% 100% at 50% 50%,rgba(14,13,11,.62),rgba(14,13,11,.86))}
+.band.statement .cap{max-width:none;margin:0 auto}
+.band.statement .eyebrow{justify-content:center}
+.band.statement p{margin-left:auto;margin-right:auto;max-width:52ch}
+@media(max-width:700px){
+  .band.machine::after{background:linear-gradient(180deg,rgba(14,13,11,.55),rgba(14,13,11,.85))}
+  /* narrow screens crop to the centre, which is empty spokes — pull the frame
+     across so the cassette and derailleur stay in shot */
+  .band.machine .plx{object-position:72% 50%}
+}
+
+/* ============ PREMIUM LAYER ============ */
+
+/* scroll progress bar */
+#progress{position:fixed;top:0;left:0;height:2px;width:0;z-index:130;background:linear-gradient(90deg,var(--gold-soft),var(--gold));box-shadow:0 0 12px rgba(190,157,82,.6);transition:width .1s linear}
+
+/* film grain over hero */
+#hero .grain{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.06;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 6s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-4%,3%)}40%{transform:translate(3%,-4%)}60%{transform:translate(-3%,2%)}80%{transform:translate(4%,-3%)}100%{transform:translate(0,0)}}
+
+/* slow cinematic zoom on hero video */
+#hero video{animation:kenburns 26s ease-in-out infinite alternate}
+@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.09)}}
+
+/* radial vignette breathing on hero */
+#hero .vig{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 42%,transparent 44%,rgba(14,13,11,.55) 100%);
+  animation:vigpulse 9s ease-in-out infinite}
+@keyframes vigpulse{0%,100%{opacity:.85}50%{opacity:1}}
+
+/* cursor spotlight for dark sections */
+.spot{position:relative}
+.spot::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .5s;
+  background:radial-gradient(360px circle at var(--mx,50%) var(--my,50%),rgba(190,157,82,.10),transparent 60%)}
+.spot:hover::before{opacity:1}
+.spot>.wrap{position:relative;z-index:1}
+
+/* split reveal for display headings */
+.split{display:block;overflow:hidden;padding:.12em .03em .18em;margin:-.12em -.03em -.18em}
+.split>span{display:block;transform:translateY(105%);transition:transform 1s cubic-bezier(.16,.84,.28,1)}
+.split.in>span{transform:none}
+.split.d1>span{transition-delay:.1s}.split.d2>span{transition-delay:.2s}
+
+/* shine sweep on reveal images */
+.shine{position:relative;overflow:hidden}
+.shine::after{content:"";position:absolute;top:0;left:-140%;width:60%;height:100%;z-index:3;pointer-events:none;
+  transform:skewX(-22deg);background:linear-gradient(90deg,transparent,rgba(244,240,231,.22),transparent)}
+.shine.in::after{animation:sweep 1.15s cubic-bezier(.2,.7,.2,1) .25s}
+@keyframes sweep{to{left:140%}}
+
+/* magnetic button base (JS drives translate via --mxb/--myb) */
+.btn.mag{will-change:transform}
+
+/* bike card tilt */
+.bike{transform-style:preserve-3d;will-change:transform}
+.bike .ph img,.bike .num,.bike .tag{transform:translateZ(0)}
+
+/* premium depth shadow on cards + gold ring on hover */
+.bike{box-shadow:0 1px 0 rgba(190,157,82,.06)}
+.bike:hover{box-shadow:0 30px 60px -30px rgba(0,0,0,.8),0 0 0 1px var(--line)}
+
+/* gold hairline that draws in under eyebrows */
+.eyebrow.in::before,.hero-kicker::before{animation:linegrow .8s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes linegrow{from{width:0}}
+
+/* subtle float on the address tag */
+.intro-tag{animation:floaty 5s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* nav logo micro-interaction */
+.nav-logo img{transition:transform .4s cubic-bezier(.2,.7,.2,1),filter .4s}
+.nav-logo:hover img{transform:translateY(-2px);filter:drop-shadow(0 4px 10px rgba(190,157,82,.4))}
+
+/* route number badge shimmer on hover already exists; add gold glow */
+.route:hover::after{background:linear-gradient(180deg,rgba(190,157,82,.12) 20%,rgba(14,13,11,.9) 100%)}
+
+/* pricing band: animated gold sheen */
+#pricing{position:relative;overflow:hidden}
+#pricing::before{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-20deg);
+  animation:bandsheen 7s ease-in-out infinite}
+@keyframes bandsheen{0%{left:-60%}55%,100%{left:160%}}
+
+/* refined focus states */
+a:focus-visible,button:focus-visible{outline:2px solid var(--gold-soft);outline-offset:3px;border-radius:1px}
+
+@media (prefers-reduced-motion:reduce){
+  #hero video,#hero .grain,#hero .vig,.intro-tag,#pricing::before{animation:none!important}
+  .split>span{transform:none!important}
+  .shine::after{display:none}
+}
+
+
+
+
+.bike[data-bike]{cursor:pointer}
+.bike[data-bike]:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+/* ================= COMPONENT DETAILS (hotspots) ================= */
+#details[hidden]{display:none}
+#details{background:var(--ink);padding:clamp(60px,9vw,120px) 0}
+#details .head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;
+  gap:24px;margin-bottom:clamp(30px,4.4vw,54px)}
+.det-wrap{display:grid;grid-template-columns:1.35fr .9fr;gap:clamp(20px,3vw,44px);align-items:center}
+@media(max-width:920px){.det-wrap{grid-template-columns:1fr}}
+.det-stage{position:relative}
+.det-stage>img{display:block;width:100%;height:auto}
+.det-dot{position:absolute;width:26px;height:26px;transform:translate(-50%,-50%);border:0;padding:0;
+  background:none;cursor:pointer;z-index:3}
+.det-dot::before{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--gold);
+  transition:transform .3s,box-shadow .3s}
+.det-dot::after{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid rgba(190,157,82,.55);
+  animation:detPing 2.4s ease-out infinite}
+.det-dot:hover::before,.det-dot.on::before{transform:scale(1.5);box-shadow:0 0 0 6px rgba(190,157,82,.18)}
+.det-dot.on::after{animation:none;border-color:var(--gold)}
+@keyframes detPing{0%{transform:scale(.55);opacity:1}100%{transform:scale(1.25);opacity:0}}
+.det-card{background:var(--coal);border:1px solid rgba(190,157,82,.2);overflow:hidden;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%)}
+.det-card .ph{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--coal-2)}
+.det-card .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0;transition:opacity .45s ease,transform 1.2s cubic-bezier(.2,.7,.2,1);transform:scale(1.06)}
+.det-card .ph img.on{opacity:1;transform:scale(1)}
+.det-card .tx{padding:20px 22px 24px}
+.det-card .tx small{display:block;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gold);font-weight:600;margin-bottom:8px}
+.det-card .tx h3{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;
+  font-size:clamp(1.1rem,1.9vw,1.45rem);line-height:1.05;margin-bottom:8px}
+.det-card .tx p{font-size:.9rem;color:rgba(244,240,231,.76);line-height:1.55}
+.det-hint{margin-top:14px;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--stone)}
+@media(max-width:920px){
+  .det-card .ph{aspect-ratio:16/10}
+  .det-hint{text-align:center}
+}
+
+
+
+
+/* eight price tiers: keep the table readable on a phone */
+.ptable th,.ptable td{padding:9px 4px;font-size:.82rem}
+.ptable th{font-size:.56rem;letter-spacing:.08em}
+@media(max-width:560px){
+  .ptable{font-size:.74rem}
+  .ptable th{font-size:.5rem;letter-spacing:.02em;padding:7px 2px}
+  .ptable td{padding:8px 2px;font-size:.76rem}
+}
+
+/* stat lines read as: 7 — PREMIUM BIKE MODELS */
+.intro-stats .stat{display:flex;align-items:baseline;gap:11px;flex-wrap:nowrap}
+.intro-stats .stat b{display:inline-flex;align-items:baseline}
+.intro-stats .stat b em{font-style:normal;font-size:.62em;color:var(--gold);margin-left:4px}
+.intro-stats .stat .dash{font-style:normal;color:var(--gold);font-size:.9rem;line-height:1}
+.intro-stats .stat small{margin-top:0;white-space:nowrap;letter-spacing:.16em}
+@media(max-width:560px){
+  .intro-stats .stat{gap:8px}
+  .intro-stats .stat small{font-size:.56rem;letter-spacing:.1em;white-space:normal}
+  .intro-stats .stat b{font-size:1.5rem}
+}
+
+/* ================= FAQ ================= */
+#faq{background:var(--paper);color:var(--ink);padding:clamp(60px,9vw,120px) 0}
+#faq .eyebrow{color:var(--gold)}
+#faq h2{font-size:clamp(1.8rem,4.6vw,3.2rem);margin-bottom:clamp(26px,3.6vw,44px)}
+.faq-list{max-width:820px;border-top:1px solid rgba(14,13,11,.14)}
+.faq{border-bottom:1px solid rgba(14,13,11,.14)}
+.faq summary{list-style:none;cursor:pointer;padding:20px 40px 20px 0;position:relative;
+  font-family:var(--disp);font-stretch:110%;font-weight:700;font-size:clamp(1rem,1.7vw,1.18rem);
+  line-height:1.3;color:var(--ink);transition:color .2s}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:hover{color:var(--gold)}
+.faq summary::after{content:"+";position:absolute;right:6px;top:19px;font-family:var(--body);
+  font-size:1.35rem;line-height:1;color:var(--gold);transition:transform .28s}
+.faq[open] summary::after{content:"−";transform:rotate(180deg)}
+.faq p{padding:0 40px 22px 0;margin:0;font-size:.98rem;line-height:1.65;color:#4A453A;max-width:720px}
+/* ================= LIVE CONDITIONS ================= */
+.live{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin:0 0 26px;
+  padding:13px 0;border-top:1px solid rgba(14,13,11,.12);border-bottom:1px solid rgba(14,13,11,.12);
+  opacity:0;transform:translateY(6px);transition:opacity .7s ease,transform .7s ease}
+.live.in{opacity:1;transform:none}
+.live-dot{position:relative;width:7px;height:7px;flex:none}
+.live-dot::before,.live-dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--gold)}
+.live-dot::after{animation:livePing 2.4s ease-out infinite}
+@keyframes livePing{0%{transform:scale(1);opacity:.7}100%{transform:scale(3.4);opacity:0}}
+.live-lbl{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--stone);font-weight:600}
+.live-vals{display:flex;flex-wrap:wrap;gap:8px 14px;margin-left:auto}
+.live-vals b{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:.98rem;
+  color:var(--ink);letter-spacing:.01em}
+.live-vals i{font-style:normal;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;
+  color:#7C7566;margin-left:6px}
+.live-vals span{display:inline-flex;align-items:baseline;white-space:nowrap}
+.live-vals span+span{padding-left:14px;border-left:1px solid rgba(14,13,11,.14)}
+@media(max-width:700px){
+  .live{gap:8px 12px}
+  .live-vals{margin-left:0;width:100%}
+  .live-vals span+span{padding-left:12px}
+  .live-vals b{font-size:.92rem}
+}
+/* ================= INTRO — richer layout ================= */
+#intro{position:relative;overflow:hidden}
+/* oversized watermark word sitting behind the copy */
+.intro-mark{position:absolute;right:-3%;bottom:-4%;z-index:0;pointer-events:none;
+  font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;
+  font-size:clamp(6rem,13vw,12rem);line-height:.8;letter-spacing:-.02em;
+  color:transparent;-webkit-text-stroke:1px rgba(14,13,11,.055);user-select:none}
+#intro .wrap{position:relative;z-index:1}
+/* lead paragraph gets weight, the second one recedes */
+#intro p.lead{font-size:clamp(1.02rem,1.5vw,1.2rem);color:#3A362D;line-height:1.62}
+#intro p.sub{font-size:.98rem;color:#5A544A}
+/* gold rule that draws itself under the headline */
+.rule{display:block;height:2px;width:0;background:var(--gold);margin:0 0 26px;
+  transition:width 1.1s cubic-bezier(.2,.7,.2,1) .25s}
+.rule.in{width:132px}
+/* stats become bordered tiles with a growing accent */
+.intro-stats{display:flex;flex-direction:column;gap:0;margin-top:42px;
+  border-top:1px solid rgba(14,13,11,.14)}
+.stat{position:relative;padding:16px 0 15px}
+.stat+.stat{border-top:1px solid rgba(14,13,11,.12)}
+.stat::before{content:"";position:absolute;top:-1px;left:0;height:2px;width:0;background:var(--gold);
+  transition:width 1s cubic-bezier(.2,.7,.2,1)}
+.intro-stats.in .stat::before{width:38%}
+.intro-stats.in .stat:nth-child(2)::before{transition-delay:.12s}
+.intro-stats.in .stat:nth-child(3)::before{transition-delay:.24s}
+/* media column: stacked frames + coordinates plate */
+.intro-media{position:relative}
+.intro-media .row2{display:grid;grid-template-columns:1.15fr .85fr;gap:12px;margin-top:12px;align-items:stretch}
+.intro-media .ph2{overflow:hidden;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)}
+.intro-media .ph2 img{display:block;width:100%;height:100%;object-fit:cover;transform:none}
+.intro-coord{position:absolute;right:0;top:-15px;z-index:3;background:var(--ink);color:var(--ivory);
+  font-family:var(--body);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;
+  padding:8px 13px;border-left:2px solid var(--gold);white-space:nowrap}
+@media(max-width:860px){
+  .intro-mark{font-size:34vw;top:auto;bottom:2%;right:-4%}
+  .intro-media .row2{grid-template-columns:1fr 1fr}
+}
+
+/* 360° affordances */
+.gal-360{position:absolute;left:12px;top:12px;z-index:4;display:flex;align-items:center;gap:9px;
+  background:rgba(14,13,11,.78);color:var(--ivory);border:1px solid rgba(190,157,82,.5);
+  padding:9px 14px;cursor:pointer;font-family:var(--body);backdrop-filter:blur(5px);
+  transition:background .25s,color .25s,transform .25s}
+.gal-360 b{font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:.9rem;color:var(--gold);
+  line-height:1;transition:color .25s}
+.gal-360 span{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
+.gal-360:hover{background:var(--gold);color:var(--ink);transform:translateY(-1px)}
+.gal-360:hover b{color:var(--ink)}
+.gal-back{display:none;background:none;border:0;color:var(--gold);cursor:pointer;font-family:var(--body);
+  font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;padding:10px 0 2px}
+.gal-back:hover{color:var(--gold-soft)}
+/* badge on the fleet card so it is visible before opening */
+.bike.has360 .ph::after{content:"360°";position:absolute;left:14px;top:14px;z-index:3;
+  background:rgba(14,13,11,.8);color:var(--gold);border:1px solid rgba(190,157,82,.5);
+  font-family:var(--disp);font-stretch:125%;font-weight:800;font-size:.72rem;letter-spacing:.04em;
+  padding:6px 10px;backdrop-filter:blur(4px)}
+.bike .ph{position:relative}
+/* ================= 360° TURNTABLE ================= */
+.spin{position:relative;background:var(--paper);overflow:hidden;touch-action:pan-y;cursor:grab;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%)}
+.spin.dragging{cursor:grabbing}
+.spin img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.spin-badge{position:absolute;left:12px;bottom:12px;z-index:3;display:flex;align-items:center;gap:7px;
+  background:rgba(14,13,11,.72);color:var(--ivory);font-size:.62rem;letter-spacing:.16em;
+  text-transform:uppercase;font-weight:600;padding:7px 11px;border:1px solid rgba(190,157,82,.35);
+  backdrop-filter:blur(4px);transition:opacity .4s}
+.spin-badge b{color:var(--gold);font-family:var(--disp);font-stretch:125%;font-size:.72rem;letter-spacing:.06em}
+.spin.used .spin-badge{opacity:0}
+.spin-load{position:absolute;inset:0;display:grid;place-items:center;z-index:2;background:rgba(237,232,220,.7);
+  transition:opacity .4s}
+.spin-load.gone{opacity:0;pointer-events:none}
+.spin-load i{width:26px;height:26px;border:2px solid rgba(14,13,11,.18);border-top-color:var(--ink);
+  border-radius:50%;animation:spinLoad .8s linear infinite}
+@keyframes spinLoad{to{transform:rotate(360deg)}}
+/* ================= BIKE GALLERY (modal) ================= */
+.gal{display:flex;flex-direction:column;gap:10px;min-width:0}
+.gal-main{position:relative;background:var(--paper);overflow:hidden;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%)}
+.gal-main img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:4/3;
+  transition:opacity .28s ease}
+.gal-main img.swap{opacity:0}
+.gal-nav{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;
+  background:rgba(14,13,11,.62);border:1px solid rgba(190,157,82,.4);color:var(--ivory);
+  font-size:1.3rem;line-height:1;cursor:pointer;transition:background .25s,color .25s;
+  display:grid;place-items:center;backdrop-filter:blur(4px);z-index:2}
+.gal-nav:hover{background:var(--gold);color:var(--ink)}
+.gal-nav.prev{left:10px}
+.gal-nav.next{right:10px}
+.gal-count{position:absolute;right:12px;bottom:12px;z-index:2;background:rgba(14,13,11,.7);
+  color:var(--ivory);font-size:.68rem;letter-spacing:.14em;padding:5px 10px;
+  border:1px solid rgba(190,157,82,.3)}
+.gal-thumbs{display:flex;gap:7px;overflow-x:auto;overscroll-behavior-x:contain;
+  scrollbar-width:none;padding-bottom:2px}
+.gal-thumbs::-webkit-scrollbar{display:none}
+.gal-thumbs button{flex:0 0 74px;height:56px;padding:0;border:1px solid transparent;
+  background:var(--paper);cursor:pointer;overflow:hidden;opacity:.55;transition:.25s}
+.gal-thumbs button img{width:100%;height:100%;object-fit:cover;display:block}
+.gal-thumbs button:hover{opacity:.85}
+.gal-thumbs button.on{opacity:1;border-color:var(--gold)}
+@media(max-width:760px){
+  .gal-nav{width:38px;height:38px}
+  .gal-thumbs button{flex:0 0 62px;height:48px}
+}
+/* ================= LANGUAGE SWITCHER ================= */
+.lang{display:inline-flex;border:1px solid rgba(190,157,82,.42);overflow:hidden;
+  background:rgba(14,13,11,.4);backdrop-filter:blur(6px)}
+.lang button{background:none;border:0;cursor:pointer;font-family:var(--body);
+  font-size:.68rem;font-weight:700;letter-spacing:.14em;color:rgba(244,240,231,.62);
+  padding:8px 11px;transition:background .25s,color .25s;position:relative}
+.lang button+button{border-left:1px solid rgba(190,157,82,.28)}
+.lang button:hover{color:var(--ivory)}
+.lang button.on{background:var(--gold);color:var(--ink)}
+@media(max-width:900px){
+  .lang-li{margin-top:22px;width:min(320px,74vw)}
+  .lang{display:flex;width:100%;background:none}
+  .lang button{flex:1;font-size:.94rem;letter-spacing:.22em;padding:17px 0}
+}
+
+/* ============ LONGER LANGUAGES: keep the hero inside the screen ============ */
+/* Polish and Spanish headlines are longer than the English original, so the
+   display type steps down to stop the block growing past the viewport. */
+html[lang="pl"] h1.disp{font-size:clamp(1.72rem,5.9vw,5.1rem)}
+html[lang="es"] h1.disp{font-size:clamp(1.8rem,6.2vw,5.4rem)}
+html[lang="pl"] .hero-sub,html[lang="es"] .hero-sub{font-size:clamp(.94rem,1.15vw,1.04rem)}
+@media(max-width:900px){
+  html[lang="pl"] h1.disp{font-size:clamp(1.6rem,7.6vw,2.6rem)}
+  html[lang="es"] h1.disp{font-size:clamp(1.62rem,7.8vw,2.7rem)}
+}
+/* section headings with two stacked words also need the extra room */
+
+/* ================= MOBILE POLISH ================= */
+/* headings never hide under the sticky nav when jumping from the menu */
+section[id]{scroll-margin-top:76px}
+
+@media(max-width:840px){
+  /* island: the horizontal road and its pins belong to the desktop layout only */
+  .isl-road,.isl-dot,.isl-prog{display:none!important}
+  .isl-scene{height:auto;min-height:0;padding:clamp(28px,7vw,48px) 0}
+  .isl-card{position:relative;left:auto;bottom:auto;max-width:none;
+    padding:0 clamp(18px,5vw,28px)}
+  .isl-scene img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+  .isl-scene::before{background:linear-gradient(180deg,rgba(14,13,11,.72),rgba(14,13,11,.9))}
+
+  /* climb charts: taller so the line is readable on a narrow screen */
+  .climb .chart{min-height:132px}
+  .climb .figs{gap:16px}
+
+  /* nothing may poke past the edge */
+  .wrap,.climb,.isl-card{max-width:100%}
+  img,svg,video{max-width:100%}
+}
+@media(max-width:520px){
+  .climb .figs div b{font-size:1.16rem}
+  .climb .meta h3{font-size:clamp(1.5rem,7.4vw,2rem)}
+}
+
+/* overflow-x:hidden makes an ancestor a scroll container, which silently kills
+   position:sticky further down (it broke the pinned island section). clip does
+   the same job — no sideways scrolling — without creating that container. */
+@supports (overflow:clip){html,body{overflow-x:clip}}
+</style>
+<link rel="alternate" hreflang="en" href="https://vengacyclingmallorca.com/">
+<link rel="alternate" hreflang="es" href="https://vengacyclingmallorca.com/es/">
+<link rel="alternate" hreflang="pl" href="https://vengacyclingmallorca.com/pl/">
+<link rel="alternate" hreflang="x-default" href="https://vengacyclingmallorca.com/">
+<link rel="canonical" href="https://vengacyclingmallorca.com/pl/">
+<!-- link previews on WhatsApp, Facebook, iMessage, Slack -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Venga Cycling Mallorca">
+<meta property="og:title" content="Wypożyczalnia rowerów premium w Port de Pollença | Venga">
+<meta property="og:description" content="Wypożyczalnia rowerów Giant i Liv — szosowe, gravel, czasowe i elektryczne — w Port de Pollença na Majorce. Dopasowane do Ciebie, od €38/dzień. Sa Calobra spod drzwi.">
+<meta property="og:url" content="https://vengacyclingmallorca.com/pl/">
+<meta property="og:image" content="https://vengacyclingmallorca.com/assets/img/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="pl_PL">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Wypożyczalnia rowerów premium w Port de Pollença | Venga">
+<meta name="twitter:description" content="Wypożyczalnia rowerów Giant i Liv — szosowe, gravel, czasowe i elektryczne — w Port de Pollença na Majorce. Dopasowane do Ciebie, od €38/dzień. Sa Calobra spod drzwi.">
+<meta name="twitter:image" content="https://vengacyclingmallorca.com/assets/img/og-cover.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SportingGoodsStore", "name": "Venga Cycling Mallorca", "description": "Premium Giant and Liv bike rental in Port de Pollença, Mallorca. Open Monday to Saturday; Sunday pick-up and returns by prior appointment.", "url": "https://vengacyclingmallorca.com/", "image": "https://vengacyclingmallorca.com/assets/img/og-cover.jpg", "telephone": "+34643217821", "email": "hola@vengacyclingmallorca.com", "contactPoint": [{"@type": "ContactPoint", "telephone": "+34643217821", "contactType": "reservations", "availableLanguage": ["en", "es", "pl"]}, {"@type": "ContactPoint", "telephone": "+34743034408", "contactType": "customer support", "availableLanguage": ["en", "es", "pl"]}], "priceRange": "€38–€700", "address": {"@type": "PostalAddress", "streetAddress": "Carrer de Formentor 59", "postalCode": "07470", "addressLocality": "Port de Pollença", "addressRegion": "Illes Balears", "addressCountry": "ES"}, "geo": {"@type": "GeoCoordinates", "latitude": 39.9078, "longitude": 3.0847}, "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "opens": "09:00", "closes": "13:00"}, {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "opens": "16:00", "closes": "18:30"}, {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Sunday"], "opens": "09:00", "closes": "18:30", "description": "Bike pick-up and returns by prior appointment only"}], "areaServed": {"@type": "Place", "name": "Mallorca"}, "sameAs": []}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "ItemList", "name": "Bike rental fleet — Venga Cycling Mallorca", "itemListElement": [{"@type": "ListItem", "position": 1, "item": {"@type": "Product", "name": "Giant Propel Advanced TOP Pro", "description": "The essence of modern aerodynamics and engineering excellence. Built to win — low weight, exceptional stiffness and outstanding efficiency, with every second on the road counting.", "image": "https://vengacyclingmallorca.com/assets/img/bike-propel-v3.webp", "brand": {"@type": "Brand", "name": "Giant"}, "category": "Aero road · Racing", "offers": {"@type": "Offer", "url": "https://vengacyclingmallorca.com/booking/", "price": "95", "priceCurrency": "EUR", "availability": "https://schema.org/InStock", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "95", "priceCurrency": "EUR", "unitCode": "DAY", "referenceQuantity": {"@type": "QuantitativeValue", "value": 1, "unitCode": "DAY"}}, "seller": {"@type": "Organization", "name": "Venga Cycling Mallorca"}}}}, {"@type": "ListItem", "position": 2, "item": {"@type": "Product", "name": "Liv EnviLiv Advanced Disc TOP Pro", "description": "Elegance, power and precision. Designed for women who love speed and expect race-level performance — feminine finesse with race-winning power on every Mallorca climb.", "image": "https://vengacyclingmallorca.com/assets/img/bike-enviliv-v3.webp", "brand": {"@type": "Brand", "name": "Liv"}, "category": "Aero road · Women's racing", "offers": {"@type": "Offer", "url": "https://vengacyclingmallorca.com/booking/", "price": "95", "priceCurrency": "EUR", "availability": "https://schema.org/InStock", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "95", "priceCurrency": "EUR", "unitCode": "DAY", "referenceQuantity": {"@type": "QuantitativeValue", "value": 1, "unitCode": "DAY"}}, "seller": {"@type": "Organization", "name": "Venga Cycling Mallorca"}}}}, {"@type": "ListItem", "position": 3, "item": {"@type": "Product", "name": "Giant TCR Advanced Pro 0 Disc", "description": "A modern interpretation of a true classic — low weight, exceptional stiffness and precise handling. At home everywhere in Mallorca, from Coll de Sóller to fast coastal descents.", "image": "https://vengacyclingmallorca.com/assets/img/bike-tcr-v3.webp", "brand": {"@type": "Brand", "name": "Giant"}, "category": "All-round road", "offers": {"@type": "Offer", "url": "https://vengacyclingmallorca.com/booking/", "price": "47", "priceCurrency": "EUR", "availability": "https://schema.org/InStock", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "47", "priceCurrency": "EUR", "unitCode": "DAY", "referenceQuantity": {"@type": "QuantitativeValue", "value": 1, "unitCode": "DAY"}}, "seller": {"@type": "Organization", "name": "Venga Cycling Mallorca"}}}}, {"@type": "ListItem", "position": 4, "item": {"@type": "Product", "name": "Liv Langma Advanced Pro 0 Disc", "description": "Lightness, precision and elegance. Created for women who combine high-performance riding with exceptional comfort — the Langma inspires you to climb and responds to every movement.", "image": "https://vengacyclingmallorca.com/assets/img/bike-langma-v3.webp", "brand": {"@type": "Brand", "name": "Liv"}, "category": "All-round road · Women's", "offers": {"@type": "Offer", "url": "https://vengacyclingmallorca.com/booking/", "price": "47", "priceCurrency": "EUR", "availability": "https://schema.org/InStock", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "47", "priceCurrency": "EUR", "unitCode": "DAY", "referenceQuantity": {"@type": "QuantitativeValue", "value": 1, "unitCode": "DAY"}}, "seller": {"@type": "Organization", "name": "Venga Cycling Mallorca"}}}}, {"@type": "ListItem", "position": 5, "item": {"@type": "Product", "name": "Giant Trinity Advanced SL 0 TOP Pro", "description": "An uncompromising time trial and triathlon machine for riders who measure performance in seconds. AeroSystem shaping, integrated cockpit and every watt turned into forward momentum.", "image": "https://vengacyclingmallorca.com/assets/img/bike-trinity-v3.webp", "brand": {"@type": "Brand", "name": "Giant"}, "category": "Time trial · Triathlon", "offers": {"@type": "Offer", "url": "https://vengacyclingmallorca.com/booking/", "price": "110", "priceCurrency": "EUR", "availability": "https://schema.org/InStock", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "110", "priceCurrency": "EUR", "unitCode": "DAY", "referenceQuantity": {"@type": "QuantitativeValue", "value": 1, "unitCode": "DAY"}}, "seller": {"@type": "Organization", "name": "Venga Cycling Mallorca"}}}}, {"@type": "ListItem", "position": 6, "item": {"@type": "Product", "name": "Giant Revolt Advanced 3 Carbon Disc", "description": "Built for exploring Mallorca beyond the main roads — road-bike speed with gravel comfort and stability. From smooth tarmac to gravel tracks leading towards hidden coves.", "image": "https://vengacyclingmallorca.com/assets/img/bike-revolt-v3.webp", "brand": {"@type": "Brand", "name": "Giant"}, "category": "Gravel · Adventure", "offers": {"@type": "Offer", "url": "https://vengacyclingmallorca.com/booking/", "price": "38", "priceCurrency": "EUR", "availability": "https://schema.org/InStock", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "38", "priceCurrency": "EUR", "unitCode": "DAY", "referenceQuantity": {"@type": "QuantitativeValue", "value": 1, "unitCode": "DAY"}}, "seller": {"@type": "Organization", "name": "Venga Cycling Mallorca"}}}}, {"@type": "ListItem", "position": 7, "item": {"@type": "Product", "name": "Giant Explore E+ 3", "description": "An electric bike that opens up entirely new ways to discover Mallorca — explore the island at your own pace, with power exactly when you want it.", "image": "https://vengacyclingmallorca.com/assets/img/bike-ebike-v2-v3.webp", "brand": {"@type": "Brand", "name": "Giant"}, "category": "E-bike · Trekking", "offers": {"@type": "Offer", "url": "https://vengacyclingmallorca.com/booking/", "price": "42", "priceCurrency": "EUR", "availability": "https://schema.org/InStock", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "42", "priceCurrency": "EUR", "unitCode": "DAY", "referenceQuantity": {"@type": "QuantitativeValue", "value": 1, "unitCode": "DAY"}}, "seller": {"@type": "Organization", "name": "Venga Cycling Mallorca"}}}}, {"@type": "ListItem", "position": 8, "item": {"@type": "Product", "name": "Giant Defy Advanced E+ Elite AR", "description": "Endurance road bike with quiet electric assistance hidden in the rear hub. The Advanced Composite carbon frame and D-Fuse cockpit keep the feel of a real road bike, while the motor gives you exactly as much help as a climb demands \\u2014 Formentor, Femenia and Puig Major on your own terms.", "image": "https://vengacyclingmallorca.com/assets/img/bike-defy-v3.webp", "brand": {"@type": "Brand", "name": "Giant"}, "category": "E-road \\u00b7 Endurance", "offers": {"@type": "Offer", "url": "https://vengacyclingmallorca.com/booking/", "price": "57", "priceCurrency": "EUR", "availability": "https://schema.org/InStock", "priceSpecification": {"@type": "UnitPriceSpecification", "price": "57", "priceCurrency": "EUR", "unitCode": "DAY", "referenceQuantity": {"@type": "QuantitativeValue", "value": 1, "unitCode": "DAY"}}, "seller": {"@type": "Organization", "name": "Venga Cycling Mallorca"}}}}]}]}</script>
+
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WV2HZ972"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+<!-- ==================== MAINTENANCE GATE ==================== -->
+<div id="maint" role="dialog" aria-modal="true" aria-label="Site under maintenance">
+  <div class="mt-box">
+    <div class="mt-logo">VENG<b>A</b><span>Cycling Mallorca</span></div>
+
+    <p class="mt-h" role="heading" aria-level="2">We're fine-tuning<br><em>the details.</em></p>
+    <p class="mt-p">Our new website is almost ready. In the meantime the shop is open as usual —
+      call, email or drop by and we'll get you on a bike.</p>
+
+    <div class="mt-grid">
+      <a class="mt-card" href="tel:+34643217821">
+        <small>Phone &amp; WhatsApp</small>
+        <b>+34 643 217 821</b>
+        <span>Fastest way to reach us</span>
+      </a>
+      <a class="mt-card mail" href="mailto:hola@vengacyclingmallorca.com">
+        <small>E-mail</small>
+        <b>hola@vengacyclingmallorca.com</b>
+        <span>Bookings and questions</span>
+      </a>
+      <a class="mt-card" href="https://maps.google.com/?q=Carrer+de+Formentor+59,+07470+Port+de+Pollença" target="_blank" rel="noopener">
+        <small>Shop</small>
+        <b>Carrer de Formentor 59</b>
+        <span>07470 Port de Pollença, Mallorca</span>
+      </a>
+      <div class="mt-card static">
+        <small>Opening hours</small>
+        <b>Mon – Sat</b>
+        <span>09:00–13:00 &nbsp;/&nbsp; 16:00–18:30</span><span class="closed">Sunday — bike pick-up and returns by prior appointment</span>
+      </div>
+    </div>
+
+    <div class="mt-fleet">Premium Giant &amp; Liv road, gravel, TT and e-bikes · personal fit · delivery across the island</div>
+
+    <form class="mt-gate" id="mtForm" autocomplete="off">
+      <label for="mtPass">Preview access</label>
+      <div class="mt-row">
+        <input id="mtPass" type="password" inputmode="numeric" placeholder="Enter code" aria-describedby="mtErr">
+        <button type="submit">Enter</button>
+      </div>
+      <div class="mt-err" id="mtErr" role="alert">That code isn't right. Try again.</div>
+    </form>
+  </div>
+</div>
+<!-- ================== /MAINTENANCE GATE ==================== -->
+
+<div id="progress" aria-hidden="true"></div>
+<div id="loader" aria-hidden="true">
+  <div class="ld-wrap">
+    <img class="ld-ridge" src="/assets/img/ld-ridge.webp" alt="" aria-hidden="true">
+    <img class="ld-dust" src="/assets/img/ld-dust.webp" alt="" aria-hidden="true">
+    <div class="ld-stage" id="ldStage">
+      <i class="ld-road" aria-hidden="true"></i>
+      <div class="ld-bike">
+        <i class="ld-shadow r" aria-hidden="true"></i>
+        <i class="ld-shadow f" aria-hidden="true"></i>
+        <i class="ld-seqw" aria-hidden="true"><video class="ld-seq" id="ldSeq" muted playsinline autoplay preload="auto"
+        poster="/assets/img/asm-poster.webp"></video></i>
+        <i class="ld-sweep" aria-hidden="true"></i>
+      </div>
+      <div class="ld-flash" id="ldFlash">VENG<b>A</b><small>Cycling Mallorca</small></div>
+    </div>
+    <div class="ld-foot">
+      <div class="ld-bar-p"><i id="ldBar"></i></div>
+      <div class="ld-txt"><span id="ldMsg">Preparing your bike</span><button id="ldSkip" type="button">Skip</button></div>
+    </div>
+  </div>
+</div>
+
+<nav id="nav">
+  <div class="wrap">
+    <a class="nav-logo" href="#hero" aria-label="Venga Cycling Mallorca"><img src="/assets/img/logo-light.svg" alt="Venga Cycling Mallorca"></a>
+    <button id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#fleet">Fleet</a></li>
+      <li><a href="/pl/routes/">Routes</a></li><li><a href="/blog/">Journal</a></li>
+      <li><a href="#event">Events</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a class="nav-cta" href="/booking/">Book your bike</a></li>
+      <li class="lang-li"><div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="en" class="on">EN</button>
+        <button type="button" data-lang="es">ES</button>
+        <button type="button" data-lang="pl">PL</button>
+      </div></li>
+    </ul>
+  </div>
+</nav>
+
+<section id="hero">
+  <video id="heroVid" autoplay muted loop playsinline poster="/assets/img/hero-poster.webp" preload="none">
+    <source data-src="/assets/video/hero-v2.webm" type="video/webm">
+    <source data-src="/assets/video/hero-v2.mp4" type="video/mp4">
+  </video>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="vig" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <div class="wrap">
+      <div class="hero-kicker">Port de Pollença · Mallorca</div>
+      <h1 class="disp" aria-label="Venga. The first move is yours.">
+        <span class="word"><i style="animation-delay:.15s">VENGA.</i></span><br>
+        <span class="word"><i style="animation-delay:.3s">THE&nbsp;FIRST&nbsp;MOVE</i></span>
+        <span class="word gold"><i style="animation-delay:.45s">IS&nbsp;YOURS.</i></span>
+      </h1>
+      <p class="hero-sub">Premium Giant &amp; Liv bike rental built around your ride — from Cap de Formentor's coastal curves to the legendary switchbacks of Sa Calobra.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-gold" href="#fleet"><span>Explore the fleet</span></a>
+        <a class="btn btn-ghost" href="#routes"><span>Plan your route</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue">Scroll</div>
+  <button id="tapCue" aria-label="Play video">▶ Tap to play</button>
+</section>
+
+<div id="ticker" aria-hidden="true">
+  <div class="ticker-track" id="tickerTrack">
+    <span>Sa Calobra · 682 m</span><span>Puig Major · 839 m</span><span>Cap de Formentor · 384 m</span><span>Coll de Sóller · 497 m</span><span>Coll de Femenia · 515 m</span><span>Serra de Tramuntana</span>
+  </div>
+</div>
+
+<section id="intro">
+  <div class="intro-mark" aria-hidden="true">VENGA</div>
+  <div class="wrap grid">
+    <div>
+      <div class="eyebrow rv">The road to Formentor starts here</div>
+      <h2 class="disp split d1"><span>Built around <em>your ride.</em></span></h2>
+      <i class="rule rv" aria-hidden="true"></i>
+      <div class="live" id="live" hidden>
+        <span class="live-dot" aria-hidden="true"></span>
+        <span class="live-lbl">Right now in Port de Pollença</span>
+        <span class="live-vals" id="liveVals"></span>
+      </div>
+      <p class="lead rv d2">Welcome to Venga Cycling Mallorca, a premium bike rental in Port de Pollença. Located on Carrer de Formentor, we offer Giant and Liv road bikes, gravel bikes and e-bikes — individually prepared for your fit, pace and plans.</p>
+      <p class="sub rv d2">With personal advice, local knowledge and dedicated support, your Mallorca cycling experience starts exactly the way it should — with you.</p>
+      <div class="intro-stats rv d3">
+        <div class="stat"><b data-count="7">0</b><i class="dash" aria-hidden="true">—</i><small>Premium bike models</small></div>
+        <div class="stat"><b data-count="8">0</b><i class="dash" aria-hidden="true">—</i><small>Handpicked routes</small></div>
+        <div class="stat"><b><span data-count="220">0</span><em> km</em></b><i class="dash" aria-hidden="true">—</i><small>Longest route</small></div>
+      </div>
+    </div>
+    <div class="intro-media rv d1">
+      <div class="intro-coord">39°54′N · 3°05′E</div>
+      <div class="ph shine rv"><img class="plx" data-speed="0.08" src="/assets/img/detail-hands.webp" alt="Cyclist's hands on the hoods, Mallorca coast at golden hour" loading="lazy"></div>
+      <div class="row2">
+        <div class="intro-tag rv d2"><b>Carrer de Formentor 59</b><small>Port de Pollença · Illes Balears</small></div>
+        <div class="ph2 rv d3"><img src="/assets/img/detail-road.webp" alt="Empty coastal road on Mallorca" loading="lazy"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fleet">
+  <div class="wrap head">
+    <div>
+      <div class="eyebrow rv">Giant &amp; Liv · Season 2026</div>
+      <h2 class="disp split d1"><span>The <em>fleet.</em></span></h2>
+    </div>
+    <div class="fleet-hint rv d2">Drag to explore</div>
+  </div>
+  <div class="rail-outer" id="rail">
+    <div class="rail" id="railInner"><!-- bikes injected --></div>
+  </div>
+</section>
+
+<section class="band machine spot">
+  <img class="plx" data-speed="0.06" src="/assets/img/detail-drivetrain-v2.webp" alt="CADEX carbon wheel, Shimano cassette and rear derailleur on a Giant Propel">
+  <div class="band-wrap">
+    <div class="cap">
+      <div class="eyebrow rv">The machine</div>
+      <h2 class="split"><span>Every component, <em>dialled.</em></span></h2>
+      <p class="rv d1">Dura-Ace Di2, SRAM RED AXS and CADEX carbon wheels — each bike prepared, checked and tuned before it ever leaves the workshop.</p>
+    </div>
+  </div>
+</section>
+
+
+<section id="details" hidden data-off="ai-render">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="eyebrow rv">Touch the hardware</div>
+        <h2 class="disp split d1"><span>The <em>details.</em></span></h2>
+      </div>
+    </div>
+    <div class="det-wrap rv d2">
+      <div class="det-stage" id="detStage">
+        <img src="/assets/img/detail-bike.webp" alt="Carbon road bike, component overview" loading="lazy">
+      </div>
+      <div>
+        <div class="det-card">
+          <div class="ph" id="detPh"></div>
+          <div class="tx">
+            <small id="detKicker"></small>
+            <h3 id="detTitle"></h3>
+            <p id="detText"></p>
+          </div>
+        </div>
+        <div class="det-hint" id="detHint">Hover a marker to explore</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="routes">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="eyebrow rv">Ride with local knowledge</div>
+        <h2 class="disp split d1"><span>Curated <em>routes.</em></span></h2>
+      </div>
+      <a class="btn btn-ink rv d2" href="/pl/routes/"><span>View all recommended routes</span></a>
+    </div>
+    <div class="routes-grid">
+      <a class="route rv" href="https://www.strava.com/routes/3522684244354784626" target="_blank" rel="noopener">
+        <img src="/assets/img/route-2.webp" alt="Cala, Views & Coast route" loading="lazy">
+        <div class="rb">
+          <span class="lvl easy">Easy</span>
+          <h3>Cala, Views<br>&amp; Coast</h3>
+          <div class="rs">
+            <div><b><span data-count="30">0</span></b><small>km</small></div>
+            <div><b><span data-count="225">0</span></b><small>m elev</small></div>
+          </div>
+          <span class="strava">Open in Strava ↗</span>
+        </div>
+      </a>
+      <a class="route rv d1" href="https://www.strava.com/routes/3522686134754518906" target="_blank" rel="noopener">
+        <img src="/assets/img/route-1.webp" alt="The road to Formentor route" loading="lazy">
+        <div class="rb">
+          <span class="lvl medium">Medium</span>
+          <h3>The Road<br>to Formentor</h3>
+          <div class="rs">
+            <div><b><span data-count="39">0</span></b><small>km</small></div>
+            <div><b><span data-count="864">0</span></b><small>m elev</small></div>
+          </div>
+          <span class="strava">Open in Strava ↗</span>
+        </div>
+      </a>
+      <a class="route rv d2" href="https://www.strava.com/routes/3523410084069892806" target="_blank" rel="noopener">
+        <img src="/assets/img/route-5.webp" alt="Sa Calobra Challenge route" loading="lazy">
+        <div class="rb">
+          <span class="lvl hard">Hard</span>
+          <h3>The Sa Calobra<br>Challenge</h3>
+          <div class="rs">
+            <div><b><span data-count="106">0</span></b><small>km</small></div>
+            <div><b><span data-count="2077">0</span></b><small>m elev</small></div>
+          </div>
+          <span class="strava">Open in Strava ↗</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="why" class="spot">
+  <div class="bg">
+    <video id="whyVid" autoplay muted loop playsinline poster="/assets/img/scenery-road.webp" preload="none">
+      <source src="/assets/video/why-v2.webm" type="video/webm">
+      <source src="/assets/video/why-v2.mp4" type="video/mp4">
+    </video>
+    <img class="plx" data-speed="0.1" src="/assets/img/scenery-road.webp" alt="" loading="lazy">
+  </div>
+  <div class="wrap">
+    <div class="eyebrow rv">More than a rental</div>
+    <h2 class="disp split d1"><span>Every kilometre, <em>your own.</em></span></h2>
+    <div class="why-grid">
+      <div class="why-item rv"><b>Personal fit</b><p>Every bike is individually prepared for your fit, pace and plans before you roll out.</p></div>
+      <div class="why-item rv d1"><b>Local knowledge</b><p>We help you choose the right bike and plan the right route — from coastal roads to legendary climbs.</p></div>
+      <div class="why-item rv d2"><b>Premium fleet</b><p>Latest-generation Giant and Liv bikes with Dura-Ace Di2, SRAM RED AXS and CADEX carbon wheels.</p></div>
+      <div class="why-item rv d3"><b>Dedicated support</b><p>Pedals, GPS, nutrition, transfers and personal guides — everything your ride needs, arranged.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div>
+      <h2 class="disp rv">Transparent pricing. Two seasons. From €38 a day.</h2>
+      <p class="rv d1">Group of nine? The tenth bike rides free on bookings of 7 days or more. Basic and FULL &amp; SOS insurance available for every bike.</p>
+    </div>
+    <a class="btn btn-ink rv d2" href="#fleet"><span>See rates per bike</span></a>
+  </div>
+</section>
+
+<section id="event">
+  <div class="wrap grid">
+    <div class="ph shine rv"><img class="plx" data-speed="0.06" src="/assets/img/event-masters.webp" alt="Venga Cycling Mallorca opening" loading="lazy"></div>
+    <div>
+      <div class="eyebrow rv">Events on the island</div>
+      <h2 class="disp rv d1">This September, <em>we make our mark.</em></h2>
+      <p class="rv d2">Venga Cycling Mallorca opens its doors at Carrer de Formentor 59 — at the starting point of some of Mallorca's most beautiful cycling routes. More than a rental: a place for people who share a passion for riding.</p>
+      <div class="rv d2" style="margin-top:28px">
+        <div class="date">Clàssica de Tardor — 5 &amp; 12 Sep 2026</div>
+        <p>Two stages. One island. The autumn racing season begins.</p>
+        <div class="date" style="margin-top:18px">International Masters Cycling Week — 13–18 Oct 2026</div>
+        <p>The European Masters Cup finale — with one stage finishing right here in Port de Pollença.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band statement spot">
+  <img class="plx" data-speed="0.05" src="/assets/img/detail-road.webp" alt="Painted rider names on a Mallorca climb at golden hour">
+  <div class="band-wrap">
+    <div class="cap">
+      <div class="eyebrow rv">The legendary climbs</div>
+      <h2 class="split d1"><span>Sa Calobra. Puig Major. <em>Formentor.</em></span></h2>
+      <p class="rv d2">The roads that made Mallorca the island every cyclist dreams of — names painted into the tarmac, waiting for you to ride them.</p>
+    </div>
+  </div>
+</section>
+
+<section id="climbs">
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="eyebrow rv">Know before you climb</div>
+        <h2 class="disp split d1"><span>The <em>climbs.</em></span></h2>
+      </div>
+      <a class="btn btn-gold rv d2" href="/booking/"><span>Book your bike</span></a>
+    </div>
+    <div class="climb-list" id="climbList"></div>
+  </div>
+</section>
+
+<section id="island" aria-label="Ride the island — a journey along the Tramuntana">
+  <div class="isl-pin-view">
+    <div class="isl-head">
+      <div class="eyebrow">One ride, four worlds</div>
+      <h2 class="disp" style="font-size:clamp(1.6rem,3.2vw,2.4rem)">Ride the <em style="font-style:normal;color:var(--gold)">island.</em></h2>
+    </div>
+    <div class="isl-track" id="islTrack">
+      <div class="isl-scene">
+        <img src="/assets/img/island-1.webp" alt="Port de Pollença bay at dawn" loading="lazy" onerror="this.style.display='none'">
+        <div class="isl-card">
+          <span class="km">KM 0 · Home base</span>
+          <h3>Port de<br>Pollença</h3>
+          <p>Every ride starts here — coffee on the seafront, a bike fitted to the millimetre, and the whole Tramuntana waiting behind the bay.</p>
+          <div class="st"><div><b>07:30</b><small>roll-out</small></div><div><b>22°C</b><small>morning air</small></div></div>
+        </div>
+        <div class="isl-dot" style="left:12%"></div>
+      </div>
+      <div class="isl-scene">
+        <img src="/assets/img/island-2.webp" alt="Cap de Formentor lighthouse cliffs" loading="lazy" onerror="this.style.display='none'">
+        <div class="isl-card">
+          <span class="km">KM 19 · The lighthouse ride</span>
+          <h3>Cap de<br>Formentor</h3>
+          <p>A cliff road that keeps changing its mind — short brutal ramps, turquoise water two hundred metres below, and the lighthouse at the end of the island.</p>
+          <div class="st"><div><b>19</b><small>km one way</small></div><div><b>12%</b><small>max ramp</small></div></div>
+        </div>
+        <div class="isl-dot" style="left:46%"></div>
+      </div>
+      <div class="isl-scene">
+        <img src="/assets/img/island-3.webp" alt="Sa Calobra hairpins" loading="lazy" onerror="this.style.display='none'">
+        <div class="isl-card">
+          <span class="km">KM 60 · The pilgrimage</span>
+          <h3>Sa<br>Calobra</h3>
+          <p>Twenty-six hairpins tied into a knot of limestone. You descend to the sea knowing there's only one way back out — and that's the whole point.</p>
+          <div class="st"><div><b>9.5</b><small>km climb</small></div><div><b>7%</b><small>average</small></div></div>
+        </div>
+        <div class="isl-dot" style="left:58%"></div>
+      </div>
+      <div class="isl-scene">
+        <img src="/assets/img/island-4.webp" alt="Puig Major mountain road" loading="lazy" onerror="this.style.display='none'">
+        <div class="isl-card">
+          <span class="km">KM 90 · The high point</span>
+          <h3>Puig<br>Major</h3>
+          <p>The island's highest road, carved through the Serra de Tramuntana. From up here the sea is a rumour and the descent home is your reward.</p>
+          <div class="st"><div><b>830</b><small>m up</small></div><div><b>13.7</b><small>km climb</small></div></div>
+        </div>
+        <div class="isl-dot" style="left:70%"></div>
+      </div>
+      <div class="isl-road"></div>
+    </div>
+    <div class="isl-prog"><span>Pollença</span><i><b id="islBar"></b></i><span>Puig Major</span></div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap grid">
+    <div>
+      <div class="eyebrow rv">The people behind it</div>
+      <h2 class="disp rv d1">More than <em>a place.</em></h2>
+      <p class="rv d2">Venga has its home in Mallorca, but its story began years earlier in Poland — at races, training camps and over thousands of kilometres ridden together. Patryk and Kacper first met as young riders competing against each other.</p>
+      <blockquote class="rv d2">"Szczepan Bike became our second family."</blockquote>
+      <p class="rv d3">The idea behind Venga grew naturally: a place shaped by how cyclists actually ride and travel — great bikes, local knowledge, personal support and, above all, the right people.</p>
+    </div>
+    <div class="about-media rv d1">
+      <div class="ph"><img src="/assets/img/about-1.webp" alt="Venga crew riding in Mallorca" loading="lazy"></div>
+      <div class="ph"><img src="/assets/img/about-2.webp" alt="Venga team" loading="lazy"></div>
+      <div class="ph"><img src="/assets/img/about-4.webp" alt="Riding together" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="eyebrow rv">Before you book</div>
+    <h2 class="disp split d1"><span>Questions we <em>hear a lot.</em></span></h2>
+    <div class="faq-list rv d2">
+      <details class="faq" open><summary>Do I need to book a bike in advance?</summary><p>In March, April, May, September and October — yes. Those are the busy months on Mallorca and the popular sizes go first. In summer and winter you can usually walk in, but a booking still guarantees the bike is fitted and waiting when you arrive.</p></details>
+      <details class="faq"><summary>How far in advance should I book for Sa Calobra or Puig Major?</summary><p>The bike matters more than the date. Book at least a few days ahead so we can set your saddle height and fit the pedals you ride. Both climbs start from our door in Port de Pollença — no transfer needed.</p></details>
+      <details class="faq"><summary>Can I use my own pedals and saddle?</summary><p>Yes, and most riders do. Bring them and we will fit them before you collect the bike, at no charge. If you would rather not travel with pedals, we fit Look Keo, Shimano SPD-SL or SPD for €10, and flat platform pedals are free.</p></details>
+      <details class="faq"><summary>What size bike will I get?</summary><p>We pick the frame from your height, which you give when booking, and then set the saddle before you arrive. If something feels wrong on the first ride, come back and we will adjust it.</p></details>
+      <details class="faq"><summary>Is insurance included?</summary><p>Basic insurance is available for every bike and covers damage up to €1,000 during your rental. It is optional — you choose when booking.</p></details>
+      <details class="faq"><summary>Where do I collect the bike?</summary><p>Carrer de Formentor 59 in Port de Pollença, open Monday to Saturday, 09:00–13:00 and 16:00–18:30. On Sundays we handle pick-ups and returns by prior appointment — call us and we will arrange a time. The coastal road to Formentor starts a few hundred metres from the door.</p></details>
+      <details class="faq"><summary>Do you rent to children or offer smaller sizes?</summary><p>Our fleet runs from XS to XL, which fits most riders from roughly 155 cm upward. Write to us with heights and we will tell you honestly whether we have something suitable.</p></details>
+      <details class="faq"><summary>How do I pay?</summary><p>In the shop when you collect the bike. We do not take card details online — booking costs nothing and is confirmed by email.</p></details>
+    </div>
+  </div>
+</section>
+<section id="contact">
+  <div class="wrap top">
+    <div>
+      <div class="eyebrow rv">Contact / visit us</div>
+      <h2 class="disp split d1"><span>Your bike. Your pace. <em>Your Mallorca.</em></span></h2>
+      <p class="lead rv d2">Tell us when you're riding and what you're planning — we'll have the right bike ready, fitted and waiting.</p>
+      <a class="btn btn-gold rv d3" href="/booking/"><span>Book your bike</span></a>
+    </div>
+    <div class="c-list">
+      <div class="c-item rv"><small>Address</small><a href="https://maps.google.com/?q=Carrer+de+Formentor+59,+07470+Port+de+Pollença" target="_blank" rel="noopener">Carrer de Formentor 59<br>07470 Port de Pollença, Illes Balears</a></div>
+      <div class="c-item rv d1"><small>General contact &amp; reservations</small><a href="tel:+34643217821">+34 643 217 821</a></div>
+      <div class="c-item rv d1"><small>Rider support</small><a href="tel:+34743034408">+34 743 034 408</a></div>
+      <div class="c-item rv d2"><small>E-mail</small><a href="mailto:hola@vengacyclingmallorca.com">hola@vengacyclingmallorca.com</a></div>
+      <div class="c-item rv d3"><small>Opening hours</small><span>Mon – Sat · 09:00–13:00 / 16:00–18:30 · Sunday by appointment</span></div>
+    </div>
+  </div>
+  <footer>
+    <div class="wrap">
+      <img src="/assets/img/logo-light.svg" alt="Venga Cycling Mallorca">
+      <small>© 2026 Venga Cycling Mallorca · Port de Pollença</small>
+     <span class="sep">·</span> <a class="privlink" href="/pl/privacy/">Privacy</a></div>
+  </footer>
+</section>
+
+<div id="modal" role="dialog" aria-modal="true">
+  <div class="backdrop" data-close></div>
+  <div class="sheet">
+    <button class="close" data-close aria-label="Close">✕</button>
+    <div class="sheet-grid">
+      <div class="gal">
+        <div class="gal-main">
+          <img id="mImg" src="" alt="" loading="lazy">
+          <button class="gal-nav prev" id="galPrev" type="button" aria-label="Previous photo">‹</button>
+          <button class="gal-nav next" id="galNext" type="button" aria-label="Next photo">›</button>
+          <div class="gal-count"><span id="galNow">1</span>/<span id="galAll">1</span></div>
+          <button class="gal-360" id="gal360" type="button"><b>360°</b><span>Spin the bike</span></button>
+        </div>
+        <button class="gal-back" id="galBack" type="button">‹ Back to photos</button>
+        <div class="gal-thumbs" id="galThumbs"></div>
+      </div>
+      <div class="cnt">
+        <div class="eyebrow" id="mCat"></div>
+        <h3 id="mName"></h3>
+        <div class="gset" id="mGset"></div>
+        <p class="desc" id="mDesc"></p>
+        <div class="spec" id="mSpec"></div>
+        <div class="season-toggle" role="group" aria-label="Season">
+          <button class="on" data-season="low">Low season</button>
+          <button data-season="high">High season</button>
+        </div>
+        <table class="ptable">
+          <thead><tr><th>1 d</th><th>2 d</th><th>3 d</th><th>4 d</th><th>5 d</th><th>6 d</th><th>7 d</th><th>+ day</th></tr></thead>
+          <tbody><tr id="mPrices"></tr></tbody>
+        </table>
+        <div class="ins" id="mIns"></div>
+        <a class="btn btn-gold" id="mBook" href="/booking/"><span>Book this bike</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Kept in its own script: if anything later fails to load (for example the
+   Supabase library from its CDN), the preview gate must still let you in. */
+/* ---------- maintenance gate: unlock ---------- */
+(function(){
+  var f=document.getElementById('mtForm');if(!f)return;
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var v=document.getElementById('mtPass').value.trim();
+    var err=document.getElementById('mtErr');
+    if(v==='911'){
+      try{localStorage.setItem('venga_preview','ok')}catch(_){}
+      document.documentElement.className=document.documentElement.className.replace(/\bmaint\b/,'');
+      document.getElementById('maint').remove();
+      try{sessionStorage.removeItem('venga_boot')}catch(_){}
+      location.reload();
+    }else{
+      err.classList.add('on');
+      document.getElementById('mtPass').value='';
+      document.getElementById('mtPass').focus();
+    }
+  });
+  document.getElementById('mtPass').addEventListener('input',function(){
+    document.getElementById('mtErr').classList.remove('on');
+  });
+})();
+</script>
+<script>
+const BIKES=[
+ {id:"propel",cat:"Aero road · Racing",name:"Giant Propel Advanced TOP Pro",gset:"Shimano Dura-Ace Di2 · CADEX wheels · Power meter",img:"/assets/img/bike-propel-v3.webp",gallery:["/assets/img/propel-8.webp","/assets/img/propel-2.webp","/assets/img/propel-3.webp","/assets/img/propel-4.webp","/assets/img/propel-5.webp","/assets/img/propel-6.webp","/assets/img/propel-7.webp"],tag:"Top Pro",
+  desc:"The essence of modern aerodynamics and engineering excellence. Built to win — low weight, exceptional stiffness and outstanding efficiency, with every second on the road counting.",
+  spec:[["Groupset","Dura-Ace Di2 12s"],["Wheels","CADEX Carbon Ultra"],["Gearing","52/36T · 11–34T"],["Weight","≈ 7.0 kg"],["Tyres","28 mm"],["Rider limit","110 kg"]],
+  chips:["Dura-Ace Di2","CADEX Ultra","Power meter","7.0 kg"],
+  price:{low:[95,190,285,366,447,529,570,80],high:[100,200,300,385,471,557,600,85]},from:95},
+ {id:"enviliv",cat:"Aero road · Women's racing",name:"Liv EnviLiv Advanced Disc TOP Pro",gset:"Shimano Dura-Ace Di2 · CADEX wheels · Power meter",img:"/assets/img/bike-enviliv-v3.webp",gallery:["/assets/img/enviliv-1.webp", "/assets/img/enviliv-2.webp", "/assets/img/enviliv-3.webp", "/assets/img/enviliv-4.webp", "/assets/img/enviliv-5.webp", "/assets/img/enviliv-6.webp", "/assets/img/enviliv-7.webp"],tag:"Top Pro",
+  desc:"Elegance, power and precision. Designed for women who love speed and expect race-level performance — feminine finesse with race-winning power on every Mallorca climb.",
+  spec:[["Groupset","Dura-Ace Di2 12s"],["Wheels","CADEX Carbon Ultra"],["Gearing","52/36T · 11–34T"],["Weight","≈ 7.0 kg"],["Tyres","28 mm"],["Rider limit","110 kg"]],
+  chips:["Dura-Ace Di2","CADEX Ultra","Power meter","Liv women's fit"],
+  price:{low:[95,190,285,366,447,529,570,80],high:[100,200,300,385,471,557,600,85]},from:95},
+ {id:"tcr",cat:"All-round road",name:"Giant TCR Advanced Pro 0 Disc",gset:"Shimano Di2 · Carbon wheels",img:"/assets/img/bike-tcr-v3.webp",gallery:["/assets/img/tcr-1.webp", "/assets/img/tcr-2.webp", "/assets/img/tcr-3.webp", "/assets/img/tcr-4.webp", "/assets/img/tcr-5.webp", "/assets/img/tcr-6.webp"],tag:"Classic",
+  desc:"A modern interpretation of a true classic — low weight, exceptional stiffness and precise handling. At home everywhere in Mallorca, from Coll de Sóller to fast coastal descents.",
+  spec:[["Groupset","Shimano Di2 12s"],["Wheels","Giant Carbon Disc"],["Frame","Advanced Pro Carbon"],["Brakes","Hydraulic disc"],["Tyres","28 mm"],["Character","Speed + control"]],
+  chips:["Di2 electronic","Carbon wheels","Climb-ready"],
+  price:{low:[47,94,140,170,200,220,237,33],high:[50,100,150,180,210,230,250,35]},from:47},
+ {id:"langma",cat:"All-round road · Women's",name:"Liv Langma Advanced Pro 0 Disc",gset:"Shimano Di2 · Carbon wheels",img:"/assets/img/bike-langma-v3.webp",gallery:["/assets/img/langma-1.webp", "/assets/img/langma-2.webp", "/assets/img/langma-3.webp", "/assets/img/langma-4.webp", "/assets/img/langma-5.webp", "/assets/img/langma-6.webp"],tag:"Classic",
+  desc:"Lightness, precision and elegance. Created for women who combine high-performance riding with exceptional comfort — the Langma inspires you to climb and responds to every movement.",
+  spec:[["Groupset","Shimano Di2 12s"],["Wheels","Giant Carbon Disc"],["Frame","Advanced Pro Carbon"],["Brakes","Hydraulic disc"],["Damping","Vibration-tuned"],["Fit","Liv women's geometry"]],
+  chips:["Di2 electronic","Carbon frame","Liv women's fit"],
+  price:{low:[47,94,140,170,200,220,237,33],high:[50,100,150,180,210,230,250,35]},from:47},
+ {id:"trinity",cat:"Time trial · Triathlon",name:"Giant Trinity Advanced SL 0 TOP Pro",gset:"SRAM RED AXS · Power meter · CADEX 65 wheels",img:"/assets/img/bike-trinity-v3.webp",gallery:["/assets/img/trinity-1.webp", "/assets/img/trinity-2.webp", "/assets/img/trinity-3.webp", "/assets/img/trinity-4.webp"],tag:"TT machine",
+  desc:"An uncompromising time trial and triathlon machine for riders who measure performance in seconds. AeroSystem shaping, integrated cockpit and every watt turned into forward momentum.",
+  spec:[["Groupset","SRAM RED AXS"],["Wheels","CADEX 65 Carbon"],["Frame","Advanced SL Carbon"],["Power meter","SRAM integrated"],["Cockpit","Fully integrated"],["Position","TT / Tri adjustable"]],
+  chips:["SRAM RED AXS","CADEX 65","Power meter","Aero"],
+  price:{low:[110,220,330,425,520,615,665,95],high:[115,230,345,445,545,645,700,100]},from:110},
+ {id:"revolt",cat:"Gravel · Adventure",name:"Giant Revolt Advanced 3 Carbon Disc",gset:"Shimano GRX · Carbon frame",img:"/assets/img/bike-revolt-v3.webp",gallery:["/assets/img/revolt-1.webp", "/assets/img/revolt-2.webp", "/assets/img/revolt-3.webp", "/assets/img/revolt-4.webp", "/assets/img/revolt-5.webp", "/assets/img/revolt-6.webp"],tag:"Gravel",
+  desc:"Built for exploring Mallorca beyond the main roads — road-bike speed with gravel comfort and stability. From smooth tarmac to gravel tracks leading towards hidden coves.",
+  spec:[["Groupset","Shimano GRX"],["Frame","Advanced Composite"],["Geometry","Endurance"],["Terrain","Tarmac + gravel"],["Brakes","Hydraulic disc"],["Character","Total freedom"]],
+  chips:["Shimano GRX","Carbon frame","Any terrain"],
+  price:{low:[38,76,114,138,162,176,198,27],high:[40,80,120,145,170,185,200,28]},from:38},
+ {id:"ebike",cat:"E-bike · Trekking",name:"Giant Explore E+ 3",gset:"Yamaha SyncDrive · EnergyPak 500 Wh",img:"/assets/img/bike-ebike-v2-v3.webp",gallery:["/assets/img/ebike-1.webp", "/assets/img/ebike-2.webp", "/assets/img/ebike-3.webp"],tag:"E-bike",
+  desc:"An electric bike that opens up entirely new ways to discover Mallorca — explore the island at your own pace, with power exactly when you want it.",
+  spec:[["Motor","Yamaha SyncDrive"],["Battery","EnergyPak 500 Wh"],["Type","Trekking e-bike"],["Comfort","Upright geometry"],["Terrain","Roads + trails"],["For","Relaxed exploring"]],
+  chips:["Yamaha motor","500 Wh","Comfort"],
+  price:{low:[42,84,126,156,185,200,210,30],high:[45,90,135,165,195,210,220,32]},from:42},
+  {id:"defy",cat:"E-road \u00b7 Endurance",name:"Giant Defy Advanced E+ Elite AR",gset:"SRAM Rival eTap AXS \u00b7 SyncDrive Move Plus",img:"/assets/img/bike-defy-v3.webp",gallery:["/assets/img/defy-1.webp","/assets/img/defy-2.webp","/assets/img/defy-3.webp","/assets/img/defy-4.webp","/assets/img/defy-5.webp","/assets/img/defy-6.webp","/assets/img/defy-7.webp"],tag:"E-power",
+  desc:"Endurance road bike with quiet electric assistance hidden in the rear hub. The Advanced Composite carbon frame and D-Fuse cockpit keep the feel of a real road bike, while the motor gives you exactly as much help as a climb demands \u2014 Formentor, Femenia and Puig Major on your own terms.",
+  spec:[["Frame","Advanced Composite carbon"],["Motor","SyncDrive Move Plus \u00b7 30 Nm"],["Battery","EnergyPak 400 Wh \u00b7 40\u2013100 km"],["Groupset","SRAM Rival eTap AXS 1\u00d712"],["Gearing","46T \u00b7 10\u201344T"],["Wheels","Giant P-X2 Tubeless Ready"],["Tyres","Schwalbe G-One 35 mm"],["Brakes","SRAM Rival hydraulic \u00b7 160 mm"]],
+  chips:["Hidden motor","40\u2013100 km","1\u00d712 wireless"],
+  price:{low:[57,114,170,200,230,250,267,33],high:[60,120,180,210,240,260,280,35]},from:57}
+];
+
+/* fleet cards */
+const railInner=document.getElementById('railInner');
+BIKES.forEach((b,i)=>{
+  const el=document.createElement('article');
+  el.className='bike rv';
+  if(window.TURN&&window.TURN[b.id])el.classList.add('has360');
+  el.dataset.bike=i;                 /* whole card opens the bike */
+  el.tabIndex=0;
+  el.setAttribute('role','button');
+  el.setAttribute('aria-label',b.name);
+  el.innerHTML=`<span class="num">0${i+1} / 0${BIKES.length}</span><span class="tag">${b.tag}</span>
+  <div class="ph"><img src="${b.img}" alt="${b.name}" loading="lazy"></div>
+  <div class="body"><h3>${b.name}</h3><div class="sub">${b.gset}</div>
+  <div class="chips">${b.chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+  <div class="foot"><div class="price"><small>From</small><b>€${b.from}<span style="font-size:.55em;color:var(--stone)">/day</span></b></div>
+  <button class="more" data-bike="${i}">Details</button></div></div>`;
+  railInner.appendChild(el);
+});
+
+/* modal */
+const modal=document.getElementById('modal');
+let curBike=null,curSeason='low';
+function renderPrices(){
+  const p=curBike.price[curSeason];
+  document.getElementById('mPrices').innerHTML=p.map((v,i)=>`<td>€${v}</td>`).join('');
+}
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('[data-bike]');
+  if(btn&&!window.__railDragged){
+    curBike=BIKES[+btn.dataset.bike];curSeason='low';
+    buildGallery(curBike);
+    document.getElementById('mImg').alt=curBike.name+' — Venga Cycling Mallorca';
+    document.getElementById('mCat').textContent=curBike.cat;
+    document.getElementById('mName').textContent=curBike.name;
+    document.getElementById('mGset').textContent=curBike.gset;
+    document.getElementById('mDesc').textContent=curBike.desc;
+    document.getElementById('mSpec').innerHTML=curBike.spec.map(s=>`<div><small>${s[0]}</small><b>${s[1]}</b></div>`).join('');
+    document.getElementById('mIns').textContent="Insurance: Basic — €20–35 per rental (damage cover up to €1,000).";
+    document.getElementById('mBook').href=`/booking/?bike=${encodeURIComponent(curBike.id)}`;
+    document.querySelectorAll('.season-toggle button').forEach(b=>b.classList.toggle('on',b.dataset.season==='low'));
+    renderPrices();
+    if(window.vengaRescanLang)window.vengaRescanLang(document.getElementById('modal'));
+    modal.classList.add('open');requestAnimationFrame(()=>modal.classList.add('show'));
+    document.body.style.overflow='hidden';
+  }
+  if(e.target.closest('[data-close]')){
+    modal.classList.remove('show');document.body.style.overflow='';
+    setTimeout(()=>modal.classList.remove('open'),400);
+  }
+  const st=e.target.closest('.season-toggle button');
+  if(st&&curBike){curSeason=st.dataset.season;
+    document.querySelectorAll('.season-toggle button').forEach(b=>b.classList.toggle('on',b===st));
+    renderPrices();}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open')){modal.classList.remove('show');document.body.style.overflow='';setTimeout(()=>modal.classList.remove('open'),400);}});
+
+/* nav */
+const nav=document.getElementById('nav');
+addEventListener('scroll',()=>{nav.classList.toggle('solid',scrollY>60)},{passive:true});
+document.getElementById('burger').addEventListener('click',()=>document.body.classList.toggle('menu-open'));
+document.querySelectorAll('#navLinks a').forEach(a=>a.addEventListener('click',()=>document.body.classList.remove('menu-open')));
+
+/* reveals */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.15});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+/* let later-injected content (climb cards) join the same reveal */
+window.observeReveals=root=>(root||document).querySelectorAll('.rv:not(.in)').forEach(el=>io.observe(el));
+
+/* counters */
+const cio=new IntersectionObserver(es=>es.forEach(en=>{
+  if(!en.isIntersecting)return;cio.unobserve(en.target);
+  const el=en.target,target=+el.dataset.count,dur=1400,t0=performance.now();
+  const step=t=>{const p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(target*e);if(p<1)requestAnimationFrame(step);};
+  requestAnimationFrame(step);
+}),{threshold:.6});
+document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
+
+/* parallax */
+const plx=[...document.querySelectorAll('.plx')];
+let ticking=false;
+function doPlx(){
+  plx.forEach(el=>{
+    const r=el.closest('section,.ph,.intro-media').getBoundingClientRect();
+    const sp=+el.dataset.speed||.08;
+    const off=(r.top+r.height/2-innerHeight/2)*sp;
+    el.style.transform=`translateY(${off.toFixed(1)}px) scale(1.1)`;
+  });ticking=false;
+}
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(doPlx);ticking=true;}},
+{passive:true});
+  doPlx();
+}
+
+/* ticker duplicate for seamless loop */
+const tt=document.getElementById('tickerTrack');tt.innerHTML+=tt.innerHTML;
+
+/* open a bike card with the keyboard */
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  const card=e.target.closest&&e.target.closest('.bike[data-bike]');
+  if(card){e.preventDefault();card.click()}
+});
+
+/* drag-scroll for fleet rail */
+const rail=document.getElementById('rail');
+let down=false,sx=0,sl=0;
+window.__railDragged=false;
+rail.addEventListener('pointerdown',e=>{down=true;sx=e.clientX;sl=rail.scrollLeft;
+  window.__railDragged=false;rail.style.cursor='grabbing';});
+addEventListener('pointerup',()=>{down=false;rail.style.cursor='grab';
+  /* clear on the next tick so the click handler still sees the drag */
+  setTimeout(()=>{window.__railDragged=false},0);});
+addEventListener('pointermove',e=>{
+  if(!down)return;
+  if(Math.abs(e.clientX-sx)>6)window.__railDragged=true;
+  rail.scrollLeft=sl-(e.clientX-sx);});
+
+/* ===== PREMIUM LAYER JS ===== */
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* scroll progress bar */
+const bar=document.getElementById('progress');
+addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  const p=h.scrollTop/(h.scrollHeight-h.clientHeight||1);
+  bar.style.width=(p*100).toFixed(2)+'%';
+},{passive:true});
+
+/* split-reveal headings (+ eyebrow line-grow) */
+const sio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');sio.unobserve(e.target);}}),{threshold:.3});
+document.querySelectorAll('.split,.eyebrow,.rule,.intro-stats,.faq-list').forEach(el=>sio.observe(el));
+
+if(!RM){
+  /* cursor spotlight on .spot sections */
+  document.querySelectorAll('.spot').forEach(sec=>{
+    sec.addEventListener('pointermove',e=>{
+      const r=sec.getBoundingClientRect();
+      sec.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+      sec.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+    });
+  });
+
+  /* magnetic buttons */
+  document.querySelectorAll('.btn').forEach(b=>{
+    b.classList.add('mag');
+    b.addEventListener('pointermove',e=>{
+      const r=b.getBoundingClientRect();
+      const dx=(e.clientX-r.left-r.width/2)/r.width;
+      const dy=(e.clientY-r.top-r.height/2)/r.height;
+      b.style.transform=`translate(${dx*10}px,${dy*8}px)`;
+    });
+    b.addEventListener('pointerleave',()=>{b.style.transform='';});
+  });
+
+  /* 3D tilt on fleet cards (delegated after cards are injected) */
+  const attachTilt=()=>document.querySelectorAll('.bike').forEach(card=>{
+    if(card._tilt)return;card._tilt=true;
+    card.addEventListener('pointermove',e=>{
+      const r=card.getBoundingClientRect();
+      const px=(e.clientX-r.left)/r.width-.5;
+      const py=(e.clientY-r.top)/r.height-.5;
+      card.style.transform=`translateY(-10px) perspective(900px) rotateX(${(-py*5).toFixed(2)}deg) rotateY(${(px*6).toFixed(2)}deg)`;
+    });
+    card.addEventListener('pointerleave',()=>{card.style.transform='';});
+  });
+  attachTilt();
+  setTimeout(attachTilt,50);
+  window._attachTilt=attachTilt;
+}
+
+/* ============ RIDE THE ISLAND: scroll-driven horizontal journey ============ */
+(function(){
+  const sec=document.getElementById('island'),track=document.getElementById('islTrack');
+  if(!sec||!track)return;
+  const mq=matchMedia('(max-width:840px)'),rm=matchMedia('(prefers-reduced-motion: reduce)');
+  const imgs=[...track.querySelectorAll('.isl-scene img')];
+  const bar=document.getElementById('islBar');
+  let ticking=false;
+  function frame(){
+    ticking=false;
+    if(mq.matches||rm.matches){track.style.transform='';imgs.forEach(i=>i.style.transform='');return}
+    const r=sec.getBoundingClientRect();
+    const total=sec.offsetHeight-innerHeight;
+    if(total<=0)return;
+    const p=Math.min(1,Math.max(0,-r.top/total));
+    const shift=p*(track.scrollWidth-innerWidth);
+    track.style.transform=`translate3d(${-shift}px,0,0)`;
+    /* image parallax: each photo drifts slower than the track */
+    imgs.forEach((im,i)=>{
+      const sceneX=i*innerWidth-shift;                 /* scene position vs viewport */
+      im.style.transform=`translate3d(${-sceneX*0.14}px,0,0)`;
+    });
+    if(bar)bar.style.transform=`scaleX(${p})`;
+  }
+  function onScroll(){if(!ticking){ticking=true;requestAnimationFrame(frame)}}
+  addEventListener('scroll',onScroll,{passive:true});
+  addEventListener('resize',onScroll);
+  frame();
+})();
+
+/* loader: the bike assembles itself, then rolls out */
+(function(){
+  var L=document.getElementById('loader');if(!L)return;
+  var off=function(){L.classList.add('off')};
+  try{
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches||sessionStorage.getItem('venga_boot')){off();return}
+    sessionStorage.setItem('venga_boot','1');
+  }catch(e){}
+
+  var bar=document.getElementById('ldBar'),msg=document.getElementById('ldMsg');
+  var LMSG={en:['Preparing your bike','Checking the wind at Formentor','Rolling out'],
+            es:['Preparando tu bici','Comprobando el viento en Formentor','En marcha'],
+            pl:['Przygotowujemy Twój rower','Sprawdzamy wiatr na Formentorze','Ruszamy']};
+  var lg='en'; try{lg=localStorage.getItem('venga_lang')||'en'}catch(e){}
+  var msgs=LMSG[lg]||LMSG.en;
+  msg.textContent=msgs[0];
+  var mi=0,mT,pT,prog=0,done=false,t0=performance.now();
+
+  function finish(){
+    bar.style.width='100%';
+    if(done)return;done=true;
+    clearInterval(mT);clearInterval(pT);
+    bar.style.width='100%';
+    setTimeout(function(){L.classList.add('done')},260);
+    setTimeout(function(){
+      off();
+      /* only now let the heavy hero video start — it would fight the animation */
+      var v=document.getElementById('heroVid');
+      if(v){
+        [].forEach.call(v.querySelectorAll('source[data-src]'),function(sc){
+          sc.src=sc.getAttribute('data-src');sc.removeAttribute('data-src');
+        });
+        v.preload='auto';v.load();
+        var pr=v.play(); if(pr&&pr.catch)pr.catch(function(){});
+      }
+    },950);
+  }
+
+  /* wait until the parts are DECODED, not merely downloaded — a half-decoded
+     image stalls the first animation frame and the assembly looks like it pops */
+  var parts=[].slice.call(L.querySelectorAll('.ld-p'));
+  var waits=parts.map(function(im){
+    if(im.decode) return im.decode().catch(function(){});
+    return im.complete?Promise.resolve():new Promise(function(r){im.onload=im.onerror=r});
+  });
+  var ready=Promise.race([
+    Promise.all(waits),
+    new Promise(function(r){setTimeout(r,1600)})
+  ]);
+
+  var raf2=function(){return new Promise(function(r){
+    requestAnimationFrame(function(){requestAnimationFrame(r)})})};
+
+
+  /* ---- assembly clip: one short H.264 file, decoded by the phone's own
+     video hardware. Swapping 16 stills in JavaScript competed with the rest of
+     the page loading and stuttered on real devices; a video does not. ---- */
+  var seqEl=document.getElementById('ldSeq');
+  var small=matchMedia('(max-width:900px)').matches;
+  (function(){
+    /* mp4 first: iOS and Android decode H.264 in hardware.
+       webm is the fallback for browsers built without H.264. */
+    var suf=small?'-sm':'';
+    [['/assets/img/asm'+suf+'.mp4','video/mp4'],
+     ['/assets/img/asm'+suf+'.webm','video/webm']].forEach(function(p){
+      var so=document.createElement('source'); so.src=p[0]; so.type=p[1]; seqEl.appendChild(so);
+    });
+    seqEl.load();
+  })();
+  function playAssembly(){
+    var wrap=document.querySelector('.ld-seqw');
+    if(wrap)wrap.style.opacity='1';
+    try{
+      seqEl.currentTime=0;
+      var pr=seqEl.play();
+      /* if autoplay is refused the poster stays: the finished bike, still correct */
+      if(pr&&pr.catch)pr.catch(function(){});
+    }catch(e){}
+  }
+
+  /* ---- loader switched off: the assembly clip is AI-generated and reads as
+     such. Set VENGA_LOADER to true to bring it back. ---- */
+  var VENGA_LOADER=false;
+  if(!VENGA_LOADER){
+    L.classList.add('done','off');
+    try{sessionStorage.setItem('venga_boot','1')}catch(e){}
+    document.documentElement.style.overflow='';
+    return;
+  }
+  ready.then(raf2).then(function(){
+    mT=setInterval(function(){
+      msg.classList.add('swap');
+      setTimeout(function(){mi=(mi+1)%msgs.length;msg.textContent=msgs[mi];msg.classList.remove('swap')},240);
+    },1150);
+    pT=setInterval(function(){prog=Math.min(88,prog+Math.random()*9);bar.style.width=prog+'%'},170);
+    L.classList.add('build');
+    playAssembly();
+    setTimeout(function(){L.classList.add('riding')},1600);
+    setTimeout(function(){                     /* release GPU layers we no longer move */
+      /* frames are plain images now — nothing to release */
+    },2600);
+    setTimeout(function(){L.classList.add('peak')},2950);
+    var close=function(){setTimeout(finish,Math.max(0,4150-(performance.now()-t0)))};
+    if(document.readyState==='complete')close();
+    else addEventListener('load',close);
+    setTimeout(finish,6200);
+  });
+
+  document.getElementById('ldSkip').onclick=finish;
+})();
+
+/* ============ ELEVATION PROFILES ============ */
+const CLIMBS=[
+  {name:'Sa Calobra',sub:'Coll dels Reis',
+   blurb:'The road that climbs back out of the sea. Twenty-six hairpins, no flat metre to recover on, and the Nus de sa Corbata tying itself in a knot beneath you.',
+   km:9.5,elev:670,avg:7.0,max:12,
+   segs:[[1.2,6.5],[1.6,7.5],[1.4,6.8],[1.3,8.2],[1.5,7.0],[1.2,6.2],[1.3,7.8]],
+   mark:{at:.88,label:'Nus de sa Corbata'}},
+  {name:'Puig Major',sub:'from S\u00f3ller',
+   blurb:"The island's highest road. A long, relentless drag through the Tramuntana to the tunnel \u2014 the climb that tells you exactly what shape you are in.",
+   km:13.7,elev:830,avg:6.1,max:9,
+   segs:[[2.0,5.2],[2.4,6.4],[2.2,6.8],[2.6,5.8],[2.3,6.6],[2.2,5.9]],
+   mark:{at:1,label:'Tunnel \u00b7 summit'}},
+  {name:'Cap de Formentor',sub:'from Port de Pollen\u00e7a',
+   blurb:'Not one climb but a dozen. Short brutal ramps, a cliff road above turquoise water, and the lighthouse waiting at the end of the island.',
+   km:19.0,elev:600,avg:3.2,max:12,
+   segs:[[2.2,6.0],[1.4,-3.5],[1.8,5.5],[2.0,-2.5],[2.4,7.2],[1.6,-4.0],[2.2,4.8],[1.8,-3.0],[2.0,6.4],[1.6,-2.0]],
+   mark:{at:.34,label:'Mirador des Colomer'}}
+];
+function profilePoints(segs,samplesPerKm,targetGain){
+  samplesPerKm=samplesPerKm||8;
+  var pts=[],d=0,a=0;pts.push({d:0,a:0});
+  segs.forEach(function(seg,si){
+    var len=seg[0],g=seg[1],n=Math.max(2,Math.round(len*samplesPerKm));
+    for(var i=1;i<=n;i++){
+      var st=len/n,t=i/n;d+=st;
+      var wob=Math.sin(t*Math.PI*2+si)*0.9+Math.sin(t*Math.PI*5+si*2)*0.45;
+      a+=st*1000*((g+wob)/100);pts.push({d:d,a:a});
+    }
+  });
+  if(targetGain){
+    var lo=Math.min.apply(null,pts.map(function(p){return p.a})),
+        hi=Math.max.apply(null,pts.map(function(p){return p.a})),sp=hi-lo;
+    if(sp>0){var k=targetGain/sp;pts.forEach(function(p){p.a=(p.a-lo)*k})}
+  }
+  return pts;
+}
+function pathFor(pts,w,h,pad){
+  pad=pad||0;
+  var maxD=pts[pts.length-1].d,
+      lo=Math.min.apply(null,pts.map(function(p){return p.a})),
+      hi=Math.max.apply(null,pts.map(function(p){return p.a})),span=(hi-lo)||1;
+  var X=function(d){return pad+(d/maxD)*(w-pad*2)},
+      Y=function(a){return h-pad-((a-lo)/span)*(h-pad*2)},dStr='';
+  pts.forEach(function(p,i){dStr+=(i?'L':'M')+X(p.d).toFixed(1)+' '+Y(p.a).toFixed(1)});
+  return {d:dStr,X:X,Y:Y,maxD:maxD,lo:lo,hi:hi};
+}
+function drawRouteProfiles(){
+  var mini={
+    'Cala, Views':[[6,1.5],[5,2.6],[6,1.2],[5,2.8],[8,1.4]],
+    'The Road':[[5,3.2],[4,5.5],[4,-3.0],[6,4.8],[6,-2.4],[8,3.6],[6,-2.0]],
+    'The Sa Calobra':[[14,2.2],[9,6.8],[10,-5.5],[12,3.4],[9,7.2],[10,-4.8],[16,2.6],[12,-3.2],[14,3.0]]
+  };
+  document.querySelectorAll('.route').forEach(function(card){
+    if(card.querySelector('.prof'))return;
+    var h3=card.querySelector('h3');if(!h3)return;
+    var key=Object.keys(mini).find(function(k){return h3.textContent.replace(/\s+/g,' ').indexOf(k)>=0});
+    if(!key)return;
+    var pts=profilePoints(mini[key],3),w=260,h=44,g=pathFor(pts,w,h,3),
+        uid='rg'+Math.random().toString(36).slice(2,7);
+    var svg='<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" aria-hidden="true">'+
+      '<defs><linearGradient id="'+uid+'" x1="0" y1="0" x2="0" y2="1">'+
+      '<stop offset="0%" stop-color="#BE9D52" stop-opacity=".62"/>'+
+      '<stop offset="100%" stop-color="#BE9D52" stop-opacity=".04"/></linearGradient></defs>'+
+      '<path class="prof-area" fill="url(#'+uid+')" d="'+g.d+'L'+g.X(g.maxD).toFixed(1)+' '+h+' L3 '+h+' Z"/>'+
+      '<path class="prof-line" d="'+g.d+'"/></svg>';
+    var box=document.createElement('div');box.className='prof';box.innerHTML=svg;
+    var rs=card.querySelector('.rs');if(rs)rs.insertAdjacentElement('beforebegin',box);
+  });
+}
+function drawClimbs(){
+  var host=document.getElementById('climbList');if(!host||host.children.length)return;
+  host.innerHTML=CLIMBS.map(function(c,i){
+    var pts=profilePoints(c.segs,10,c.elev),w=680,h=168,g=pathFor(pts,w,h,16),uid='cg'+i;
+    var targetD=g.maxD*c.mark.at,mi=0,best=1e9;
+    pts.forEach(function(p,k){var df=Math.abs(p.d-targetD);if(df<best){best=df;mi=k}});
+    var px=g.X(pts[mi].d),py=g.Y(pts[mi].a),grid='';
+    for(var q=0;q<=3;q++){var y=16+((h-32)/3)*q;
+      grid+='<line class="cl-grid" x1="16" y1="'+y.toFixed(1)+'" x2="'+(w-16)+'" y2="'+y.toFixed(1)+'"/>'}
+    var ticks='',step=g.maxD>15?5:2;
+    for(var km=0;km<=Math.floor(g.maxD);km+=step){
+      ticks+='<text class="cl-tick" x="'+g.X(km).toFixed(1)+'" y="'+(h-3)+'" text-anchor="middle">'+km+'</text>'}
+    ticks+='<text class="cl-tick" x="'+(w-16)+'" y="14" text-anchor="end">'+c.elev+' m climbed</text>';
+    var len=Math.round(g.maxD*130);
+    return '<article class="climb rv" data-i="'+i+'">'+
+      '<div class="meta"><span class="num">'+String(i+1).padStart(2,'0')+' \u00b7 '+c.sub+'</span>'+
+      '<h3>'+c.name+'</h3><p>'+c.blurb+'</p>'+
+      '<div class="figs"><div><b>'+c.km+'</b><small>km</small></div>'+
+      '<div><b>'+c.elev+'</b><small>m up</small></div>'+
+      '<div><b>'+c.avg+'%</b><small>avg</small></div>'+
+      '<div><b>'+c.max+'%</b><small>max</small></div></div></div>'+
+      '<div class="chart"><svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="xMidYMid meet" role="img" '+
+      'aria-label="'+c.name+': '+c.km+' km, '+c.elev+' metres of climbing, '+c.avg+'% average gradient">'+
+      '<defs><linearGradient id="'+uid+'" x1="0" y1="0" x2="0" y2="1">'+
+      '<stop offset="0%" stop-color="#BE9D52" stop-opacity=".34"/>'+
+      '<stop offset="100%" stop-color="#BE9D52" stop-opacity="0"/></linearGradient></defs>'+grid+
+      '<path class="cl-area" fill="url(#'+uid+')" d="'+g.d+'L'+g.X(g.maxD).toFixed(1)+' '+(h-16)+' L16 '+(h-16)+' Z"/>'+
+      '<path class="cl-line" style="--len:'+len+'" d="'+g.d+'"/>'+
+      '<circle class="cl-peak" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="3.4"/>'+
+      '<text class="cl-peak-lbl" x="'+px.toFixed(1)+'" y="'+(py-9).toFixed(1)+'" text-anchor="'+
+      (px>w*0.7?'end':(px<w*0.3?'start':'middle'))+'">'+c.mark.label+'</text>'+ticks+'</svg></div></article>';
+  }).join('');
+  var cio=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.classList.add('drawn');cio.unobserve(e.target)}})},{threshold:.25});
+  host.querySelectorAll('.climb').forEach(function(el){cio.observe(el)});
+  if(window.observeReveals)window.observeReveals(host);
+}
+drawRouteProfiles();
+drawClimbs();
+if(window.vengaRescanLang)window.vengaRescanLang();
+
+/* ============ LANGUAGE (EN / ES / PL) ============ */
+const I18N={"Cycling Mallorca": {"es": "Cycling Mallorca", "pl": "Cycling Mallorca"}, "We're fine-tuning": {"es": "Estamos puliendo", "pl": "Dopinamy"}, "the details.": {"es": "los detalles.", "pl": "ostatnie szczegóły."}, "Our new website is almost ready. In the meantime the shop is open as usual — call, email or drop by and we'll get you on a bike.": {"es": "Nuestra nueva web está casi lista. Mientras tanto la tienda funciona con normalidad: llámanos, escríbenos o pásate y te ponemos sobre una bici.", "pl": "Nowa strona jest już prawie gotowa. W tym czasie wypożyczalnia działa normalnie — zadzwoń, napisz albo wpadnij, a wsadzimy Cię na rower."}, "Phone & WhatsApp": {"es": "Teléfono y WhatsApp", "pl": "Telefon i WhatsApp"}, "Fastest way to reach us": {"es": "La forma más rápida de contactarnos", "pl": "Najszybszy kontakt z nami"}, "E-mail": {"es": "Correo", "pl": "E-mail"}, "Bookings and questions": {"es": "Reservas y consultas", "pl": "Rezerwacje i pytania"}, "Shop": {"es": "Tienda", "pl": "Sklep"}, "Opening hours": {"es": "Horario", "pl": "Godziny otwarcia"}, "Premium Giant & Liv road, gravel, TT and e-bikes · personal fit · delivery across the island": {"es": "Bicis Giant y Liv de gama alta: carretera, gravel, contrarreloj y eléctricas · ajuste personalizado · entrega en toda la isla", "pl": "Rowery Giant i Liv z najwyższej półki: szosa, gravel, czasówka i elektryki · indywidualne dopasowanie · dowóz na całej wyspie"}, "Preview access": {"es": "Acceso anticipado", "pl": "Dostęp podglądowy"}, "Enter": {"es": "Entrar", "pl": "Wejdź"}, "That code isn't right. Try again.": {"es": "Ese código no es correcto. Inténtalo de nuevo.", "pl": "Ten kod jest nieprawidłowy. Spróbuj ponownie."}, "Preparing your bike": {"es": "Preparando tu bici", "pl": "Przygotowujemy Twój rower"}, "Checking the wind at Formentor": {"es": "Comprobando el viento en Formentor", "pl": "Sprawdzamy wiatr na Formentorze"}, "Rolling out": {"es": "En marcha", "pl": "Ruszamy"}, "Skip": {"es": "Saltar", "pl": "Pomiń"}, "Fleet": {"es": "Flota", "pl": "Rowery"}, "Routes": {"es": "Rutas", "pl": "Trasy"}, "Events": {"es": "Eventos", "pl": "Wydarzenia"}, "About": {"es": "Nosotros", "pl": "O nas"}, "Book your bike": {"es": "Reserva tu bici", "pl": "Zarezerwuj rower"}, "Book this bike": {"es": "Reservar esta bici", "pl": "Zarezerwuj ten rower"}, "Port de Pollença · Mallorca": {"es": "Port de Pollença · Mallorca", "pl": "Port de Pollença · Majorka"}, "THE FIRST MOVE": {"es": "EL PRIMER MOVIMIENTO", "pl": "PIERWSZY RUCH"}, "IS YOURS.": {"es": "ES TUYO.", "pl": "NALEŻY DO CIEBIE."}, "Premium Giant & Liv bike rental built around your ride — from Cap de Formentor's coastal curves to the legendary switchbacks of Sa Calobra.": {"es": "Alquiler de bicis Giant y Liv de gama alta, pensado para tu salida: de las curvas costeras del Cap de Formentor a las míticas lazadas de Sa Calobra.", "pl": "Wypożyczalnia rowerów Giant i Liv z najwyższej półki, ułożona pod Twoją jazdę — od nadmorskich zakrętów Cap de Formentor po legendarne serpentyny Sa Calobry."}, "Explore the fleet": {"es": "Ver la flota", "pl": "Zobacz rowery"}, "Plan your route": {"es": "Planea tu ruta", "pl": "Zaplanuj trasę"}, "Scroll": {"es": "Desliza", "pl": "Przewiń"}, "▶ Tap to play": {"es": "▶ Toca para reproducir", "pl": "▶ Dotknij, aby odtworzyć"}, "The road to Formentor starts here": {"es": "La carretera a Formentor empieza aquí", "pl": "Droga na Formentor zaczyna się tutaj"}, "Built around": {"es": "Pensado para", "pl": "Ułożone pod"}, "your ride.": {"es": "tu salida.", "pl": "Twoją jazdę."}, "Welcome to Venga Cycling Mallorca, a premium bike rental in Port de Pollença. Located on Carrer de Formentor, we offer Giant and Liv road bikes, gravel bikes and e-bikes — individually prepared for your fit, pace and plans.": {"es": "Bienvenido a Venga Cycling Mallorca, alquiler de bicis de gama alta en Port de Pollença. Desde nuestra tienda en Carrer de Formentor ofrecemos bicis de carretera, gravel y eléctricas de Giant y Liv, preparadas una a una según tu talla, tu ritmo y tus planes.", "pl": "Witamy w Venga Cycling Mallorca — wypożyczalni rowerów premium w Port de Pollença. Z naszego sklepu przy Carrer de Formentor wydajemy szosy, gravele i elektryki Giant oraz Liv, przygotowane pod Twoje wymiary, tempo i plany."}, "With personal advice, local knowledge and dedicated support, your Mallorca cycling experience starts exactly the way it should — with you.": {"es": "Con asesoramiento personal, conocimiento local y apoyo real, tu experiencia ciclista en Mallorca empieza justo como debe: por ti.", "pl": "Osobiste doradztwo, znajomość wyspy i realne wsparcie sprawiają, że Twoje kolarstwo na Majorce zaczyna się dokładnie tam, gdzie powinno — od Ciebie."}, "Premium bikes": {"es": "Bicis premium", "pl": "Rowery premium"}, "Curated routes": {"es": "Rutas seleccionadas", "pl": "Wybrane trasy"}, "Longest loop": {"es": "Ruta más larga", "pl": "Najdłuższa pętla"}, "Port de Pollença · Illes Balears": {"es": "Port de Pollença · Illes Balears", "pl": "Port de Pollença · Baleary"}, "Giant & Liv · Season 2026": {"es": "Giant y Liv · Temporada 2026", "pl": "Giant i Liv · Sezon 2026"}, "The": {"es": "La", "pl": "Nasza"}, "fleet.": {"es": "flota.", "pl": "flota."}, "Drag to explore": {"es": "Arrastra para explorar", "pl": "Przeciągnij, by przeglądać"}, "Top Pro": {"es": "Top Pro", "pl": "Top Pro"}, "Power meter": {"es": "Potenciómetro", "pl": "Pomiar mocy"}, "From": {"es": "Desde", "pl": "Od"}, "/day": {"es": "/día", "pl": "/dzień"}, "Details": {"es": "Detalles", "pl": "Szczegóły"}, "Classic": {"es": "Clásica", "pl": "Klasyk"}, "Di2 electronic": {"es": "Di2 electrónico", "pl": "Elektroniczne Di2"}, "Carbon wheels": {"es": "Ruedas de carbono", "pl": "Koła karbonowe"}, "Climb-ready": {"es": "Para subir", "pl": "Pod podjazdy"}, "Carbon frame": {"es": "Cuadro de carbono", "pl": "Rama karbonowa"}, "TT machine": {"es": "Máquina de CRI", "pl": "Maszyna czasowa"}, "Aero": {"es": "Aero", "pl": "Aero"}, "Gravel": {"es": "Gravel", "pl": "Gravel"}, "Any terrain": {"es": "Cualquier terreno", "pl": "Każdy teren"}, "E-bike": {"es": "Eléctrica", "pl": "Elektryk"}, "Comfort": {"es": "Confort", "pl": "Komfort"}, "The machine": {"es": "La máquina", "pl": "Maszyna"}, "Every component,": {"es": "Cada componente,", "pl": "Każdy komponent"}, "dialled.": {"es": "a punto.", "pl": "dopięty."}, "Dura-Ace Di2, SRAM RED AXS and CADEX carbon wheels — each bike prepared, checked and tuned before it ever leaves the workshop.": {"es": "Dura-Ace Di2, SRAM RED AXS y ruedas de carbono CADEX. Cada bici se prepara, se revisa y se ajusta antes de salir del taller.", "pl": "Dura-Ace Di2, SRAM RED AXS i karbonowe koła CADEX. Każdy rower jest przygotowany, sprawdzony i wyregulowany, zanim opuści warsztat."}, "Ride with local knowledge": {"es": "Pedalea con conocimiento local", "pl": "Jedź z lokalną wiedzą"}, "Curated": {"es": "Rutas", "pl": "Wybrane"}, "routes.": {"es": "seleccionadas.", "pl": "trasy."}, "All 8 routes": {"es": "Las 8 rutas", "pl": "Wszystkie 8 tras"}, "Easy": {"es": "Fácil", "pl": "Łatwa"}, "Medium": {"es": "Media", "pl": "Średnia"}, "Hard": {"es": "Dura", "pl": "Trudna"}, "Cala, Views": {"es": "Calas, vistas", "pl": "Zatoki, widoki"}, "& Coast": {"es": "y costa", "pl": "i wybrzeże"}, "The Road": {"es": "La carretera", "pl": "Droga"}, "to Formentor": {"es": "a Formentor", "pl": "na Formentor"}, "The Sa Calobra": {"es": "El reto de", "pl": "Wyzwanie"}, "Challenge": {"es": "Sa Calobra", "pl": "Sa Calobra"}, "m elev": {"es": "m desnivel", "pl": "m przewyższenia"}, "Open in Strava ↗": {"es": "Abrir en Strava ↗", "pl": "Otwórz w Stravie ↗"}, "More than a rental": {"es": "Más que un alquiler", "pl": "Więcej niż wypożyczalnia"}, "Every kilometre,": {"es": "Cada kilómetro,", "pl": "Każdy kilometr"}, "your own.": {"es": "tuyo.", "pl": "tylko Twój."}, "Personal fit": {"es": "Ajuste personal", "pl": "Indywidualne dopasowanie"}, "Every bike is individually prepared for your fit, pace and plans before you roll out.": {"es": "Cada bici se prepara para tu talla, tu ritmo y tus planes antes de que salgas a rodar.", "pl": "Każdy rower przygotowujemy pod Twoje wymiary, tempo i plany, zanim wyruszysz."}, "Local knowledge": {"es": "Conocimiento local", "pl": "Znajomość wyspy"}, "We help you choose the right bike and plan the right route — from coastal roads to legendary climbs.": {"es": "Te ayudamos a elegir la bici adecuada y a planear la ruta que buscas, desde carreteras costeras hasta puertos míticos.", "pl": "Pomożemy dobrać właściwy rower i ułożyć trasę na miarę — od nadmorskich dróg po legendarne podjazdy."}, "Premium fleet": {"es": "Flota premium", "pl": "Flota premium"}, "Latest-generation Giant and Liv bikes with Dura-Ace Di2, SRAM RED AXS and CADEX carbon wheels.": {"es": "Bicis Giant y Liv de última generación con Dura-Ace Di2, SRAM RED AXS y ruedas de carbono CADEX.", "pl": "Najnowsze roczniki Giant i Liv z Dura-Ace Di2, SRAM RED AXS i karbonowymi kołami CADEX."}, "Dedicated support": {"es": "Apoyo de verdad", "pl": "Realne wsparcie"}, "Pedals, GPS, nutrition, transfers and personal guides — everything your ride needs, arranged.": {"es": "Pedales, GPS, nutrición, traslados y guías personales: todo lo que tu salida necesite, resuelto.", "pl": "Pedały, GPS, odżywki, transfery i przewodnicy — wszystko, czego wymaga Twoja jazda, załatwione."}, "Group of nine? The tenth bike rides free on bookings of 7 days or more. Basic insurance available for every bike.": {"es": "¿Sois nueve? La décima bici es gratis en reservas de 7 días o más. Seguro Básico y FULL & SOS disponibles para todas las bicis.", "pl": "Jedziecie w dziewięciu? Dziesiąty rower gratis przy rezerwacji od 7 dni. Do każdego roweru dostępne ubezpieczenie Basic oraz FULL & SOS."}, "See rates per bike": {"es": "Ver tarifas por bici", "pl": "Zobacz ceny rowerów"}, "Low season": {"es": "Temporada baja", "pl": "Sezon niski"}, "High season": {"es": "Temporada alta", "pl": "Sezon wysoki"}, "+ day": {"es": "+ día", "pl": "+ doba"}, "Events on the island": {"es": "Eventos en la isla", "pl": "Wydarzenia na wyspie"}, "This September,": {"es": "Este septiembre,", "pl": "We wrześniu"}, "we make our mark.": {"es": "dejamos huella.", "pl": "zostawiamy ślad."}, "Clàssica de Tardor — 5 & 12 Sep 2026": {"es": "Clàssica de Tardor — 5 y 12 sep 2026", "pl": "Clàssica de Tardor — 5 i 12 września 2026"}, "Two stages. One island. The autumn racing season begins.": {"es": "Dos etapas. Una isla. Arranca la temporada de otoño.", "pl": "Dwa etapy. Jedna wyspa. Zaczyna się jesienny sezon wyścigowy."}, "International Masters Cycling Week — 13–18 Oct 2026": {"es": "International Masters Cycling Week — 13–18 oct 2026", "pl": "International Masters Cycling Week — 13–18 października 2026"}, "The European Masters Cup finale — with one stage finishing right here in Port de Pollença.": {"es": "La final de la European Masters Cup, con una etapa que termina aquí mismo, en Port de Pollença.", "pl": "Finał European Masters Cup — z jednym etapem kończącym się tu, w Port de Pollença."}, "The legendary climbs": {"es": "Los puertos míticos", "pl": "Legendarne podjazdy"}, "The roads that made Mallorca the island every cyclist dreams of — names painted into the tarmac, waiting for you to ride them.": {"es": "Las carreteras que convirtieron Mallorca en la isla con la que sueña todo ciclista: nombres pintados en el asfalto, esperando a que los subas.", "pl": "Drogi, dzięki którym Majorka stała się wyspą marzeń każdego kolarza — nazwy wymalowane na asfalcie, czekające, aż je pokonasz."}, "Know before you climb": {"es": "Conoce antes de subir", "pl": "Wiedz, na co się piszesz"}, "climbs.": {"es": "puertos.", "pl": "podjazdy."}, "The road that climbs back out of the sea. Twenty-six hairpins, no flat metre to recover on, and the Nus de sa Corbata tying itself in a knot beneath you.": {"es": "La carretera que sale del mar hacia arriba. Veintiséis lazadas, ni un metro llano para recuperar y el Nus de sa Corbata anudándose bajo tus ruedas.", "pl": "Droga, która wspina się prosto z morza. Dwadzieścia sześć serpentyn, ani metra płasko na odpoczynek i Nus de sa Corbata zawiązujący się w węzeł pod Tobą."}, "The island's highest road. A long, relentless drag through the Tramuntana to the tunnel — the climb that tells you exactly what shape you are in.": {"es": "La carretera más alta de la isla. Un tirón largo e implacable por la Tramuntana hasta el túnel: el puerto que te dice exactamente en qué forma estás.", "pl": "Najwyższa droga na wyspie. Długi, bezlitosny ciąg przez Tramuntanę aż do tunelu — podjazd, który mówi Ci wprost, w jakiej jesteś formie."}, "Not one climb but a dozen. Short brutal ramps, a cliff road above turquoise water, and the lighthouse waiting at the end of the island.": {"es": "No es un puerto, son doce. Rampas cortas y brutales, una carretera de acantilado sobre agua turquesa y el faro esperando al final de la isla.", "pl": "To nie jeden podjazd, tylko kilkanaście. Krótkie, brutalne ścianki, droga po klifie nad turkusową wodą i latarnia czekająca na końcu wyspy."}, "m up": {"es": "m de subida", "pl": "m w górę"}, "avg": {"es": "media", "pl": "śr."}, "max": {"es": "máx", "pl": "maks."}, "Tunnel · summit": {"es": "Túnel · cima", "pl": "Tunel · szczyt"}, "m climbed": {"es": "m de desnivel", "pl": "m przewyższenia"}, "One ride, four worlds": {"es": "Una salida, cuatro mundos", "pl": "Jedna trasa, cztery światy"}, "Ride the": {"es": "Recorre la", "pl": "Przejedź"}, "island.": {"es": "isla.", "pl": "wyspę."}, "KM 0 · Home base": {"es": "KM 0 · Punto de partida", "pl": "KM 0 · Baza"}, "Every ride starts here — coffee on the seafront, a bike fitted to the millimetre, and the whole Tramuntana waiting behind the bay.": {"es": "Aquí empieza cada salida: café frente al mar, una bici ajustada al milímetro y toda la Tramuntana esperando detrás de la bahía.", "pl": "Tu zaczyna się każda jazda — kawa nad zatoką, rower dopasowany co do milimetra i cała Tramuntana czekająca za wodą."}, "roll-out": {"es": "salida", "pl": "wyjazd"}, "morning air": {"es": "aire matinal", "pl": "rano"}, "KM 19 · The lighthouse ride": {"es": "KM 19 · La ruta del faro", "pl": "KM 19 · Trasa do latarni"}, "A cliff road that keeps changing its mind — short brutal ramps, turquoise water two hundred metres below, and the lighthouse at the end of the island.": {"es": "Una carretera de acantilado que cambia de idea constantemente: rampas cortas y brutales, agua turquesa doscientos metros más abajo y el faro al final de la isla.", "pl": "Droga po klifie, która wciąż zmienia zdanie — krótkie, brutalne ścianki, turkusowa woda dwieście metrów niżej i latarnia na końcu wyspy."}, "km one way": {"es": "km de ida", "pl": "km w jedną stronę"}, "max ramp": {"es": "rampa máx", "pl": "maks. nachylenie"}, "KM 60 · The pilgrimage": {"es": "KM 60 · La peregrinación", "pl": "KM 60 · Pielgrzymka"}, "Twenty-six hairpins tied into a knot of limestone. You descend to the sea knowing there's only one way back out — and that's the whole point.": {"es": "Veintiséis lazadas anudadas en piedra caliza. Bajas hasta el mar sabiendo que solo hay una forma de volver, y ahí está toda la gracia.", "pl": "Dwadzieścia sześć serpentyn zawiązanych w wapienny węzeł. Zjeżdżasz do morza, wiedząc, że wrócić można tylko jedną drogą — i o to właśnie chodzi."}, "km climb": {"es": "km de puerto", "pl": "km podjazdu"}, "average": {"es": "media", "pl": "średnio"}, "KM 90 · The high point": {"es": "KM 90 · El techo", "pl": "KM 90 · Dach wyspy"}, "The island's highest road, carved through the Serra de Tramuntana. From up here the sea is a rumour and the descent home is your reward.": {"es": "La carretera más alta de la isla, tallada en la Serra de Tramuntana. Desde arriba el mar es solo un rumor y la bajada a casa es tu recompensa.", "pl": "Najwyższa droga wyspy, wykuta w Serra de Tramuntana. Z góry morze jest tylko szumem, a zjazd do domu to Twoja nagroda."}, "The people behind it": {"es": "Las personas detrás", "pl": "Ludzie, którzy za tym stoją"}, "More than": {"es": "Más que", "pl": "Więcej niż"}, "a place.": {"es": "un lugar.", "pl": "miejsce."}, "\"Szczepan Bike became our second family.\"": {"es": "«Szczepan Bike se convirtió en nuestra segunda familia.»", "pl": "„Szczepan Bike stał się naszą drugą rodziną.”"}, "The idea behind Venga grew naturally: a place shaped by how cyclists actually ride and travel — great bikes, local knowledge, personal support and, above all, the right people.": {"es": "La idea de Venga surgió de forma natural: un sitio pensado desde cómo ruedan y viajan los ciclistas de verdad. Buenas bicis, conocimiento local, apoyo personal y, sobre todo, las personas adecuadas.", "pl": "Pomysł na Vengę wziął się naturalnie: miejsce ułożone wokół tego, jak kolarze naprawdę jeżdżą i podróżują. Dobre rowery, znajomość terenu, osobiste wsparcie i przede wszystkim właściwi ludzie."}, "Contact / visit us": {"es": "Contacto / visítanos", "pl": "Kontakt / odwiedź nas"}, "Your bike. Your pace.": {"es": "Tu bici. Tu ritmo.", "pl": "Twój rower. Twoje tempo."}, "Your Mallorca.": {"es": "Tu Mallorca.", "pl": "Twoja Majorka."}, "Tell us when you're riding and what you're planning — we'll have the right bike ready, fitted and waiting.": {"es": "Cuéntanos cuándo ruedas y qué tienes en mente: tendremos la bici adecuada lista, ajustada y esperándote.", "pl": "Napisz, kiedy jedziesz i co planujesz — właściwy rower będzie gotowy, dopasowany i czekający."}, "Address": {"es": "Dirección", "pl": "Adres"}, "Phone": {"es": "Teléfono", "pl": "Telefon"}, "© 2026 Venga Cycling Mallorca · Port de Pollença": {"es": "© 2026 Venga Cycling Mallorca · Port de Pollença", "pl": "© 2026 Venga Cycling Mallorca · Port de Pollença"}, "\"Venga Cycling Mallorca opens its doors at Carrer de Formentor 59 — at the starting point of some of Mallorca's most beautiful cycling routes. More than a rental: a place for people who share a passion for riding.\"": {"es": "«Venga Cycling Mallorca abre sus puertas en Carrer de Formentor 59, en el punto de partida de algunas de las rutas más bonitas de Mallorca. Más que un alquiler: un sitio para gente que comparte la pasión por rodar.»", "pl": "„Venga Cycling Mallorca otwiera drzwi przy Carrer de Formentor 59 — w punkcie startowym najpiękniejszych tras na Majorce. Więcej niż wypożyczalnia: miejsce dla ludzi, których łączy pasja do jazdy.”"}, "Venga has its home in Mallorca, but its story began years earlier in Poland — at races, training camps and over thousands of kilometres ridden together. Patryk and Kacper first met as young riders competing against each other.": {"es": "Venga tiene su casa en Mallorca, pero su historia empezó años antes en Polonia: en carreras, concentraciones y miles de kilómetros rodados juntos. Patryk y Kacper se conocieron de jóvenes, compitiendo el uno contra el otro.", "pl": "Venga ma dom na Majorce, ale jej historia zaczęła się lata wcześniej w Polsce — na wyścigach, zgrupowaniach i tysiącach wspólnie przejechanych kilometrów. Patryk i Kacper poznali się jako młodzi zawodnicy, ścigając się ze sobą."}, "01 · Coll dels Reis": {"es": "01 · Coll dels Reis", "pl": "01 · Coll dels Reis"}, "02 · from Sóller": {"es": "02 · desde Sóller", "pl": "02 · od strony Sóller"}, "03 · from Port de Pollença": {"es": "03 · desde Port de Pollença", "pl": "03 · z Port de Pollença"}, "670 m climbed": {"es": "670 m de desnivel", "pl": "670 m przewyższenia"}, "830 m climbed": {"es": "830 m de desnivel", "pl": "830 m przewyższenia"}, "600 m climbed": {"es": "600 m de desnivel", "pl": "600 m przewyższenia"}, "The essence of modern aerodynamics and engineering excellence. Built to win — low weight, exceptional stiffness and outstanding efficiency, with every second on the road counting.": {"es": "La esencia de la aerodinámica moderna y de la excelencia técnica. Construida para ganar: poco peso, rigidez excepcional y una eficiencia sobresaliente, con cada segundo contando en carretera.", "pl": "Esencja nowoczesnej aerodynamiki i inżynieryjnej precyzji. Zbudowany, by wygrywać — niska waga, wyjątkowa sztywność i znakomita efektywność, gdy liczy się każda sekunda na drodze."}, "Elegance, power and precision. Designed for women who love speed and expect race-level performance — feminine finesse with race-winning power on every Mallorca climb.": {"es": "Elegancia, potencia y precisión. Diseñada para mujeres que aman la velocidad y esperan rendimiento de competición: finura femenina con potencia ganadora en cada puerto de Mallorca.", "pl": "Elegancja, moc i precyzja. Zaprojektowany dla kobiet, które kochają szybkość i oczekują wyścigowych osiągów — kobieca finezja połączona z mocą na każdym podjeździe Majorki."}, "A modern interpretation of a true classic — low weight, exceptional stiffness and precise handling. At home everywhere in Mallorca, from Coll de Sóller to fast coastal descents.": {"es": "Una interpretación moderna de un clásico: poco peso, rigidez excepcional y manejo preciso. Se siente en casa en toda Mallorca, del Coll de Sóller a los descensos rápidos junto al mar.", "pl": "Nowoczesna interpretacja klasyka — niska waga, wyjątkowa sztywność i precyzyjne prowadzenie. Czuje się dobrze wszędzie na Majorce, od Coll de Sóller po szybkie nadmorskie zjazdy."}, "Lightness, precision and elegance. Created for women who combine high-performance riding with exceptional comfort — the Langma inspires you to climb and responds to every movement.": {"es": "Ligereza, precisión y elegancia. Creada para mujeres que combinan alto rendimiento con un confort excepcional: la Langma invita a subir y responde a cada movimiento.", "pl": "Lekkość, precyzja i elegancja. Stworzony dla kobiet, które łączą wysokie osiągi z wyjątkowym komfortem — Langma zachęca do podjazdów i reaguje na każdy ruch."}, "An uncompromising time trial and triathlon machine for riders who measure performance in seconds. AeroSystem shaping, integrated cockpit and every watt turned into forward momentum.": {"es": "Una máquina de contrarreloj y triatlón sin concesiones, para quienes miden el rendimiento en segundos. Perfil AeroSystem, cockpit integrado y cada vatio convertido en avance.", "pl": "Bezkompromisowa maszyna do czasówki i triathlonu dla tych, którzy mierzą osiągi w sekundach. Profil AeroSystem, zintegrowany cockpit i każdy wat zamieniony w prędkość."}, "Built for exploring Mallorca beyond the main roads — road-bike speed with gravel comfort and stability. From smooth tarmac to gravel tracks leading towards hidden coves.": {"es": "Pensada para descubrir Mallorca más allá de las carreteras principales: velocidad de bici de carretera con el confort y la estabilidad del gravel. Del asfalto liso a las pistas que llevan a calas escondidas.", "pl": "Zbudowany do odkrywania Majorki poza głównymi drogami — szybkość szosy z komfortem i stabilnością gravela. Od gładkiego asfaltu po szutry prowadzące do ukrytych zatoczek."}, "An electric bike that opens up entirely new ways to discover Mallorca — explore the island at your own pace, with power exactly when you want it.": {"es": "Una bici eléctrica que abre formas totalmente nuevas de descubrir Mallorca: explora la isla a tu ritmo, con potencia justo cuando la quieres.", "pl": "Rower elektryczny, który otwiera zupełnie nowe sposoby odkrywania Majorki — zwiedzaj wyspę we własnym tempie, z mocą dokładnie wtedy, gdy jej potrzebujesz."}, "Groupset": {"es": "Grupo", "pl": "Osprzęt"}, "Wheels": {"es": "Ruedas", "pl": "Koła"}, "Gearing": {"es": "Desarrollos", "pl": "Przełożenia"}, "Weight": {"es": "Peso", "pl": "Waga"}, "Tyres": {"es": "Cubiertas", "pl": "Opony"}, "Rider limit": {"es": "Peso máx. ciclista", "pl": "Limit wagi"}, "Frame": {"es": "Cuadro", "pl": "Rama"}, "Brakes": {"es": "Frenos", "pl": "Hamulce"}, "Cockpit": {"es": "Cockpit", "pl": "Cockpit"}, "Geometry": {"es": "Geometría", "pl": "Geometria"}, "Position": {"es": "Posición", "pl": "Pozycja"}, "Character": {"es": "Carácter", "pl": "Charakter"}, "Terrain": {"es": "Terreno", "pl": "Teren"}, "Damping": {"es": "Amortiguación", "pl": "Amortyzacja"}, "Motor": {"es": "Motor", "pl": "Silnik"}, "Battery": {"es": "Batería", "pl": "Bateria"}, "Type": {"es": "Tipo", "pl": "Typ"}, "Fit": {"es": "Ajuste", "pl": "Dopasowanie"}, "For": {"es": "Para", "pl": "Dla"}, "Insurance: Basic — €20–35 per rental (damage cover up to €1,000) · FULL & SOS — €80–130 (comprehensive cover, incl. incidents on the ride).": {"es": "Seguro: Básico — 20–35 € por alquiler (cobertura de daños hasta 1.000 €) · FULL & SOS — 80–130 € (cobertura completa, incluidos incidentes durante la salida).", "pl": "Ubezpieczenie: Basic — 20–35 € za wynajem (szkody do 1000 €) · FULL & SOS — 80–130 € (pełna ochrona, także zdarzenia na trasie)."}, "Touch the hardware": {"es": "Toca el material", "pl": "Dotknij sprzętu"}, "details.": {"es": "ficha técnica.", "pl": "detale."}, "Hover a marker to explore": {"es": "Pasa por un punto para explorar", "pl": "Najedź na punkt, by zobaczyć"}, "One-piece carbon cockpit": {"es": "Cockpit de carbono de una pieza", "pl": "Jednoczęściowy cockpit z karbonu"}, "Bar and stem in a single carbon piece, cables routed inside. Cleaner in the wind, and nothing rattles on a fast descent.": {"es": "Manillar y potencia en una sola pieza de carbono, con los cables por dentro. Más limpio frente al viento y sin ruidos en los descensos rápidos.", "pl": "Kierownica i mostek w jednym kawałku karbonu, przewody schowane w środku. Czyściej w wietrze i nic nie grzechocze na szybkim zjeździe."}, "Drivetrain": {"es": "Transmisión", "pl": "Napęd"}, "Dura-Ace Di2, 12-speed": {"es": "Dura-Ace Di2, 12 velocidades", "pl": "Dura-Ace Di2, 12 rzędów"}, "Electronic shifting that never misses under load — the gear you ask for is the gear you get, halfway up Sa Calobra.": {"es": "Cambio electrónico que no falla bajo carga: el piñón que pides es el que entra, a media subida de Sa Calobra.", "pl": "Elektroniczna zmiana biegów, która nie myli się pod obciążeniem — dostajesz przełożenie, o które prosisz, w połowie Sa Calobry."}, "Watts, measured at the crank": {"es": "Vatios, medidos en la biela", "pl": "Waty mierzone na korbie"}, "Train and pace by real numbers instead of feel. Pairs with your head unit the moment you roll out of the shop.": {"es": "Entrena y dosifica con datos reales en lugar de sensaciones. Se empareja con tu ciclocomputador nada más salir de la tienda.", "pl": "Trenuj i rozkładaj siły na realnych liczbach, nie na wyczuciu. Paruje się z Twoim licznikiem, zanim wyjedziesz ze sklepu."}, "Hydraulic disc brakes": {"es": "Frenos de disco hidráulicos", "pl": "Hydrauliczne hamulce tarczowe"}, "Full control on long Tramuntana descents, wet or dry, with one finger on the lever.": {"es": "Control total en las bajadas largas de la Tramuntana, con lluvia o en seco, con un dedo en la maneta.", "pl": "Pełna kontrola na długich zjazdach z Tramuntany, na sucho i na mokro, jednym palcem na klamce."}, "CADEX carbon, deep section": {"es": "CADEX de carbono, perfil alto", "pl": "Karbonowe CADEX, wysoki profil"}, "Fast where it is flat, light where it climbs. The wheels are what you feel first on every ride.": {"es": "Rápidas en llano, ligeras cuando sube. Las ruedas son lo primero que se nota en cada salida.", "pl": "Szybkie na płaskim, lekkie na podjazdach. Koła to pierwsza rzecz, którą czujesz na każdej trasie."}, "Drag to rotate": {"es": "Arrastra para girar", "pl": "Przeciągnij, by obrócić"}, "360° view": {"es": "Vista 360°", "pl": "Widok 360°"}, "Spin the bike": {"es": "Gira la bici", "pl": "Obróć rower"}, "‹ Back to photos": {"es": "‹ Volver a las fotos", "pl": "‹ Powrót do zdjęć"}, "Right now in Port de Pollença": {"es": "Ahora mismo en Port de Pollença", "pl": "Teraz w Port de Pollença"}, "air": {"es": "aire", "pl": "powietrze"}, "wind": {"es": "viento", "pl": "wiatr"}, "sunrise": {"es": "amanecer", "pl": "wschód"}, "sunset": {"es": "atardecer", "pl": "zachód"}, "reading": {"es": "medición", "pl": "odczyt"}, "Premium bike models": {"es": "Modelos de bici premium", "pl": "Modele rowerów premium"}, "Handpicked routes": {"es": "Rutas seleccionadas", "pl": "Wybrane trasy"}, "Longest route": {"es": "Ruta más larga", "pl": "Najdłuższa trasa"}, "View all recommended routes": {"es": "Ver todas las rutas recomendadas", "pl": "Zobacz wszystkie polecane trasy"}, "Insurance: Basic — €20–35 per rental (damage cover up to €1,000).": {"es": "Seguro: Básico — 20–35 € por alquiler (cobertura de daños hasta 1.000 €).", "pl": "Ubezpieczenie: Basic — 20–35 € za wynajem (szkody do 1000 €)."}, "Where you're staying": {"es": "Dónde te alojas", "pl": "Gdzie się zatrzymujesz"}, "Hotel or apartment name, Port de Pollença": {"es": "Nombre del hotel o apartamento, Port de Pollença", "pl": "Nazwa hotelu lub apartamentu, Port de Pollença"}, "So we know where you're riding from — and where to reach you.": {"es": "Para saber desde dónde sales a rodar y cómo localizarte.", "pl": "Żebyśmy wiedzieli, skąd wyjeżdżasz i jak Cię znaleźć."}, "Your height (cm)": {"es": "Tu altura (cm)", "pl": "Twój wzrost (cm)"}, "We pick the frame size and set the saddle from this.": {"es": "Con esto elegimos la talla del cuadro y ajustamos el sillín.", "pl": "Na tej podstawie dobieramy rozmiar ramy i ustawiamy siodełko."}, "Your weight (kg)": {"es": "Tu peso (kg)", "pl": "Twoja waga (kg)"}, "Helps us set tyre pressure.": {"es": "Nos ayuda a ajustar la presión de los neumáticos.", "pl": "Pomaga ustawić ciśnienie w oponach."}, "Preferred riding position": {"es": "Posición preferida sobre la bici", "pl": "Preferowana pozycja na rowerze"}, "How would you like us to set up your bike?": {"es": "¿Cómo quieres que preparemos tu bici?", "pl": "Jak mamy ustawić Twój rower?"}, "Sporty": {"es": "Deportiva", "pl": "Sportowa"}, "Lower and more aerodynamic": {"es": "Más baja y aerodinámica", "pl": "Niżej i bardziej aerodynamicznie"}, "Balanced": {"es": "Equilibrada", "pl": "Zrównoważona"}, "A mix of performance and comfort": {"es": "Una mezcla de rendimiento y comodidad", "pl": "Połączenie osiągów i komfortu"}, "Relaxed": {"es": "Relajada", "pl": "Wygodna"}, "More upright for sightseeing and easy rides": {"es": "Más erguida, para pasear y rodar tranquilo", "pl": "Bardziej wyprostowana, do zwiedzania i spokojnej jazdy"}, "Not sure": {"es": "No estoy seguro", "pl": "Nie wiem"}, "Please recommend the best option for me": {"es": "Recomiéndame la mejor opción", "pl": "Poproszę o rekomendację"}, "Anything else": {"es": "Algo más", "pl": "Coś jeszcze"}, "Endurance road bike with quiet electric assistance hidden in the rear hub. The Advanced Composite carbon frame and D-Fuse cockpit keep the feel of a real road bike, while the motor gives you exactly as much help as a climb demands — Formentor, Femenia and Puig Major on your own terms.": {"es": "Bici de carretera endurance con asistencia eléctrica silenciosa escondida en el buje trasero. El cuadro de carbono Advanced Composite y el cockpit D-Fuse mantienen el tacto de una bici de carretera de verdad, y el motor da exactamente la ayuda que pide cada puerto: Formentor, Femenia y Puig Major a tu manera.", "pl": "Szosa endurance z cichym wspomaganiem ukrytym w piaście tylnego koła. Karbonowa rama Advanced Composite i cockpit D-Fuse zachowują czucie prawdziwej szosy, a silnik dokłada dokładnie tyle, ile wymaga podjazd — Formentor, Femenia i Puig Major na Twoich warunkach."}, "E-road · Endurance": {"es": "E-carretera · Endurance", "pl": "E-szosa · Endurance"}, "E-power": {"es": "E-power", "pl": "E-power"}, "Hidden motor": {"es": "Motor oculto", "pl": "Ukryty silnik"}, "1×12 wireless": {"es": "1×12 inalámbrico", "pl": "1×12 bezprzewodowo"}, "Privacy": {"es": "Privacidad", "pl": "Prywatność"}, "Before you book": {"es": "Antes de reservar", "pl": "Zanim zarezerwujesz"}, "Questions we": {"es": "Preguntas que", "pl": "Pytania, które"}, "hear a lot.": {"es": "nos hacen mucho.", "pl": "słyszymy najczęściej."}, "Do I need to book a bike in advance?": {"es": "¿Hace falta reservar con antelación?", "pl": "Czy trzeba rezerwować rower z wyprzedzeniem?"}, "Can I use my own pedals and saddle?": {"es": "¿Puedo usar mis pedales y mi sillín?", "pl": "Czy mogę użyć własnych pedałów i siodełka?"}, "What size bike will I get?": {"es": "¿Qué talla de bici me daréis?", "pl": "Jaki rozmiar roweru dostanę?"}, "Is insurance included?": {"es": "¿El seguro está incluido?", "pl": "Czy ubezpieczenie jest wliczone?"}, "Where do I collect the bike?": {"es": "¿Dónde recojo la bici?", "pl": "Gdzie odbieram rower?"}, "How do I pay?": {"es": "¿Cómo se paga?", "pl": "Jak płacę?"}, "Mon – Sat": {"es": "Lun – Sáb", "pl": "Pon – Sob"}, "Sunday closed": {"es": "Domingo cerrado", "pl": "Niedziela nieczynne"}, "Journal": {"es": "Diario", "pl": "Blog"}, "General contact & reservations": {"es": "Contacto general y reservas", "pl": "Kontakt ogólny i rezerwacje"}, "Rider support": {"es": "Asistencia al ciclista", "pl": "Wsparcie na trasie"}, "Mon – Sat · 09:00–13:00 / 16:00–18:30 · Sunday by appointment": {"es": "Lun – Sáb · 09:00–13:00 / 16:00–18:30 · Domingo con cita previa", "pl": "Pon – Sob · 09:00–13:00 / 16:00–18:30 · Niedziela po umówieniu"}, "Sunday — bike pick-up and returns by prior appointment": {"es": "Domingo — recogidas y devoluciones con cita previa", "pl": "Niedziela — odbiór i zwrot po wcześniejszym umówieniu"}, "Basic insurance is available for every bike and covers damage up to €1,000 during your rental. It is optional — you choose when booking.": {"es": "El seguro básico está disponible para todas las bicis y cubre daños de hasta 1.000 € durante el alquiler. Es opcional: lo eliges al reservar.", "pl": "Ubezpieczenie podstawowe jest dostępne dla każdego roweru i pokrywa szkody do 1000 € w czasie wypożyczenia. Jest opcjonalne — wybierasz je przy rezerwacji."}, "Do you rent to children or offer smaller sizes?": {"es": "¿Alquiláis a niños o tenéis tallas pequeñas?", "pl": "Czy wypożyczacie dzieciom albo macie mniejsze rozmiary?"}, "Group of nine? The tenth bike rides free on bookings of 7 days or more. Basic and FULL & SOS insurance available for every bike.": {"es": "¿Grupo de nueve? La décima bici es gratis en reservas de 7 días o más. Seguro Básico y FULL & SOS disponible para todas las bicis.", "pl": "Grupa dziewięciu osób? Dziesiąty rower gratis przy rezerwacji na 7 dni lub dłużej. Ubezpieczenie Basic i FULL & SOS dostępne dla każdego roweru."}, "How far in advance should I book for Sa Calobra or Puig Major?": {"es": "¿Con cuánta antelación debo reservar para Sa Calobra o el Puig Major?", "pl": "Z jakim wyprzedzeniem rezerwować na Sa Calobra albo Puig Major?"}, "In March, April, May, September and October — yes. Those are the busy months on Mallorca and the popular sizes go first. In summer and winter you can usually walk in, but a booking still guarantees the bike is fitted and waiting when you arrive.": {"es": "En marzo, abril, mayo, septiembre y octubre, sí. Son los meses de más actividad en Mallorca y las tallas más pedidas se agotan primero. En verano e invierno normalmente puedes venir sin reserva, pero reservar garantiza que la bici esté ajustada y esperándote al llegar.", "pl": "W marcu, kwietniu, maju, wrześniu i październiku — tak. To najbardziej ruchliwe miesiące na Majorce i popularne rozmiary znikają najszybciej. Latem i zimą zwykle można przyjść bez rezerwacji, ale rezerwacja gwarantuje, że rower będzie dopasowany i będzie czekał."}, "In the shop when you collect the bike. We do not take card details online — booking costs nothing and is confirmed by email.": {"es": "En la tienda, al recoger la bici. No pedimos datos de tarjeta online: reservar no cuesta nada y se confirma por email.", "pl": "W sklepie, przy odbiorze roweru. Nie pobieramy danych karty online — rezerwacja nic nie kosztuje i potwierdzamy ją e-mailem."}, "Our fleet runs from XS to XL, which fits most riders from roughly 155 cm upward. Write to us with heights and we will tell you honestly whether we have something suitable.": {"es": "Nuestra flota va de la XS a la XL, lo que sirve a la mayoría de ciclistas a partir de unos 155 cm. Escríbenos con las alturas y te diremos con sinceridad si tenemos algo adecuado.", "pl": "Nasza flota ma rozmiary od XS do XL, co pasuje większości osób od ok. 155 cm wzrostu. Napisz nam, ile kto ma wzrostu, a uczciwie powiemy, czy mamy coś odpowiedniego."}, "The bike matters more than the date. Book at least a few days ahead so we can set your saddle height and fit the pedals you ride. Both climbs start from our door in Port de Pollença — no transfer needed.": {"es": "Importa más la bici que la fecha. Reserva al menos con unos días de antelación para que podamos ajustar la altura del sillín y montar tus pedales. Las dos subidas empiezan en nuestra puerta en Port de Pollença, sin traslados.", "pl": "Ważniejszy jest rower niż data. Zarezerwuj co najmniej kilka dni wcześniej, żebyśmy ustawili wysokość siodła i założyli Twoje pedały. Oba podjazdy zaczynają się spod naszych drzwi w Port de Pollença — bez transferu."}, "Transparent pricing. Two seasons. From €38 a day.": {"es": "Precios claros. Dos temporadas. Desde 38 € al día.", "pl": "Przejrzyste ceny. Dwa sezony. Od 38 € za dzień."}, "We pick the frame from your height, which you give when booking, and then set the saddle before you arrive. If something feels wrong on the first ride, come back and we will adjust it.": {"es": "Elegimos el cuadro según tu altura, que nos indicas al reservar, y ajustamos el sillín antes de que llegues. Si algo no te convence en la primera salida, vuelve y lo ajustamos.", "pl": "Dobieramy ramę według wzrostu podanego przy rezerwacji i ustawiamy siodło przed Twoim przyjazdem. Jeśli coś nie pasuje na pierwszej jeździe, wróć — poprawimy."}, "Yes, and most riders do. Bring them and we will fit them before you collect the bike, at no charge. If you would rather not travel with pedals, we fit Look Keo, Shimano SPD-SL or SPD for €10, and flat platform pedals are free.": {"es": "Sí, y la mayoría lo hace. Tráelos y te los montamos antes de recoger la bici, sin coste. Si prefieres no viajar con pedales, montamos Look Keo, Shimano SPD-SL o SPD por 10 €, y los pedales de plataforma son gratis.", "pl": "Tak, i większość tak robi. Przywieź je, a zamontujemy przed odbiorem roweru, bez opłat. Jeśli wolisz nie wozić pedałów, zakładamy Look Keo, Shimano SPD-SL lub SPD za 10 €, a pedały platformowe są gratis."}, "Shimano Dura-Ace Di2 · CADEX wheels · Power meter": {"es": "Shimano Dura-Ace Di2 · Ruedas CADEX · Potenciómetro", "pl": "Shimano Dura-Ace Di2 · Koła CADEX · Pomiar mocy"}, "Shimano Di2 · Carbon wheels": {"es": "Shimano Di2 · Ruedas de carbono", "pl": "Shimano Di2 · Koła karbonowe"}, "SRAM RED AXS · Power meter · CADEX 65 wheels": {"es": "SRAM RED AXS · Potenciómetro · Ruedas CADEX 65", "pl": "SRAM RED AXS · Pomiar mocy · Koła CADEX 65"}, "Shimano GRX · Carbon frame": {"es": "Shimano GRX · Cuadro de carbono", "pl": "Shimano GRX · Rama karbonowa"}};
+
+(function(){
+  var norm=function(t){return t.replace(/\s+/g,' ').trim()};
+  var nodes=[];                         /* [{node, en, lead, tail}] */
+  function collect(root){
+    var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(n){
+      var p=n.parentElement;
+      if(!p||['SCRIPT','STYLE','NOSCRIPT'].indexOf(p.tagName)>=0)return NodeFilter.FILTER_REJECT;
+      return norm(n.textContent).length>1?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
+    }});
+    var n;
+    while((n=w.nextNode())){
+      var raw=n.textContent, key=norm(raw);
+      if(!I18N[key])continue;
+      var lead=raw.match(/^\s*/)[0], tail=raw.match(/\s*$/)[0];
+      nodes.push({node:n,en:key,lead:lead,tail:tail});
+    }
+  }
+  function apply(lang){
+    nodes.forEach(function(it){
+      var v=(lang==='en')?it.en:(I18N[it.en]&&I18N[it.en][lang])||it.en;
+      it.node.textContent=it.lead+v+it.tail;
+    });
+    document.documentElement.lang=lang;
+    document.querySelectorAll('.lang button').forEach(function(b){
+      b.classList.toggle('on',b.dataset.lang===lang);
+    });
+    /* translate a few attributes too */
+    var ph=document.getElementById('mtPass');
+    if(ph)ph.placeholder={en:'Enter code',es:'Introduce el código',pl:'Wpisz kod'}[lang];
+  }
+  var cur='en';
+  try{cur=localStorage.getItem('venga_lang')||'en'}catch(e){}
+  /* a ?lang= address wins, so the hreflang links actually land on that language */
+  var q=(location.search.match(/[?&]lang=(en|es|pl)/)||[])[1];
+  if(q){cur=q;try{localStorage.setItem('venga_lang',q)}catch(e){}}
+  function setLang(lang){
+    cur=lang;
+    try{localStorage.setItem('venga_lang',lang)}catch(e){}
+    apply(lang);
+  }
+  window.vengaRescanLang=function(root){collect(root||document.body);apply(cur)};
+  function init(){
+    collect(document.body);
+    apply(cur);
+    document.querySelectorAll('.lang button').forEach(function(b){
+      b.addEventListener('click',function(){setLang(b.dataset.lang)});
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+
+
+
+/* ---------- 360° turntable: drag to rotate ---------- */
+/* 360 spin removed: its frames start from a different angle than the
+   catalogue photos, which made the Propel face the wrong way. */
+window.TURN={};
+/* cards are built before this point, so tag the ones that have a turntable */
+(function(){
+  document.querySelectorAll('.bike[data-bike]').forEach(function(el){
+    var bk=(typeof BIKES!=='undefined')&&BIKES[+el.dataset.bike];
+    if(bk&&window.TURN[bk.id])el.classList.add('has360');
+  });
+})();
+function buildTurntable(host,cfg){
+  host.innerHTML='<img alt="" draggable="false">'
+    +'<div class="spin-badge"><b>360°</b><span data-i18n>Drag to rotate</span></div>'
+    +'<div class="spin-load"><i></i></div>';
+  const img=host.querySelector('img'),load=host.querySelector('.spin-load');
+  const urls=[];for(let i=0;i<cfg.frames;i++)urls.push(cfg.dir+String(i).padStart(2,'0')+'.webp');
+  let cur=0,ready=false;
+  img.src=urls[0];
+  /* preload the rest only after the first frame is on screen */
+  img.onload=function(){
+    let left=urls.length-1;
+    urls.slice(1).forEach(function(u){
+      const p=new Image();
+      p.onload=p.onerror=function(){if(--left<=0){ready=true;load.classList.add('gone')}};
+      p.src=u;
+    });
+  };
+  function show(i){
+    cur=((i%cfg.frames)+cfg.frames)%cfg.frames;
+    img.src=urls[cur];
+  }
+  let down=false,sx=0,si=0,moved=0;
+  const STEP=14;                    /* px of drag per frame */
+  function start(x){down=true;sx=x;si=cur;moved=0;host.classList.add('dragging','used')}
+  function move(x){
+    if(!down||!ready)return;
+    const d=x-sx; moved=Math.max(moved,Math.abs(d));
+    show(si-Math.round(d/STEP));    /* drag left → bike turns towards you */
+  }
+  function end(){down=false;host.classList.remove('dragging')}
+  host.addEventListener('pointerdown',e=>{e.preventDefault();start(e.clientX)});
+  addEventListener('pointermove',e=>move(e.clientX));
+  addEventListener('pointerup',end);
+  host.addEventListener('touchstart',e=>start(e.touches[0].clientX),{passive:true});
+  host.addEventListener('touchmove',e=>{move(e.touches[0].clientX)},{passive:true});
+  host.addEventListener('touchend',end,{passive:true});
+  /* a gentle auto-spin hint the first time it scrolls into view */
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+    if(!e.isIntersecting||!ready)return;
+    io.unobserve(e.target);
+    let n=0;const t=setInterval(()=>{if(down||n>=8){clearInterval(t);return}show(cur+1);n++},70);
+  }),{threshold:.4});
+  io.observe(host);
+  return {show};
+}
+/* ---------- bike gallery ---------- */
+var GAL={list:[],i:0};
+function galShow(n,animate){
+  if(!GAL.list.length)return;
+  GAL.i=(n+GAL.list.length)%GAL.list.length;
+  var img=document.getElementById('mImg');
+  var src=GAL.list[GAL.i];
+  if(animate){
+    img.classList.add('swap');
+    setTimeout(function(){img.src=src;img.onload=function(){img.classList.remove('swap')}},170);
+  }else{img.src=src;img.classList.remove('swap')}
+  document.getElementById('galNow').textContent=GAL.i+1;
+  document.querySelectorAll('#galThumbs button').forEach(function(b,k){
+    b.classList.toggle('on',k===GAL.i);
+    if(k===GAL.i)b.scrollIntoView({block:'nearest',inline:'nearest'});
+  });
+}
+function buildGallery(bike){
+  GAL.list=(bike.gallery&&bike.gallery.length)?bike.gallery.slice():[bike.img];
+  GAL.i=0;
+  GAL.turn=(window.TURN&&window.TURN[bike.id])||null;
+  var multi=GAL.list.length>1;
+  document.getElementById('galAll').textContent=GAL.list.length;
+  ['galPrev','galNext'].forEach(function(id){document.getElementById(id).style.display=multi?'grid':'none'});
+  document.querySelector('.gal-count').style.display=multi?'block':'none';
+  var th=document.getElementById('galThumbs');
+  th.style.display=multi?'flex':'none';
+  var thumbs=multi?GAL.list.map(function(src,k){
+    return '<button type="button" data-k="'+k+'" aria-label="Photo '+(k+1)+'"><img src="'+src+'" alt="" loading="lazy"></button>';
+  }).join(''):'';
+  if(GAL.turn){
+    thumbs='<button type="button" data-turn="1" aria-label="360 degree view" '
+      +'style="position:relative"><img src="'+GAL.turn.dir+'00.webp" alt="" loading="lazy">'
+      +'<span style="position:absolute;inset:0;display:grid;place-items:center;'
+      +'background:rgba(14,13,11,.45);color:#F4F0E7;font-size:.56rem;font-weight:700;'
+      +'letter-spacing:.08em">360°</span></button>'+thumbs;
+    th.style.display='flex';
+  }
+  th.innerHTML=thumbs;
+  th.querySelectorAll('button').forEach(function(b){
+    b.onclick=function(){
+      if(b.dataset.turn){openTurn();return}
+      closeTurn(); galShow(+b.dataset.k,true);
+      th.querySelectorAll('button').forEach(function(x){x.classList.remove('on')});
+      b.classList.add('on');
+    };
+  });
+  document.getElementById('gal360').style.display=GAL.turn?'flex':'none';
+  closeTurn();
+  galShow(0,false);
+}
+document.getElementById('gal360').onclick=function(){openTurn()};
+document.getElementById('galBack').onclick=function(){closeTurn()};
+function openTurn(){
+  if(!GAL.turn)return;
+  var main=document.querySelector('.gal-main');
+  var box=document.getElementById('spinBox');
+  if(!box){
+    box=document.createElement('div'); box.id='spinBox'; box.className='spin';
+    main.insertAdjacentElement('afterend',box);
+  }
+  buildTurntable(box,GAL.turn);
+  if(window.vengaRescanLang)window.vengaRescanLang(box);
+  main.style.display='none'; box.style.display='block';
+  document.getElementById('galBack').style.display='block';
+  document.querySelectorAll('#galThumbs button').forEach(function(x){
+    x.classList.toggle('on',!!x.dataset.turn)});
+  if(window.vengaRescanLang)window.vengaRescanLang(box);
+}
+function closeTurn(){
+  var box=document.getElementById('spinBox');
+  var main=document.querySelector('.gal-main');
+  if(box){box.style.display='none';box.innerHTML=''}
+  if(main)main.style.display='';
+  var back=document.getElementById('galBack'); if(back)back.style.display='none';
+}
+document.getElementById('galPrev').onclick=function(){galShow(GAL.i-1,true)};
+document.getElementById('galNext').onclick=function(){galShow(GAL.i+1,true)};
+document.addEventListener('keydown',function(e){
+  if(!document.body.classList.contains('modal-open'))return;
+  if(e.key==='ArrowLeft')galShow(GAL.i-1,true);
+  if(e.key==='ArrowRight')galShow(GAL.i+1,true);
+});
+/* swipe on touch */
+(function(){
+  var m=document.querySelector('.gal-main');if(!m)return;
+  var x0=null;
+  m.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+  m.addEventListener('touchend',function(e){
+    if(x0===null)return;
+    var dx=e.changedTouches[0].clientX-x0;
+    if(Math.abs(dx)>42)galShow(GAL.i+(dx<0?1:-1),true);
+    x0=null;
+  },{passive:true});
+})();
+
+
+/* ---------- component details: hotspots ---------- */
+(function(){
+  var stage=document.getElementById('detStage'); if(!stage)return;
+  var DET=[
+    {x:78,y:14,img:'/assets/img/det-cockpit.webp',kicker:'Cockpit',
+     title:'One-piece carbon cockpit',
+     text:'Bar and stem in a single carbon piece, cables routed inside. Cleaner in the wind, and nothing rattles on a fast descent.'},
+    {x:20,y:62,img:'/assets/img/det-cassette.webp',kicker:'Drivetrain',
+     title:'Dura-Ace Di2, 12-speed',
+     text:'Electronic shifting that never misses under load — the gear you ask for is the gear you get, halfway up Sa Calobra.'},
+    {x:44,y:70,img:'/assets/img/det-crank.webp',kicker:'Power meter',
+     title:'Watts, measured at the crank',
+     text:'Train and pace by real numbers instead of feel. Pairs with your head unit the moment you roll out of the shop.'},
+    {x:77,y:66,img:'/assets/img/det-brake.webp',kicker:'Brakes',
+     title:'Hydraulic disc brakes',
+     text:'Full control on long Tramuntana descents, wet or dry, with one finger on the lever.'},
+    {x:86,y:38,img:'/assets/img/det-wheel.webp',kicker:'Wheels',
+     title:'CADEX carbon, deep section',
+     text:'Fast where it is flat, light where it climbs. The wheels are what you feel first on every ride.'}
+  ];
+  var ph=document.getElementById('detPh'),kick=document.getElementById('detKicker'),
+      ttl=document.getElementById('detTitle'),txt=document.getElementById('detText'),
+      hint=document.getElementById('detHint'),imgs=[],cur=-1;
+
+  DET.forEach(function(d,i){
+    var im=document.createElement('img');
+    im.src=d.img; im.alt=d.title; im.loading='lazy';
+    ph.appendChild(im); imgs.push(im);
+    var b=document.createElement('button');
+    b.className='det-dot'; b.type='button';
+    b.style.left=d.x+'%'; b.style.top=d.y+'%';
+    b.setAttribute('aria-label',d.title);
+    b.addEventListener('mouseenter',function(){show(i)});
+    b.addEventListener('focus',function(){show(i)});
+    b.addEventListener('click',function(){show(i)});
+    stage.appendChild(b);
+  });
+  function show(i){
+    if(i===cur)return; cur=i;
+    var d=DET[i];
+    imgs.forEach(function(im,k){im.classList.toggle('on',k===i)});
+    kick.textContent=d.kicker; ttl.textContent=d.title; txt.textContent=d.text;
+    stage.querySelectorAll('.det-dot').forEach(function(b,k){b.classList.toggle('on',k===i)});
+    if(hint)hint.style.display='none';
+    if(window.vengaRescanLang)window.vengaRescanLang(document.querySelector('.det-card'));
+  }
+  show(0);
+})();
+
+
+/* ---------- live conditions in Port de Pollença (Open-Meteo, no key) ---------- */
+(function(){
+  var box=document.getElementById('live'), vals=document.getElementById('liveVals');
+  if(!box||!vals)return;
+  var URL='https://api.open-meteo.com/v1/forecast?latitude=39.9078&longitude=3.0847'
+        +'&current=temperature_2m,apparent_temperature,wind_speed_10m,wind_direction_10m,wind_gusts_10m'
+        +'&daily=sunrise,sunset&timezone=Europe%2FMadrid&forecast_days=1';
+  var COMPASS=['N','NE','E','SE','S','SW','W','NW'];
+  function paint(d){
+    var c=(d&&d.current)||{}, dy=(d&&d.daily)||{};
+    if(c.temperature_2m==null&&c.wind_speed_10m==null)throw new Error('response had no current values');
+    var dir=COMPASS[Math.round(((c.wind_direction_10m||0)%360)/45)%8];
+    var hhmm=function(v){var m=String(v||'').match(/(\d{2}:\d{2})/);return m?m[1]:''};
+    var up=hhmm(dy.sunrise&&dy.sunrise[0]), down=hhmm(dy.sunset&&dy.sunset[0]);
+    var parts=[];
+    /* each value is optional on its own: a missing field must not blank the bar */
+    if(c.temperature_2m!=null)
+      parts.push('<span><b>'+Math.round(c.temperature_2m)+'\u00B0C</b><i>air</i></span>');
+    if(c.wind_speed_10m!=null)
+      parts.push('<span><b>'+Math.round(c.wind_speed_10m)+' km/h '+dir+'</b><i>wind</i></span>');
+    if(up)   parts.push('<span><b>'+up+'</b><i>sunrise</i></span>');
+    if(down) parts.push('<span><b>'+down+'</b><i>sunset</i></span>');
+    if(!parts.length)throw new Error('nothing usable in response');
+    /* the model publishes on the hour, so show which reading this is */
+    var stamp=String(c.time||'').match(/(\d{2}:\d{2})/);
+    if(stamp)parts.push('<span class="live-at"><b>'+stamp[1]+'</b><i>reading</i></span>');
+    vals.innerHTML=parts.join('');
+    console.log('[venga] weather reading',stamp?stamp[1]:'?',
+                '· '+Math.round(c.temperature_2m)+'\u00B0C ·',
+                Math.round(c.wind_speed_10m)+' km/h '+dir);
+    box.hidden=false;
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){
+      if(e.isIntersecting){box.classList.add('in');io.unobserve(e.target)}})},{threshold:.4});
+    io.observe(box);
+    if(window.vengaRescanLang)window.vengaRescanLang(box);
+  }
+
+  /* 5 minutes only: long enough to stop repeat requests while clicking around,
+     short enough that the reading always matches what a weather app shows */
+  var KEY='venga_meteo';
+  /* type vengaWeatherTest() in the browser console to see the raw response */
+  window.vengaWeatherTest=function(){
+    return fetch(URL,{cache:'no-store'}).then(function(r){return r.json()})
+      .then(function(d){console.log('[venga] weather response:',d);return d})
+      .catch(function(e){console.error('[venga] weather request failed:',e);throw e});
+  };
+  try{
+    var hit=JSON.parse(sessionStorage.getItem(KEY)||'null');
+    if(hit&&Date.now()-hit.at<3e5){paint(hit.d);return}
+  }catch(e){}
+  fetch(URL,{cache:'no-store'})
+    .then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})
+    .then(function(d){
+      try{sessionStorage.setItem(KEY,JSON.stringify({at:Date.now(),d:d}))}catch(e){}
+      paint(d);
+    })
+    .catch(function(err){
+      /* the bar stays hidden, but say why in the console — a silent failure
+         is impossible to diagnose from the outside */
+      console.warn('[venga] live conditions unavailable:', err && err.message ? err.message : err);
+    });
+})();
+
+
+/* ============ ANALYTICS LAYER ============
+   Nothing is sent anywhere on its own. Events are pushed to window.dataLayer,
+   which is what Google Tag Manager reads. Paste the GTM snippet and every event
+   below becomes available as a trigger — no further code changes needed. */
+window.dataLayer = window.dataLayer || [];
+(function(){
+  function track(name, data){
+    try{ window.dataLayer.push(Object.assign({event:name}, data||{})); }catch(e){}
+  }
+  window.vengaTrack = track;
+
+  function lang(){ try{ return localStorage.getItem('venga_lang')||'en' }catch(e){ return 'en' } }
+
+  track('page_view_ready', {page:'home', language:lang()});
+
+  document.addEventListener('click', function(e){
+    /* the fleet card is an <article>, not a link — check it before bailing out */
+    var card0 = e.target.closest('.bike[data-bike]');
+    if(card0 && typeof BIKES!=='undefined' && !window.__railDragged){
+      var b0 = BIKES[+card0.dataset.bike];
+      if(b0) track('bike_view', {bike_name:b0.name, bike_id:b0.id, language:lang()});
+    }
+    var a = e.target.closest('a,button');
+    if(!a) return;
+
+    /* the booking funnel starts here */
+    if(a.matches('.nav-cta') || (a.getAttribute('href')||'').indexOf('/booking/')===0){
+      track('booking_start', {placement: a.closest('#nav') ? 'nav' : 'page', language:lang()});
+    }
+    /* book button inside the bike modal */
+    if(a.id==='mBook' && typeof curBike!=='undefined' && curBike){
+      track('booking_start', {placement:'bike_modal', bike_name:curBike.name, language:lang()});
+    }
+    /* 360 spin, gallery, details — engagement signals */
+    if(a.id==='gal360') track('bike_360_open', {bike_name:(typeof curBike!=='undefined'&&curBike)?curBike.name:''});
+    /* contact intents are conversions for a rental shop */
+    var href = a.getAttribute('href')||'';
+    if(href.indexOf('tel:')===0)    track('contact_click', {method:'phone', language:lang()});
+    if(href.indexOf('mailto:')===0) track('contact_click', {method:'email', language:lang()});
+    if(href.indexOf('/pl/routes/')>=0)  track('routes_view', {language:lang()});
+    /* language switch tells you which market is actually arriving */
+    if(a.matches('.lang button')) track('language_change', {from:lang(), to:a.dataset.lang});
+  }, true);
+
+  /* how far people actually read */
+  var marks=[25,50,75,100], hit={};
+  addEventListener('scroll', function(){
+    var h=document.documentElement;
+    var pct=Math.round((h.scrollTop)/(h.scrollHeight-innerHeight)*100);
+    marks.forEach(function(m){ if(pct>=m && !hit[m]){ hit[m]=1; track('scroll_depth',{percent:m}); } });
+  }, {passive:true});
+})();
+
+/* hero video autoplay nudge + tap-to-play fallback */
+(function(){
+  const v=document.getElementById('heroVid');if(!v)return;
+  v.muted=true;v.setAttribute('muted','');
+  const go=()=>v.play().catch(()=>{});
+  v.addEventListener('loadeddata',go);
+  if(v.readyState>=2)go();
+  ['click','touchstart','keydown'].forEach(ev=>document.addEventListener(ev,go,{once:true}));
+  setTimeout(go,500);
+  setTimeout(()=>{if(v.paused){document.getElementById('tapCue').style.display='flex';}},1400);
+  v.addEventListener('playing',()=>{const c=document.getElementById('tapCue');if(c)c.style.display='none';});
+})();
+
+
+</script>
+<script data-vlangsw>(function(){var M={en:'/',es:'/es/',pl:'/pl/'};document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.lang button[data-lang]');if(!b)return;var t=M[b.dataset.lang];if(!t||t===location.pathname)return;e.preventDefault();e.stopImmediatePropagation();try{localStorage.setItem('venga_lang',b.dataset.lang)}catch(_){}location.href=t;},true);})();</script>
+</body>
+</html>
