@@ -552,6 +552,16 @@ Write in plain text. Blank line starts a new paragraph.
       <div class="f" data-delivery hidden><label for="mDel">Delivery</label><select id="mDel"><option value="0">Pickup in shop</option><option value="1">Delivery</option></select></div>
     </div>
     <div class="f" id="mAddrF" style="display:none"><label for="mAddr">Delivery address</label><input id="mAddr" type="text"></div>
+    <div id="mFit">
+      <div class="two">
+        <div class="f"><label for="mAcc">Accommodation <small class="hint">(optional)</small></label><input id="mAcc" type="text" placeholder="Hotel or address"></div>
+        <div class="f"><label for="mPos">Riding position</label><select id="mPos"><option value="unsure">Not sure</option><option value="sporty">Sporty</option><option value="balanced">Balanced</option><option value="relaxed">Relaxed</option></select></div>
+      </div>
+      <div class="two">
+        <div class="f"><label for="mH">Height, cm <small class="hint">(optional)</small></label><input id="mH" type="number" min="120" max="220" inputmode="numeric"></div>
+        <div class="f"><label for="mW">Weight, kg <small class="hint">(optional)</small></label><input id="mW" type="number" min="35" max="200" inputmode="numeric"></div>
+      </div>
+    </div>
     <div class="f"><label for="mNotes">Notes</label><textarea id="mNotes" rows="2"></textarea></div>
 
     <div class="two" id="mEditOnly" style="display:none">
@@ -1233,6 +1243,7 @@ function setModalMode(edit){
     ? 'Change anything below. Availability is re-checked, but this reservation no longer competes with itself.'
     : 'For phone and walk-in bookings. Availability and price are checked the same way as online.';
   $('mEditOnly').style.display=edit?'grid':'none';
+  $('mFit').style.display=edit?'none':'block';
   $('mIgnoreWrap').style.display=edit?'flex':'none';
   $('mSave').textContent=edit?'Save changes':'Create reservation';
 }
@@ -1352,7 +1363,7 @@ if(!INSURANCE_FULL_ON){
 }
 
 function clearModal(){
-  ['mName','mMail','mPhone','mNotes','mAddr','mFrom','mTo','mPrice'].forEach(i=>$(i).value='');
+  ['mName','mMail','mPhone','mNotes','mAddr','mFrom','mTo','mPrice','mAcc','mH','mW'].forEach(i=>$(i).value='');$('mPos').value='unsure';
   if(typeof MCAL!=='undefined'){mcalReset(false)}
   $('mAdd').querySelectorAll('.chip.on').forEach(c=>c.classList.remove('on'));
   $('mIns').value='none'; $('mDel').value='0'; $('mAddrF').style.display='none';
@@ -1411,7 +1422,7 @@ function estimate(){
   if($('mDel').value==='1')sum+=+(D.settings.delivery_fee??100);
   $('mTotal').textContent=money(sum);
 }
-const RPC_ERR={MISSING_NAME:'Enter the guest name.',NO_AVAILABILITY:'No stock left for that bike, size and date range.',SIZE_NOT_AVAILABLE:'That size has no units.',PICKUP_OUTSIDE_HOURS:'Pickup must be 09:00–12:30 or 16:00–18:00.',CLOSED_SUNDAY:'Sunday bookings are allowed (pick-up/return by prior appointment). Seeing this means an outdated rule answered — refresh and try again.',DELIVERY_ADDRESS_REQUIRED:'Add the delivery address.',START_IN_PAST:'The first day is in the past.',INVALID_DATES:'The last day must be on or after the first day.',BAD_EMAIL:'That email address is not valid — it needs an @ and a domain, like name@gmail.com.',MISSING_CONTACT:'Give either an email or a phone number.',TOO_LONG:'Rentals over 60 days must be handled manually.',DATE_BLOCKED:'Those dates are blocked for service or holiday. Tick "Allow blocked dates" to override.',RESERVATION_NOT_FOUND:'That reservation no longer exists — refresh the page.'};
+const RPC_ERR={MISSING_NAME:'Enter the guest name.',NO_AVAILABILITY:'No stock left for that bike, size and date range.',SIZE_NOT_AVAILABLE:'That size has no units.',PICKUP_OUTSIDE_HOURS:'Pickup must be 09:00–12:30 or 16:00–18:00.',CLOSED_SUNDAY:'Sunday bookings are allowed (pick-up/return by prior appointment). Seeing this means an outdated rule answered — refresh and try again.',DELIVERY_ADDRESS_REQUIRED:'Add the delivery address.',START_IN_PAST:'The first day is in the past.',INVALID_DATES:'The last day must be on or after the first day.',BAD_EMAIL:'That email address is not valid — it needs an @ and a domain, like name@gmail.com.',MISSING_CONTACT:'Give either an email or a phone number.',TOO_LONG:'Rentals over 60 days must be handled manually.',DATE_BLOCKED:'Those dates are blocked for service or holiday. Tick "Allow blocked dates" to override.',RESERVATION_NOT_FOUND:'That reservation no longer exists — refresh the page.',BAD_HEIGHT:'Height must be between 120 and 220 cm.',BAD_WEIGHT:'Weight must be between 35 and 200 kg.',MISSING_ACCOMMODATION:'The server still requires accommodation — refresh the page (Cmd+Shift+R) and try again.',MISSING_HEIGHT:'The server still requires height — refresh the page (Cmd+Shift+R) and try again.'};
 
 /* the error banner sits at the top of a long form, so bring it into view
    and mark the offending field — otherwise a failed save looks like nothing
@@ -1431,6 +1442,9 @@ $('mSave').onclick=async()=>{
   if(em&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))
     return mFail('That email address is not valid. Write it in full, like name@gmail.com — or leave it empty and keep just the phone number.','mMail');
   if(!$('mFrom').value||!$('mTo').value)return mFail('Pick the first and last day.','mFrom');
+  const hv=$('mH').value.trim(), wv=$('mW').value.trim();
+  if(!editing&&hv&&(+hv<120||+hv>220))return mFail('Height must be between 120 and 220 cm — or leave it empty.','mH');
+  if(!editing&&wv&&(+wv<35||+wv>200))return mFail('Weight must be between 35 and 200 kg — or leave it empty.','mW');
   btn.disabled=true;btn.textContent='Saving…';$('mErr').classList.remove('on');
   document.querySelectorAll('#ovl .bad').forEach(e=>e.classList.remove('bad'));
   const addons=[...$('mAdd').querySelectorAll('.chip.on')].map(c=>c.dataset.s);
@@ -1451,7 +1465,10 @@ $('mSave').onclick=async()=>{
         p_ignore_blocks:$('mIgnore').checked
       }));
     }else{
-      ({data,error}=await sb.rpc('create_reservation',common));
+      ({data,error}=await sb.rpc('create_reservation',{...common,
+        p_accommodation:$('mAcc').value.trim()||null,
+        p_height_cm:hv?Math.round(+hv):null, p_weight_kg:wv?Math.round(+wv):null,
+        p_riding_position:$('mPos').value}));
     }
     if(error)throw error;
     if(!editing){
