@@ -387,6 +387,18 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 .pr-r em{font-style:normal;font-size:.74rem;color:var(--stone)}
 .ptoast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;z-index:130;background:var(--coal-2);border:1px solid var(--gold);color:var(--ivory);padding:11px 16px;font-size:.82rem;max-width:90vw;transition:.25s;pointer-events:none}
 .ptoast.on{opacity:1;transform:translate(-50%,0)}
+
+.pdevs{padding:6px 4px 10px;border-bottom:1px solid rgba(190,157,82,.12)}
+.pdevs:empty{display:none}
+.pd-h{font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--stone);margin-bottom:4px}
+.pd-r{display:flex;justify-content:space-between;gap:10px;font-size:.8rem;padding:3px 0}
+.pd-r em{font-style:normal;color:var(--stone);white-space:nowrap}
+.ponb{position:fixed;inset:0;z-index:140;background:rgba(6,5,4,.92);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px}
+.ponb-in{max-width:380px;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:stretch}
+.ponb-ic{font-size:2.6rem}
+.ponb h3{font-family:var(--disp);font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:1.3rem}
+.ponb p{color:var(--stone);font-size:.92rem;line-height:1.5;margin-bottom:6px}
+.ponb .btn-g{padding:16px}
 </style>
 </head>
 <body>
@@ -664,7 +676,8 @@ Write in plain text. Blank line starts a new paragraph.
       <button data-go="ext">Extras</button>
       <button data-go="cms">Journal</button>
       <button data-go="seo">SEO</button>
-      <div class="sheet-row" id="pushRow"><span>Notifications</span><span class="pr-r"><em id="pushRowSt"></em><button type="button" class="btn btn-o btn-sm" id="pushRowBtn">Enable</button></span></div>
+      <div class="sheet-row" id="pushRow"><span>Notifications</span><span class="pr-r"><em id="pushRowSt"></em><button type="button" class="btn btn-o btn-sm" id="pushRowBtn">Enable</button><button type="button" class="btn btn-g btn-sm" id="pushAllBtn" style="display:none">Test all</button></span></div>
+      <div class="pdevs" id="pushDevs"></div>
       <div class="sheet-row"><span>Language</span><button class="langsw" data-notr type="button" aria-label="Language / Język"><i data-l="en">EN</i><i data-l="pl">PL</i></button></div>
       <button data-go="out" class="dim">Sign out</button>
     </div>
@@ -2248,9 +2261,12 @@ $('sNoindex').addEventListener('change',seoPreview);
 (function(){
   if(!window.APP_MODE)return;
   const $=id=>document.getElementById(id);
-  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const ua=navigator.userAgent;
+  const ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
   const supported='serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window;
+  const device=(/iphone/i.test(ua)?'iPhone':/ipad/i.test(ua)?'iPad':/android/i.test(ua)?'Android':/mac os/i.test(ua)?'Mac':/windows/i.test(ua)?'Windows':'Device')
+               +(/edg\//i.test(ua)?' · Edge':/crios|chrome/i.test(ua)?' · Chrome':/fxios|firefox/i.test(ua)?' · Firefox':/safari/i.test(ua)?' · Safari':'');
   const ub=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const b=atob(s);return Uint8Array.from(b,c=>c.charCodeAt(0))};
   async function fn(body){
     const {data:{session}}=await sb.auth.getSession();
@@ -2258,23 +2274,32 @@ $('sNoindex').addEventListener('change',seoPreview);
     return r.json().catch(()=>({ok:false}));
   }
   async function getSub(){const reg=await navigator.serviceWorker.getRegistration('/app/');return reg?reg.pushManager.getSubscription():null}
+  async function perm(){
+    let p=Notification.permission;
+    try{const q=await navigator.permissions.query({name:'notifications'});if(q&&q.state)p=q.state==='prompt'?'default':q.state}catch(e){}
+    return p;
+  }
   async function state(){
     if(ios&&!standalone)return 'ios-install';
     if(!supported)return 'unsupported';
-    let perm=Notification.permission;
-    try{const q=await navigator.permissions.query({name:'notifications'});if(q&&q.state)perm=q.state==='prompt'?'default':q.state}catch(e){}
-    if(perm==='denied')return 'denied';
-    return (await getSub())?'on':'off';
+    const p=await perm();
+    if(p==='denied')return 'denied';
+    if(await getSub())return 'on';
+    return p==='granted'?'granted-off':'off';
   }
   async function save(sub){
     const j=sub.toJSON();
+    const {data:{session}}=await sb.auth.getSession();
     const {error}=await sb.from('push_subscriptions').upsert({endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth,
-      user_agent:navigator.userAgent.slice(0,180),lang:window.ADMIN_LANG||'en'},{onConflict:'endpoint'});
+      user_agent:ua.slice(0,180),device,lang:window.ADMIN_LANG||'en',user_email:session&&session.user?session.user.email:null},{onConflict:'endpoint'});
     if(error)throw error;
   }
-  async function enable(){
-    const perm=await Notification.requestPermission();
-    if(perm!=='granted'){await render();return}
+  /* subscribe; asks the phone only when it has not said yes before */
+  async function enable(ask){
+    if(ask&&(await perm())!=='granted'){
+      const p=await Notification.requestPermission();
+      if(p!=='granted')return false;
+    }
     const reg=await navigator.serviceWorker.ready;
     let sub=await reg.pushManager.getSubscription();
     if(!sub){
@@ -2282,52 +2307,93 @@ $('sNoindex').addEventListener('change',seoPreview);
       if(!k.publicKey)throw new Error(k.error||'no key');
       sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:ub(k.publicKey)});
     }
-    await save(sub);
+    await save(sub); return true;
   }
   window.pushDisable=async function(){
     const sub=await getSub();
     if(sub){try{await sb.from('push_subscriptions').delete().eq('endpoint',sub.endpoint)}catch(e){}await sub.unsubscribe()}
   };
   function toast(t){
-    let el=document.getElementById('pushToast');
+    let el=$('pushToast');
     if(!el){el=document.createElement('div');el.id='pushToast';el.className='ptoast';document.body.appendChild(el)}
-    el.textContent=t; el.classList.add('on'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('on'),4500);
+    el.textContent=t; el.classList.add('on'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('on'),5000);
   }
-  async function test(){
-    const r=await fn({action:'test'});
-    toast(r.ok?'Test notification sent — it should appear in a moment.':'Could not send a test notification.');
+  async function test(all){
+    const r=await fn({action:all?'test-all':'test'});
+    if(!r||r.devices===undefined){toast('Could not send a test notification.');return}
+    toast(all?('Test sent to '+r.delivered+' of '+r.devices+' devices.'+(r.removed?' Removed '+r.removed+' that no longer exist.':'')):
+             (r.delivered?'Test notification sent — it should appear in a moment.':'Could not send a test notification.'));
+    loadDevices();
   }
-  const MSG={
-    off:['<b>Get an alert for every new booking.</b> Turn on notifications on this phone.','Enable'],
-    'ios-install':['<b>Notifications on iPhone</b> work only from the app on your home screen: in Safari tap Share → Add to Home Screen, then open Venga from there.',''],
-    denied:['<b>Notifications are blocked</b> for this app. Turn them on in your phone\'s settings for Venga, then come back.',''],
-    unsupported:['This browser cannot show notifications.','']
-  };
+  async function loadDevices(){
+    const box=$('pushDevs'); if(!box)return;
+    const r=await fn({action:'devices'});
+    const list=(r&&r.devices)||[];
+    box.innerHTML=list.length?'<div class="pd-h">'+list.length+' '+(list.length===1?'device':'devices')+' with notifications on</div>'+list.map(d=>
+      '<div class="pd-r"><span>'+esc(d.user_email||'—')+'</span><em>'+esc(d.device||'')+(d.fail_count>0?' · ⚠':'')+'</em></div>').join(''):
+      '<div class="pd-h">No devices with notifications on yet</div>';
+  }
+
+  /* first launch after installing: one tap to switch notifications on */
+  let skipThisSession=false;
+  function onboarding(show){
+    let ov=$('pushOnb');
+    if(!show){if(ov)ov.remove();return}
+    if(ov)return;
+    ov=document.createElement('div'); ov.id='pushOnb'; ov.className='ponb';
+    ov.innerHTML='<div class="ponb-in"><div class="ponb-ic">🔔</div><h3>Turn on booking alerts</h3>'+
+      '<p>Every new online booking appears on this phone straight away — even when the app is closed.</p>'+
+      '<button class="btn btn-g" id="ponbGo">Turn on notifications</button><button class="btn btn-o btn-sm" id="ponbLater">Not now</button></div>';
+    document.body.appendChild(ov);
+    $('ponbGo').onclick=async()=>{
+      $('ponbGo').disabled=true;
+      try{await enable(true)}catch(e){toast('Could not turn on notifications: '+(e.message||e))}
+      onboarding(false); render();
+    };
+    $('ponbLater').onclick=()=>{skipThisSession=true;onboarding(false)};
+  }
+
   async function render(){
-    const st=await state();
-    const card=$('pushCard'), rowSt=$('pushRowSt'), rowBtn=$('pushRowBtn');
+    let st=await state();
+    /* the phone already allows notifications: switch them on without asking */
+    if(st==='granted-off'){try{if(await enable(false))st='on'}catch(e){st='off'}}
+    const card=$('pushCard'), rowSt=$('pushRowSt'), rowBtn=$('pushRowBtn'), allBtn=$('pushAllBtn');
     if(st==='on'){
-      card.hidden=true;
-      rowSt.textContent='On'; rowBtn.textContent='Send test'; rowBtn.style.display=''; rowBtn.dataset.act='test';
+      card.hidden=true; onboarding(false);
+      rowSt.textContent='On'; rowBtn.textContent='Test'; rowBtn.style.display=''; rowBtn.dataset.act='test';
+      allBtn.style.display='';
       try{await save(await getSub())}catch(e){}
-      return;
+      loadDevices(); return;
     }
-    const [txt,btn]=MSG[st];
-    let dismissed=false; try{dismissed=localStorage.getItem('pushCardHide')==='1'}catch(e){}
-    card.hidden=dismissed||st==='unsupported';
-    card.innerHTML='<span class="pc-t">'+txt+'</span><span class="pc-a">'+(btn?'<button class="btn btn-g btn-sm" id="pcGo">'+btn+'</button>':'')+'<button class="btn btn-o btn-sm" id="pcX">Later</button></span>';
-    rowSt.textContent=st==='off'?'Off':(st==='denied'?'Blocked':'—'); rowBtn.style.display=st==='off'?'':'none'; rowBtn.textContent='Enable'; rowBtn.dataset.act='on';
-    const go=$('pcGo'); if(go)go.onclick=async()=>{go.disabled=true;try{await enable()}catch(e){alert('Could not turn on notifications: '+(e.message||e))}go.disabled=false;render()};
-    $('pcX').onclick=()=>{card.hidden=true;try{localStorage.setItem('pushCardHide','1')}catch(e){}};
+    allBtn.style.display='none';
+    if(st==='off'||st==='granted-off'){
+      if(standalone&&!skipThisSession)onboarding(true);
+      card.hidden=standalone;
+      card.innerHTML='<span class="pc-t"><b>Get an alert for every new booking.</b> Turn on notifications on this phone.</span><span class="pc-a"><button class="btn btn-g btn-sm" id="pcGo">Enable</button></span>';
+      $('pcGo').onclick=async()=>{$('pcGo').disabled=true;try{await enable(true)}catch(e){toast('Could not turn on notifications: '+(e.message||e))}render()};
+      rowSt.textContent='Off'; rowBtn.textContent='Enable'; rowBtn.style.display=''; rowBtn.dataset.act='on';
+    }else{
+      onboarding(false);
+      const msg={'ios-install':'<b>Notifications on iPhone</b> work only from the app on your home screen: in Safari tap Share → Add to Home Screen, then open Venga from there.',
+                 denied:'<b>Notifications are blocked</b> for this app. Turn them on in your phone\'s settings for Venga, then come back.',
+                 unsupported:'This browser cannot show notifications.'}[st];
+      card.hidden=st==='unsupported'; card.innerHTML='<span class="pc-t">'+msg+'</span>';
+      rowSt.textContent=st==='denied'?'Blocked':'—'; rowBtn.style.display='none';
+    }
+    loadDevices();
   }
   $('pushRowBtn').onclick=async()=>{
     const b=$('pushRowBtn'); b.disabled=true;
-    try{ if(b.dataset.act==='test')await test(); else await enable(); }catch(e){alert('Could not turn on notifications: '+(e.message||e))}
+    try{ if(b.dataset.act==='test')await test(false); else await enable(true); }catch(e){toast('Could not turn on notifications: '+(e.message||e))}
     b.disabled=false; render();
   };
-  /* start once the panel is open after sign-in */
+  $('pushAllBtn').onclick=async()=>{
+    const b=$('pushAllBtn'); if(!confirm('Send a test notification to every device with notifications on?'))return;
+    b.disabled=true; try{await test(true)}catch(e){toast('Could not send a test notification.')} b.disabled=false;
+  };
+  /* start once the panel is open after sign-in, and re-check when the app comes back */
   (function wait(){ if($('app').style.display!=='block')return setTimeout(wait,400); render(); })();
-  /* a notification arrived or was tapped while the app is open */
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&$('app').style.display==='block')render()});
   if('serviceWorker' in navigator)navigator.serviceWorker.addEventListener('message',e=>{
     const d=e.data||{};
     if(d.type==='venga-refresh'&&typeof loadAll==='function')loadAll();
