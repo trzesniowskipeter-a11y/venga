@@ -383,6 +383,16 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 .kwl-r{display:flex;align-items:center;gap:10px;margin-top:6px}
 .kwl-r input{flex:1}
 .kwl-r a{font-size:.72rem;color:var(--gold);white-space:nowrap}
+
+.pushcard{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:14px 16px;margin:0 0 18px;border:1px solid var(--gold);background:rgba(190,157,82,.08);font-size:.84rem;line-height:1.45}
+.pushcard[hidden]{display:none}
+.pushcard b{color:var(--gold)}
+.pushcard .pc-t{flex:1 1 220px}
+.pushcard .pc-a{display:flex;gap:8px}
+.pr-r{display:flex;align-items:center;gap:10px}
+.pr-r em{font-style:normal;font-size:.74rem;color:var(--stone)}
+.ptoast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;z-index:130;background:var(--coal-2);border:1px solid var(--gold);color:var(--ivory);padding:11px 16px;font-size:.82rem;max-width:90vw;transition:.25s;pointer-events:none}
+.ptoast.on{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
@@ -434,6 +444,7 @@ if(!window.APP_MODE)document.addEventListener('DOMContentLoaded',function(){
     <section class="pane" id="p-today">
       <h1 class="pt">Today</h1>
       <p class="sub" id="tdDate"></p>
+      <div class="pushcard" id="pushCard" hidden></div>
       <div class="kpis" id="tdKpis"></div>
       <div id="tdBody"></div>
     </section>
@@ -659,6 +670,7 @@ Write in plain text. Blank line starts a new paragraph.
       <button data-go="ext">Extras</button>
       <button data-go="cms">Journal</button>
       <button data-go="seo">SEO</button>
+      <div class="sheet-row" id="pushRow"><span>Notifications</span><span class="pr-r"><em id="pushRowSt"></em><button type="button" class="btn btn-o btn-sm" id="pushRowBtn">Enable</button></span></div>
       <div class="sheet-row"><span>Language</span><button class="langsw" data-notr type="button" aria-label="Language / Język"><i data-l="en">EN</i><i data-l="pl">PL</i></button></div>
       <button data-go="out" class="dim">Sign out</button>
     </div>
@@ -833,7 +845,7 @@ async function start(){$('login').style.display='none';$('app').style.display='b
 /* ===== TABS ===== */
 document.querySelectorAll('.tab').forEach(t=>{
   t.onclick=async()=>{
-    if(t.dataset.p==='out'){await sb.auth.signOut();location.reload();return}
+    if(t.dataset.p==='out'){try{if(window.APP_MODE&&typeof pushDisable==='function')await pushDisable()}catch(e){}await sb.auth.signOut();location.reload();return}
     document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
     document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
     $('p-'+t.dataset.p).classList.add('on');
@@ -2233,6 +2245,99 @@ $('sNoindex').addEventListener('change',seoPreview);
     try{if(typeof loadAll==='function')await loadAll()}catch(e){}
     try{navigator.vibrate&&navigator.vibrate(10)}catch(e){}
     ptr.classList.remove('spin');ptr.style.transform='';busy=false;
+  });
+})();
+</script>
+
+<script>
+/* ===== push notifications for new bookings (phone app only) ===== */
+(function(){
+  if(!window.APP_MODE)return;
+  const $=id=>document.getElementById(id);
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  const supported='serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window;
+  const ub=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const b=atob(s);return Uint8Array.from(b,c=>c.charCodeAt(0))};
+  async function fn(body){
+    const {data:{session}}=await sb.auth.getSession();
+    const r=await fetch(SB_URL+'/functions/v1/push-setup',{method:'POST',headers:{'Authorization':'Bearer '+(session?session.access_token:''),'apikey':SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(body||{})});
+    return r.json().catch(()=>({ok:false}));
+  }
+  async function getSub(){const reg=await navigator.serviceWorker.getRegistration('/app/');return reg?reg.pushManager.getSubscription():null}
+  async function state(){
+    if(ios&&!standalone)return 'ios-install';
+    if(!supported)return 'unsupported';
+    let perm=Notification.permission;
+    try{const q=await navigator.permissions.query({name:'notifications'});if(q&&q.state)perm=q.state==='prompt'?'default':q.state}catch(e){}
+    if(perm==='denied')return 'denied';
+    return (await getSub())?'on':'off';
+  }
+  async function save(sub){
+    const j=sub.toJSON();
+    const {error}=await sb.from('push_subscriptions').upsert({endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth,
+      user_agent:navigator.userAgent.slice(0,180),lang:window.ADMIN_LANG||'en'},{onConflict:'endpoint'});
+    if(error)throw error;
+  }
+  async function enable(){
+    const perm=await Notification.requestPermission();
+    if(perm!=='granted'){await render();return}
+    const reg=await navigator.serviceWorker.ready;
+    let sub=await reg.pushManager.getSubscription();
+    if(!sub){
+      const k=await fn({action:'key'});
+      if(!k.publicKey)throw new Error(k.error||'no key');
+      sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:ub(k.publicKey)});
+    }
+    await save(sub);
+  }
+  window.pushDisable=async function(){
+    const sub=await getSub();
+    if(sub){try{await sb.from('push_subscriptions').delete().eq('endpoint',sub.endpoint)}catch(e){}await sub.unsubscribe()}
+  };
+  function toast(t){
+    let el=document.getElementById('pushToast');
+    if(!el){el=document.createElement('div');el.id='pushToast';el.className='ptoast';document.body.appendChild(el)}
+    el.textContent=t; el.classList.add('on'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('on'),4500);
+  }
+  async function test(){
+    const r=await fn({action:'test'});
+    toast(r.ok?'Test notification sent — it should appear in a moment.':'Could not send a test notification.');
+  }
+  const MSG={
+    off:['<b>Get an alert for every new booking.</b> Turn on notifications on this phone.','Enable'],
+    'ios-install':['<b>Notifications on iPhone</b> work only from the app on your home screen: in Safari tap Share → Add to Home Screen, then open Venga from there.',''],
+    denied:['<b>Notifications are blocked</b> for this app. Turn them on in your phone\'s settings for Venga, then come back.',''],
+    unsupported:['This browser cannot show notifications.','']
+  };
+  async function render(){
+    const st=await state();
+    const card=$('pushCard'), rowSt=$('pushRowSt'), rowBtn=$('pushRowBtn');
+    if(st==='on'){
+      card.hidden=true;
+      rowSt.textContent='On'; rowBtn.textContent='Send test'; rowBtn.style.display=''; rowBtn.dataset.act='test';
+      try{await save(await getSub())}catch(e){}
+      return;
+    }
+    const [txt,btn]=MSG[st];
+    let dismissed=false; try{dismissed=localStorage.getItem('pushCardHide')==='1'}catch(e){}
+    card.hidden=dismissed||st==='unsupported';
+    card.innerHTML='<span class="pc-t">'+txt+'</span><span class="pc-a">'+(btn?'<button class="btn btn-g btn-sm" id="pcGo">'+btn+'</button>':'')+'<button class="btn btn-o btn-sm" id="pcX">Later</button></span>';
+    rowSt.textContent=st==='off'?'Off':(st==='denied'?'Blocked':'—'); rowBtn.style.display=st==='off'?'':'none'; rowBtn.textContent='Enable'; rowBtn.dataset.act='on';
+    const go=$('pcGo'); if(go)go.onclick=async()=>{go.disabled=true;try{await enable()}catch(e){alert('Could not turn on notifications: '+(e.message||e))}go.disabled=false;render()};
+    $('pcX').onclick=()=>{card.hidden=true;try{localStorage.setItem('pushCardHide','1')}catch(e){}};
+  }
+  $('pushRowBtn').onclick=async()=>{
+    const b=$('pushRowBtn'); b.disabled=true;
+    try{ if(b.dataset.act==='test')await test(); else await enable(); }catch(e){alert('Could not turn on notifications: '+(e.message||e))}
+    b.disabled=false; render();
+  };
+  /* start once the panel is open after sign-in */
+  (function wait(){ if($('app').style.display!=='block')return setTimeout(wait,400); render(); })();
+  /* a notification arrived or was tapped while the app is open */
+  if('serviceWorker' in navigator)navigator.serviceWorker.addEventListener('message',e=>{
+    const d=e.data||{};
+    if(d.type==='venga-refresh'&&typeof loadAll==='function')loadAll();
+    if(d.type==='venga-open'){const t=new URL(d.url,location.href).searchParams.get('tab');const b=t&&document.querySelector('.tab[data-p="'+t+'"]');if(b)b.click();if(typeof loadAll==='function')loadAll()}
   });
 })();
 </script>

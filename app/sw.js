@@ -2,9 +2,9 @@
    Pages: network first, so staff always get the newest panel; the cached copy
    only opens the app when there is no connection.
    Reservation data (supabase.co) is never cached — it must always be live. */
-const VERSION = 'venga-app-v1';
+const VERSION = 'venga-app-v2';
 const LIB = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
-const SHELL = ['/app/', '/admin/i18n.js', '/assets/fonts.css', '/app/icons/icon-192.png', '/app/icons/apple-180.png'];
+const SHELL = ['/app/', '/app/icons/badge-96.png', '/admin/i18n.js', '/assets/fonts.css', '/app/icons/icon-192.png', '/app/icons/apple-180.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(VERSION).then(c => Promise.all([
@@ -44,4 +44,29 @@ self.addEventListener('fetch', e => {
       return hit || net;
     }))
   );
+});
+
+/* ---- push notifications: new bookings ---- */
+self.addEventListener('push', e => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (_) { d = { title: 'Venga', body: e.data ? e.data.text() : '' }; }
+  const show = self.registration.showNotification(d.title || 'Venga', {
+    body: d.body || '', icon: '/app/icons/icon-192.png', badge: '/app/icons/badge-96.png',
+    tag: d.tag || 'venga', renotify: true, vibrate: [80, 40, 80], data: { url: d.url || '/app/' }
+  });
+  const badge = (d.badge && self.navigator && self.navigator.setAppBadge) ? self.navigator.setAppBadge(d.badge).catch(() => {}) : Promise.resolve();
+  /* an open app refreshes its list straight away */
+  const tell = self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+    .then(list => list.forEach(c => c.postMessage({ type: 'venga-refresh' })));
+  e.waitUntil(Promise.all([show, badge, tell]));
+});
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const url = (e.notification.data && e.notification.data.url) || '/app/';
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+    for (const c of list) {
+      if (c.url.includes('/app/') && 'focus' in c) { c.postMessage({ type: 'venga-open', url }); return c.focus(); }
+    }
+    return self.clients.openWindow(url);
+  }));
 });
