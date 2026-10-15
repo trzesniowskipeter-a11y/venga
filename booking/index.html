@@ -126,6 +126,14 @@ html.maint #maint{display:flex}
 .privlink{color:inherit;text-decoration:underline;text-underline-offset:3px;opacity:.75}
 .privlink:hover{opacity:1;color:var(--gold)}
 .sep{opacity:.4;margin:0 2px}
+.szq{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;margin:4px 0 12px}
+.szq label{font-size:.78rem;color:var(--stone)}
+.szq input{width:84px;padding:9px 10px;background:var(--coal);border:1px solid rgba(190,157,82,.3);color:var(--ivory);font-size:1rem}
+#szRec{font-size:.84rem;color:var(--ivory)}#szRec b{color:var(--gold)}
+.szq-lnk{background:none;border:0;color:var(--gold);text-decoration:underline;font-size:.78rem;cursor:pointer;padding:4px 0;margin-left:auto}
+.sgbox{border:1px solid rgba(190,157,82,.22);padding:16px;margin:0 0 14px}
+.sz.rec{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.sz .rb{display:block;font-family:var(--body);font-stretch:normal;font-weight:700;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-top:3px}
 </style>
 <style>
 :root{
@@ -489,6 +497,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <h2>Dates &amp; size</h2>
       <p class="hint">Choose your size first — availability differs per size. Then pick your first and last day.</p>
       <div class="grp-h">Frame size</div>
+      <div class="szq" id="szq" hidden>
+        <label for="hgt2">Your height</label>
+        <input id="hgt2" type="number" min="120" max="220" inputmode="numeric" placeholder="cm">
+        <span id="szRec" aria-live="polite"></span>
+        <button type="button" class="szq-lnk" id="sgOpen">Size guide</button>
+      </div>
+      <div id="sgBox" class="sgbox" hidden></div>
       <div class="sizes" id="sizes"></div>
       <div id="calWrap" style="margin-top:28px;display:none">
         <div class="cal-top">
@@ -840,7 +855,7 @@ function renderSizes(){
   const all = ['XS','S','M','ML','L','XL'];
   const have = new Map(S.bike.sizes.map(s => [s.size, s.qty]));
   $('sizes').innerHTML = all.filter(sz => have.has(sz)).map(sz =>
-    `<button class="sz" type="button" data-sz="${sz}" aria-pressed="${S.size===sz}">${sz}<small>${have.get(sz)} in stock</small></button>`
+    `<button class="sz${(S.recSizes||[]).includes(sz)?' rec':''}" type="button" data-sz="${sz}" aria-pressed="${S.size===sz}">${sz}<small>${have.get(sz)} in stock</small>${(S.recSizes||[]).includes(sz)?'<span class="rb">Your size</span>':''}</button>`
   ).join('');
   $('sizes').querySelectorAll('.sz').forEach(el => {
     el.onclick = async () => {
@@ -1342,6 +1357,43 @@ function preselect(){
 boot().then(() => { renderSlots(); preselect(); gate(); });
 
 
+</script>
+
+<script src="/assets/sizeguide.js"></script>
+<script>
+/* height -> recommended frame size, shown right where the size is chosen */
+(function(){
+  var q=document.getElementById('szq'),h2=document.getElementById('hgt2'),rec=document.getElementById('szRec'),
+      box=document.getElementById('sgBox'),open=document.getElementById('sgOpen'),guide=null,lastSlug=null;
+  function slug(){return S&&S.bike?S.bike.slug:null}
+  function update(){
+    var sl=slug(); if(!sl||!window.VengaSizeGuide){q.hidden=true;return}
+    if(sl!==lastSlug){lastSlug=sl;guide=null;box.hidden=true;box.innerHTML='';open.textContent='Size guide';
+      VengaSizeGuide.load(sl).then(function(d){q.hidden=!d.chart.length;if(d.chart.length)apply()});return}
+    apply();
+  }
+  function apply(){
+    var h=parseInt(h2.value,10),sl=slug();
+    if(!(h>=120&&h<=230)){rec.innerHTML='';S.recSizes=[];renderSizes();return}
+    VengaSizeGuide.recommend(sl,h).then(function(r){
+      S.recSizes=r.stocked;
+      rec.innerHTML=r.stocked.length?('Recommended: <b>'+r.stocked.join(' / ')+'</b>'):(r.fit.length?'Your size is not in our fleet for this bike — open the size guide.':'Outside this frame\'s range — we will advise you.');
+      renderSizes(); if(guide)guide.setHeight(h);
+    });
+  }
+  h2.addEventListener('input',function(){var m=document.getElementById('hgt');if(m&&!m.value||m&&m.dataset.fromSize==='1'){m.value=h2.value;m.dataset.fromSize='1'}apply()});
+  var main=document.getElementById('hgt');
+  if(main)main.addEventListener('input',function(){main.dataset.fromSize='0';if(!h2.value||h2.dataset.fromMain==='1'){h2.value=main.value;h2.dataset.fromMain='1';apply()}});
+  open.onclick=function(){
+    if(box.hidden){box.hidden=false;open.textContent='Hide size guide';
+      if(!guide)guide=VengaSizeGuide.mount(box,{slug:slug(),lang:'en',theme:'dark',height:parseInt(h2.value,10)||175,
+        onPick:function(st,h){if(String(h)!==h2.value&&document.activeElement&&box.contains(document.activeElement)){h2.value=h;h2.dispatchEvent(new Event('input'))}}});
+    }else{box.hidden=true;open.textContent='Size guide'}
+  };
+  var _rs=window.renderSizes;
+  window.renderSizes=function(){_rs.apply(this,arguments)};
+  setInterval(function(){if(slug()!==lastSlug)update()},500);
+})();
 </script>
 </body>
 </html>
