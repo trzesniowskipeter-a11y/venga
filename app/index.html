@@ -729,6 +729,7 @@ Write in plain text. Blank line starts a new paragraph.
     </div>
     <div class="two">
       <div class="f"><label for="mPhone">Phone</label><input id="mPhone" type="tel"></div>
+      <div class="f"><label for="mLang">E-mail language</label><select id="mLang"><option value="en">English</option><option value="es">Español</option><option value="pl">Polski</option></select></div>
       <div class="f" data-delivery hidden><label for="mDel">Delivery</label><select id="mDel"><option value="0">Pickup in shop</option><option value="1">Delivery</option></select></div>
     </div>
     <div class="f" id="mAddrF" style="display:none"><label for="mAddr">Delivery address</label><input id="mAddr" type="text"></div>
@@ -1604,7 +1605,7 @@ if(!INSURANCE_FULL_ON){
 }
 
 function clearModal(){
-  ['mName','mMail','mPhone','mNotes','mAddr','mFrom','mTo','mPrice','mAcc','mH','mW'].forEach(i=>$(i).value='');$('mPos').value='unsure';
+  ['mName','mMail','mPhone','mNotes','mAddr','mFrom','mTo','mPrice','mAcc','mH','mW'].forEach(i=>$(i).value='');$('mPos').value='unsure';$('mLang').value=(window.ADMIN_LANG==='pl'?'pl':'en');
   if(typeof MCAL!=='undefined'){mcalReset(false)}
   $('mAdd').querySelectorAll('.chip.on').forEach(c=>c.classList.remove('on'));
   $('mIns').value='none'; $('mDel').value='0'; $('mAddrF').style.display='none';
@@ -1626,6 +1627,7 @@ function openEdit(id){
   (r.addons||[]).forEach(s=>{const c=$('mAdd').querySelector(`[data-s="${s}"]`);if(c)c.classList.add('on')});
   $('mName').value=r.customer_name||''; $('mMail').value=r.email||'';
   $('mPhone').value=r.phone||''; $('mNotes').value=r.notes||'';
+  $('mLang').value=['en','es','pl'].includes(r.lang)?r.lang:'en';
   $('mDel').value=r.delivery?'1':'0';
   $('mAddrF').style.display=r.delivery?'block':'none';
   $('mAddr').value=r.delivery_address||'';
@@ -1709,11 +1711,13 @@ $('mSave').onclick=async()=>{
       ({data,error}=await sb.rpc('create_reservation',{...common,
         p_accommodation:$('mAcc').value.trim()||null,
         p_height_cm:hv?Math.round(+hv):null, p_weight_kg:wv?Math.round(+wv):null,
-        p_riding_position:$('mPos').value}));
+        p_riding_position:$('mPos').value, p_lang:$('mLang').value}));
     }
     if(error)throw error;
     if(!editing){
       await sb.from('reservations').update({source:'manual',status:'confirmed'}).eq('code',data.code);
+    }else{
+      await sb.from('reservations').update({lang:$('mLang').value}).eq('id',EDIT_ID);
     }
     $('ovl').classList.remove('on');
     EDIT_ID=null; clearModal();

@@ -58,7 +58,7 @@
     'Pickup in shop': 'Odbiór w sklepie', 'High season': 'Wysoki sezon', 'Low season': 'Niski sezon',
     'Edit': 'Edytuj', 'Confirm': 'Potwierdź', 'Cancel': 'Anuluj', 'Reopen': 'Otwórz ponownie',
     'Email customer': 'Napisz do klienta', 'Guest has been emailed': 'Do gościa wysłano e-mail',
-    'Height': 'Wzrost', 'Weight': 'Waga', 'Riding position': 'Pozycja jazdy', 'Language': 'Język',
+    'Height': 'Wzrost', 'E-mail language': 'Język maila', 'Weight': 'Waga', 'Riding position': 'Pozycja jazdy', 'Language': 'Język',
     'Sporty': 'Sportowa', 'Balanced': 'Zrównoważona', 'Relaxed': 'Wygodna', 'Not sure': 'Nie wiem',
     'Sporty — low and aero': 'Sportowa — nisko i aero', 'Relaxed — upright': 'Wygodna — wyprostowana',
     'Not sure — we recommend': 'Nie wiem — polecamy',

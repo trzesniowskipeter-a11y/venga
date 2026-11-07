@@ -397,6 +397,17 @@ footer{border-top:1px solid var(--line);padding:24px clamp(18px,4vw,44px);text-a
 <meta name="twitter:description" content="Check availability and book a premium Giant or Liv bike in Port de Pollença. Pick your size and dates, add insurance and extras, pay in the shop on pickup.">
 <meta name="twitter:image" content="https://vengacyclingmallorca.com/assets/img/og-cover.jpg">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Venga Cycling Mallorca", "item": "https://vengacyclingmallorca.com/"}, {"@type": "ListItem", "position": 2, "name": "Book your bike", "item": "https://vengacyclingmallorca.com/booking/"}]}</script>
+<script>
+/* language for the guest's e-mails: the language version of the site they came from,
+   otherwise their browser's language (Spanish, Catalan, Galician, Basque -> es; Polish -> pl) */
+function vengaLang(){
+  try{var v=localStorage.getItem('venga_lang');if(v==='en'||v==='es'||v==='pl')return v}catch(e){}
+  var l=((navigator.languages&&navigator.languages[0])||navigator.language||'en').toLowerCase();
+  if(/^(es|ca|gl|eu)\b/.test(l))return 'es';
+  if(/^pl\b/.test(l))return 'pl';
+  return 'en';
+}
+</script>
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
@@ -1299,7 +1310,7 @@ async function submit(){
       p_name: $('nm').value.trim(), p_email: $('em').value.trim(),
       p_phone: $('ph').value.trim() || null, p_notes: $('nt').value.trim() || null,
       /* so the confirmation email arrives in the language they booked in */
-      p_lang: (function(){try{return localStorage.getItem('venga_lang')||'en'}catch(e){return 'en'}})(),
+      p_lang: vengaLang(),
       p_accommodation: $('acc').value.trim(),
       p_height_cm: parseInt($('hgt').value,10),
       p_weight_kg: $('wgt').value ? parseInt($('wgt').value,10) : null,
@@ -1321,7 +1332,7 @@ function showDone(res){
     transaction_id: res.code, value: Number(res.total), currency:'EUR',
     bike_name: S.bike && S.bike.name, size: S.size, days: res.days,
     insurance: S.insurance, delivery: !!S.delivery,
-    extras: [...S.extras].join(','), language: (function(){try{return localStorage.getItem('venga_lang')||'en'}catch(e){return 'en'}})()
+    extras: [...S.extras].join(','), language: vengaLang()
   });
   document.querySelectorAll('.step').forEach(s => s.classList.remove('on'));
   $('sDone').classList.add('on');
